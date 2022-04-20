@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Luck.Framework\Luck.Framework.csproj" />
+    <ProjectReference Include="..\..\src\framework\Luck.Framework\Luck.Framework.csproj" />
   </ItemGroup>
 
 </Project>
