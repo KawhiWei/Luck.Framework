@@ -6,7 +6,7 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
 using System.Text;
 
-namespace Luck.Framework.Extensions
+namespace Microsoft.Extensions.DependencyInjection
 {
     public static class ServiceProviderExtension
     {
@@ -79,6 +79,12 @@ namespace Luck.Framework.Extensions
             if (t == null)
                 throw new ArgumentNullException(nameof(action));
             action(t);
+        }
+
+        public static void CreateScoped(this IServiceProvider provider, Action<IServiceProvider> callback)
+        {
+            using var scope = provider.CreateScope();
+            callback(scope.ServiceProvider);
         }
     }
 }

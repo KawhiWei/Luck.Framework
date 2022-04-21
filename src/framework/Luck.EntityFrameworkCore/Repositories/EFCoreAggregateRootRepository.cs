@@ -1,11 +1,11 @@
 ﻿
+using Luck.EntityFrameworkCore.DbContexts;
 using Luck.Framework.Domian;
 using Luck.Framework.Repositories;
-using Luck.FrameworkCore.DbContexts;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
-namespace Luck.FrameworkCore.Repositories
+namespace Luck.EntityFrameworkCore.Repositories
 {
     public class EFCoreAggregateRootRepository<TEntity, TKey> : AggregateRootRepositoryBase<TEntity, TKey> where TEntity : class, IAggregateRootBase
         where TKey : IEquatable<TKey>

@@ -1,4 +1,4 @@
-﻿namespace Luck.FrameworkCore.Exceptions
+﻿namespace Luck.EntityFrameworkCore.Exceptions
 {
     public class EntityFrameworkCorePropertyException : Exception
     {

@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System.Linq.Expressions;
 using System.Reflection;
 
-namespace Luck.FrameworkCore.Extensions
+namespace Luck.EntityFrameworkCore.Extensions
 {
     public static class SoftDeletableExtension
     {

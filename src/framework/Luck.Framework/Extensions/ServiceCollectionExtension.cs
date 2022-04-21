@@ -1,14 +1,14 @@
 ﻿using JetBrains.Annotations;
 using Luck.Framework.Exceptions;
+using Luck.Framework.Extensions;
 using Luck.Framework.Helpers;
 using Luck.Framework.Infrastructure;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using System.Reflection;
 using System.Text;
 
-namespace Luck.Framework.Extensions
+namespace Microsoft.Extensions.DependencyInjection
 {
     public static class ServiceCollectionExtension
     {
@@ -321,11 +321,11 @@ namespace Luck.Framework.Extensions
                 }
 
                 var containerBuilderType = factoryInterface.GenericTypeArguments[0];
-                return (IServiceProvider)typeof(Extensions)
-                    .GetTypeInfo()
-                    .GetMethods()
-                    .Single(m => m.Name == nameof(BuildServiceProviderFromFactory) && m.IsGenericMethod)
-                    .MakeGenericMethod(containerBuilderType)
+                return (IServiceProvider)typeof(Extension)
+                    .GetTypeInfo()?
+                    .GetMethods()?
+                    .Single(m => m.Name == nameof(BuildServiceProviderFromFactory) && m.IsGenericMethod)?
+                    .MakeGenericMethod(containerBuilderType)?
                     .Invoke(null, new object[] { services, null });
             }
 
@@ -384,7 +384,7 @@ namespace Luck.Framework.Extensions
             var configuration = services.GetService<IConfiguration>();
             var value = configuration?.GetSection(sectionKey)?.Value;
 
-            if(value == null)
+            if (value == null)
                 return null;
             return services.GetFileText(value, fileNotExistsMsg);
 

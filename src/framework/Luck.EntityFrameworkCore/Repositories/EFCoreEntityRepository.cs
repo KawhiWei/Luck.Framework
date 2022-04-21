@@ -1,10 +1,10 @@
-﻿using Luck.Framework.Domian;
+﻿using Luck.EntityFrameworkCore.DbContexts;
+using Luck.Framework.Domian;
 using Luck.Framework.Repositories;
-using Luck.FrameworkCore.DbContexts;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
-namespace Luck.FrameworkCore.Repositories
+namespace Luck.EntityFrameworkCore.Repositories
 {
     public class EFCoreEntityRepository<TEntity, TKey> : IEntityRepository<TEntity, TKey> where TEntity : class, IEntityWithIdentity where TKey : IEquatable<TKey>
     {

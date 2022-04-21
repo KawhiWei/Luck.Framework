@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\framework\Luck.EntityFrameworkCore\Luck.EntityFrameworkCore.csproj" />
     <ProjectReference Include="..\..\src\framework\Luck.Framework\Luck.Framework.csproj" />
   </ItemGroup>
 

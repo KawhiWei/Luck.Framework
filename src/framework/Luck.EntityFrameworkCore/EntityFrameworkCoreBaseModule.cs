@@ -1,7 +1,8 @@
-﻿using Luck.Framework.Infrastructure;
+﻿using Luck.EntityFrameworkCore.DbContextDrivenProvides;
+using Luck.Framework.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Luck.FrameworkCore
+namespace Luck.EntityFrameworkCore
 {
     public abstract class EntityFrameworkCoreBaseModule : AppModule
     {
@@ -19,7 +20,7 @@ namespace Luck.FrameworkCore
         /// <returns></returns>
         protected virtual IServiceCollection AddDbDriven(IServiceCollection services)
         {
-            //services.AddSingleton<IDbContextDrivenProvider, MySqlDbContextDrivenProvider>();
+            services.AddSingleton<IDbContextDrivenProvider, MySqlDbContextDrivenProvider>();
             //services.AddSingleton<IDbContextDrivenProvider, SqlServerDbContextDrivenProvider>();
             //services.AddSingleton<IDbContextDrivenProvider, NpgSqlDbContextDrivenProvider>();
             return services;
