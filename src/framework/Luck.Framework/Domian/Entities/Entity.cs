@@ -1,6 +1,6 @@
 ﻿namespace Luck.Framework.Domian
 {
-    public class Entity : IEntity
+    public class Entity :  IEntityWithIdentity
     {
 
     }
