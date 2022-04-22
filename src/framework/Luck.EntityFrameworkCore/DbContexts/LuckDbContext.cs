@@ -1,5 +1,8 @@
 ﻿using Luck.EntityFrameworkCore.Extensions;
+using Luck.Framework.Domian;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Luck.EntityFrameworkCore.DbContexts
 {
@@ -8,8 +11,13 @@ namespace Luck.EntityFrameworkCore.DbContexts
         protected LuckDbContext()
         {
         }
-        protected LuckDbContext(DbContextOptions options) : base(options)
+   
+        protected IServiceProvider ServiceProvider { get; set; }
+        private IMediator? _mediator;
+        protected LuckDbContext(DbContextOptions options, IServiceProvider serviceProvider) : base(options)
         {
+            ServiceProvider = serviceProvider;
+            _mediator = ServiceProvider.GetService<IMediator>();
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -29,22 +37,20 @@ namespace Luck.EntityFrameworkCore.DbContexts
             OnBeforeSaveChange();
             return base.SaveChanges();
         }
-        public override int SaveChanges(bool acceptAllChangesOnSuccess)
-        {
-            OnBeforeSaveChange();
-            return base.SaveChanges(acceptAllChangesOnSuccess);
-        }
 
-        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
-        {
-            OnBeforeSaveChange();
-            return base.SaveChangesAsync(cancellationToken);
-        }
 
-        public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
+        public override async Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
         {
             OnBeforeSaveChange();
-            return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+
+            if (this._mediator != null)
+            {
+                await _mediator.DispatchDomainEventsAsync(this, cancellationToken);
+            }
+            
+            var count=  await base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+            return count;
+
         }
 
         public virtual void Rollback()

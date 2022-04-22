@@ -16,18 +16,18 @@ namespace Luck.EntityFrameworkCore.UnitOfWorks
         {
             try
             {
-                foreach (var e in _dbContext.ChangeTracker.Entries())
-                {
-                    //if (e.Entity is IAggregateRoot r)
-                    //{
-                    //    var domainEvents = r.GetDomainEvents();
-                    //    foreach (var domainEvent in domainEvents)
-                    //    {
-                    //        //await _mediator.PublishAsync(notification, cancellationToken);
-                    //    }
-                    //    r.ClearDomainEvents();
-                    //}
-                }
+                //foreach (var e in _dbContext.ChangeTracker.Entries())
+                //{
+                //    //if (e.Entity is IAggregateRoot r)
+                //    //{
+                //    //    var domainEvents = r.GetDomainEvents();
+                //    //    foreach (var domainEvent in domainEvents)
+                //    //    {
+                //    //        //await _mediator.PublishAsync(notification, cancellationToken);
+                //    //    }
+                //    //    r.ClearDomainEvents();
+                //    //}
+                //}
                 return await _dbContext.SaveChangesAsync(cancellationToken);
             }
             catch (Exception exception)
