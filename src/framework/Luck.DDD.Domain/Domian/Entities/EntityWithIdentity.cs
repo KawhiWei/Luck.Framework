@@ -1,4 +1,4 @@
-﻿namespace Luck.Framework.Domian
+﻿namespace Luck.DDD.Domain
 {
     public class EntityWithIdentity<TIdentityKey> : Entity
     {

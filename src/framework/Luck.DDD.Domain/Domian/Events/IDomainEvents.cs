@@ -1,7 +1,6 @@
 ﻿using MediatR;
-using System.Collections.Generic;
 
-namespace Luck.Framework.Domian
+namespace Luck.DDD.Domain
 {
     public interface IDomainEvents
     {

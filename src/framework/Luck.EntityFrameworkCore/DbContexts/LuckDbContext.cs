@@ -1,5 +1,4 @@
 ﻿using Luck.EntityFrameworkCore.Extensions;
-using Luck.Framework.Domian;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,7 +10,7 @@ namespace Luck.EntityFrameworkCore.DbContexts
         protected LuckDbContext()
         {
         }
-   
+
         protected IServiceProvider ServiceProvider { get; set; }
         private IMediator? _mediator;
         protected LuckDbContext(DbContextOptions options, IServiceProvider serviceProvider) : base(options)
@@ -47,8 +46,8 @@ namespace Luck.EntityFrameworkCore.DbContexts
             {
                 await _mediator.DispatchDomainEventsAsync(this, cancellationToken);
             }
-            
-            var count=  await base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+
+            var count = await base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
             return count;
 
         }

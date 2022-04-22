@@ -1,10 +1,12 @@
-﻿using Luck.Framework.Infrastructure;
+﻿
 
-namespace Luck.Framework.Domian
+using Luck.Framework;
+
+namespace Luck.DDD.Domain
 {
     public class FullAggregateRoot : AggregateRootWithIdentity<string>, IUpdatable, ISoftDeletable
     {
-        public FullAggregateRoot() : base(ObjectId.GenerateNewStringId())
+        public FullAggregateRoot() : base(SnowflakeId.GenerateNewStringId())
         {
 
         }

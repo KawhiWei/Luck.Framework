@@ -23,6 +23,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Luck.TestBase", "src\framew
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Luck.EntityFrameworkCore", "src\framework\Luck.EntityFrameworkCore\Luck.EntityFrameworkCore.csproj", "{59803D76-90B4-4290-9F61-0CDF8123ECC2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Luck.DDD.Domain", "src\framework\Luck.DDD.Domain\Luck.DDD.Domain.csproj", "{77ABBB6C-ACB8-4626-B48F-761D69160EEA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -49,6 +51,10 @@ Global
 		{59803D76-90B4-4290-9F61-0CDF8123ECC2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{59803D76-90B4-4290-9F61-0CDF8123ECC2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{59803D76-90B4-4290-9F61-0CDF8123ECC2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{77ABBB6C-ACB8-4626-B48F-761D69160EEA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{77ABBB6C-ACB8-4626-B48F-761D69160EEA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{77ABBB6C-ACB8-4626-B48F-761D69160EEA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{77ABBB6C-ACB8-4626-B48F-761D69160EEA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -61,6 +67,7 @@ Global
 		{4691C9DA-7CB4-487A-96A9-9CF3DA3586A6} = {DE49CCE6-B41E-493A-ADCC-EA6075DD0038}
 		{FDA911F3-B201-4C7F-BD82-FBB7691EE5C9} = {91CD3C81-AA29-47C7-B654-901872880B63}
 		{59803D76-90B4-4290-9F61-0CDF8123ECC2} = {0B213774-4D0A-4CF7-9486-B29F3A1EDA23}
+		{77ABBB6C-ACB8-4626-B48F-761D69160EEA} = {DE49CCE6-B41E-493A-ADCC-EA6075DD0038}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4719568B-E10A-4815-AAAA-8C6D6CEE798F}

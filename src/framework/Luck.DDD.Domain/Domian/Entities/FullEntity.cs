@@ -1,10 +1,10 @@
-﻿using Luck.Framework.Infrastructure;
+﻿using Luck.Framework;
 
-namespace Luck.Framework.Domian
+namespace Luck.DDD.Domain
 {
     public class FullEntity : EntityWithIdentity<string>, IUpdatable, ISoftDeletable
     {
-        protected FullEntity() : base(ObjectId.GenerateNewStringId())
+        protected FullEntity() : base(SnowflakeId.GenerateNewStringId())
         {
         }
         public DateTimeOffset CreationTime { get; private set; }

@@ -1,6 +1,6 @@
-﻿using Luck.Framework.Domian;
+﻿
 
-namespace Luck.Framework.Repositories
+namespace Luck.DDD.Domain.Repositories
 {
     public interface IWriteRepository<TEntity, TKey> where TEntity : IEntity
     {

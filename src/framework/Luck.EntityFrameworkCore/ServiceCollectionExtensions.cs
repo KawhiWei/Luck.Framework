@@ -1,13 +1,12 @@
-﻿using Luck.EntityFrameworkCore;
+﻿using Luck.DDD.Domain.Repositories;
+using Luck.EntityFrameworkCore;
 using Luck.EntityFrameworkCore.DbContextDrivenProvides;
 using Luck.EntityFrameworkCore.DbContexts;
 using Luck.EntityFrameworkCore.Repositories;
 using Luck.EntityFrameworkCore.UnitOfWorks;
 using Luck.Framework.Exceptions;
-using Luck.Framework.Repositories;
 using Luck.Framework.UnitOfWorks;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
 namespace Microsoft.Extensions.DependencyInjection
 {
     public static class ServiceCollectionExtensions

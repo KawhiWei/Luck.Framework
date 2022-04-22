@@ -1,11 +1,11 @@
-﻿using Luck.Framework.Infrastructure.DependencyInjectionModule;
-using Luck.Framework.Repositories;
+﻿using Luck.DDD.Domain.Repositories;
+using Luck.Framework.Infrastructure.DependencyInjectionModule;
 using Luck.Framework.UnitOfWorks;
 using Module.Sample.Domain;
 
 namespace Module.Sample.Services
 {
-    public class OrderService: IOrderService
+    public class OrderService : IOrderService
     {
 
         public readonly IAggregateRootRepository<Order, string> _aggregateRootRepository;
@@ -19,12 +19,12 @@ namespace Module.Sample.Services
 
         public async Task CreateAsync()
         {
-            var order = new Order("asdasdsa","asdasdadas");
+            var order = new Order("asdasdsa", "asdasdadas");
             _aggregateRootRepository.Add(order);
             await _unitOfWork.CommitAsync();
         }
     }
-    public interface IOrderService:IScopedDependency
+    public interface IOrderService : IScopedDependency
     {
         Task CreateAsync();
     }

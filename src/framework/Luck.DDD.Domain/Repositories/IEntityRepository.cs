@@ -1,6 +1,4 @@
-﻿using Luck.Framework.Domian;
-
-namespace Luck.Framework.Repositories
+﻿namespace Luck.DDD.Domain.Repositories
 {
     public interface IEntityRepository<TEntity, TKey> :
         IRepository<TEntity, TKey> where TEntity : IEntityWithIdentity

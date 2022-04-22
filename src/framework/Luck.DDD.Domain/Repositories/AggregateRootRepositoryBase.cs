@@ -1,11 +1,10 @@
-﻿using Luck.Framework.Domian;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 
-namespace Luck.Framework.Repositories
+namespace Luck.DDD.Domain.Repositories
 {
     public abstract class AggregateRootRepositoryBase<TEntity, TKey> :
         IAggregateRootRepository<TEntity, TKey>
-        where TEntity :class, IAggregateRootBase
+        where TEntity : class, IAggregateRootBase
     {
 
         public AggregateRootRepositoryBase()
@@ -47,6 +46,6 @@ namespace Luck.Framework.Repositories
         public abstract Task<TEntity?> FindAsync(Expression<Func<TEntity, bool>> predicate);
 
 
-        protected abstract  IQueryable<TEntity> DoFindQueryable();
+        protected abstract IQueryable<TEntity> DoFindQueryable();
     }
 }

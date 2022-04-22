@@ -1,6 +1,8 @@
+
 ﻿using MediatR;
 
-namespace Luck.Framework.Domian
+
+﻿namespace Luck.DDD.Domain
 {
     public class Entity : IEntityWithIdentity, IDomainEvents
     {

@@ -2,9 +2,9 @@
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Luck.Framework.Infrastructure
+namespace Luck.Framework
 {
-    public struct ObjectId : IComparable<ObjectId>, IEquatable<ObjectId>
+    public struct SnowflakeId : IComparable<SnowflakeId>, IEquatable<SnowflakeId>
     {
         private static readonly DateTime UnixEpoch;
 
@@ -24,14 +24,14 @@ namespace Luck.Framework.Infrastructure
         private readonly short _pid;
         private readonly int _increment;
 
-        static ObjectId()
+        static SnowflakeId()
         {
             UnixEpoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
             StaticMachine = GetMachineHash();
             _staticIncrement = new Random().Next();
             StaticPid = (short)GetCurrentProcessId();
         }
-        public ObjectId(int timestamp, int machine, short pid, int increment)
+        public SnowflakeId(int timestamp, int machine, short pid, int increment)
         {
             if ((machine & 0xff000000) != 0)
             {
@@ -51,25 +51,25 @@ namespace Luck.Framework.Infrastructure
             _increment = increment;
         }
 
-        public static bool operator ==(ObjectId lhs, ObjectId rhs)
+        public static bool operator ==(SnowflakeId lhs, SnowflakeId rhs)
         {
             return lhs.Equals(rhs);
         }
 
-        public static bool operator !=(ObjectId lhs, ObjectId rhs)
+        public static bool operator !=(SnowflakeId lhs, SnowflakeId rhs)
         {
             return !(lhs == rhs);
         }
 
-        public static ObjectId GenerateNewId()
+        public static SnowflakeId GenerateNewId()
         {
             return GenerateNewId(GetTimestampFromDateTime(DateTime.UtcNow));
         }
 
-        public static ObjectId GenerateNewId(int timestamp)
+        public static SnowflakeId GenerateNewId(int timestamp)
         {
             var increment = Interlocked.Increment(ref _staticIncrement) & 0x00ffffff; // only use low order 3 bytes
-            return new ObjectId(timestamp, StaticMachine, StaticPid, increment);
+            return new SnowflakeId(timestamp, StaticMachine, StaticPid, increment);
         }
 
         public static string GenerateNewStringId()
@@ -127,7 +127,7 @@ namespace Luck.Framework.Infrastructure
         }
 
 
-        public int CompareTo(ObjectId other)
+        public int CompareTo(SnowflakeId other)
         {
             var r = _timestamp.CompareTo(other._timestamp);
             if (r != 0)
@@ -150,7 +150,7 @@ namespace Luck.Framework.Infrastructure
             return _increment.CompareTo(other._increment);
         }
 
-        public bool Equals(ObjectId rhs)
+        public bool Equals(SnowflakeId rhs)
         {
             return
                 _timestamp == rhs._timestamp &&
@@ -163,7 +163,7 @@ namespace Luck.Framework.Infrastructure
         public override bool Equals(object obj)
 #pragma warning restore CS8765 // 参数类型的为 Null 性与重写成员不匹配(可能是由于为 Null 性特性)。
         {
-            if (obj is ObjectId id)
+            if (obj is SnowflakeId id)
             {
                 return Equals(id);
             }

@@ -1,7 +1,7 @@
 ﻿
+using Luck.DDD.Domain;
+using Luck.DDD.Domain.Repositories;
 using Luck.EntityFrameworkCore.DbContexts;
-using Luck.Framework.Domian;
-using Luck.Framework.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 

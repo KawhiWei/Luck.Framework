@@ -1,4 +1,4 @@
-﻿using Luck.Framework.Domian;
+﻿using Luck.DDD.Domain;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -21,7 +21,7 @@ namespace Luck.EntityFrameworkCore
 
             foreach (var domainEvent in domainEvents)
             {
-                await mediator.Publish(domainEvent,cancellationToken);
+                await mediator.Publish(domainEvent, cancellationToken);
             }
         }
     }

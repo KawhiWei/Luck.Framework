@@ -1,7 +1,7 @@
-﻿using Luck.Framework.Domian;
+﻿
 using System.Linq.Expressions;
 
-namespace Luck.Framework.Repositories
+namespace Luck.DDD.Domain.Repositories
 {
     public interface IRepository<TEntity, TKey> where TEntity : IEntity
     {

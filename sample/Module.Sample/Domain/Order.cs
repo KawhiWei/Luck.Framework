@@ -1,4 +1,4 @@
-﻿using Luck.Framework.Domian;
+﻿using Luck.DDD.Domain;
 
 namespace Module.Sample.Domain
 {
