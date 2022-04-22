@@ -7,8 +7,15 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Compile Remove="Infrastructure\Caching\ICache.Async.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<Folder Include="Infrastructure\Excel\" />
-		<Folder Include="Infrastructure\Cache\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Include="Infrastructure\Caching\ICache.Async.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
