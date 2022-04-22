@@ -30,7 +30,7 @@ namespace Microsoft.Extensions.DependencyInjection
             if (efDbContextAction == null)
                 throw new LuckException(nameof(efDbContextAction));
 
-            services.AddDbContext<TDbContext>((provider, dbcontextbuilder) =>
+            services.AddDbContext<ILuckDbContext, TDbContext>((provider, dbcontextbuilder) =>
             {
                 EFDbContextConfig config = new EFDbContextConfig();
                 efDbContextAction.Invoke(config);

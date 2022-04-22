@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Module.Sample.Services;
 
 namespace Module.Sample.Controllers
 {
@@ -12,10 +13,11 @@ namespace Module.Sample.Controllers
     };
 
         private readonly ILogger<WeatherForecastController> _logger;
-
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
+        private readonly IOrderService _orderService;
+        public WeatherForecastController(IOrderService orderService, ILogger<WeatherForecastController> logger)
         {
             _logger = logger;
+            _orderService = orderService;
         }
 
         [HttpGet(Name = "GetWeatherForecast")]
@@ -28,6 +30,11 @@ namespace Module.Sample.Controllers
                 Summary = Summaries[Random.Shared.Next(Summaries.Length)]
             })
             .ToArray();
+        }
+        [HttpPost]
+        public async Task CreateAsync()
+        {
+            await _orderService.CreateAsync();
         }
     }
 }

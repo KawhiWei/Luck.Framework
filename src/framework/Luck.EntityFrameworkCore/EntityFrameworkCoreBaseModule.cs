@@ -11,6 +11,8 @@ namespace Luck.EntityFrameworkCore
         {
             this.AddDbDriven(context.Services);
             context.Services.AddDefaultRepository();
+            context.Services.AddUnitOfWork();
+
             AddDbContextWithUnitOfWork(context.Services);
         }
         /// <summary>

@@ -2,11 +2,16 @@
 
 namespace Module.Sample.Domain
 {
-    public class Order: FullAggregateRoot
+    public class Order : FullAggregateRoot
     {
+        public Order(string name, string address)
+        {
+            Name = name;
+            Address = address;
+        }
 
-        public string Name { get; set; } = default!;
+        public string Name { get; private set; } = default!;
 
-        public string Address { get; set; } = default!;
+        public string Address { get; private set; } = default!;
     }
 }
