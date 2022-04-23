@@ -10,13 +10,13 @@ namespace Luck.EntityFrameworkCore.Repositories
     public class EFCoreAggregateRootRepository<TEntity, TKey> : AggregateRootRepositoryBase<TEntity, TKey> where TEntity : class, IAggregateRootBase
         where TKey : IEquatable<TKey>
     {
-        private readonly LuckDbContext _dbContext;
+        private readonly LuckDbContextBase _dbContext;
 
-        public LuckDbContext DbContext => _dbContext;
+        public LuckDbContextBase DbContext => _dbContext;
 
         public EFCoreAggregateRootRepository(ILuckDbContext dbContext)
         {
-            _dbContext = dbContext as LuckDbContext ?? throw new NotSupportedException();
+            _dbContext = dbContext as LuckDbContextBase ?? throw new NotSupportedException();
         }
 
         public override void Add(TEntity entity)

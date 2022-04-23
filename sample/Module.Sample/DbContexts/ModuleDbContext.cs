@@ -4,7 +4,7 @@ using Module.Sample.Domain;
 
 namespace Module.Sample.DbContexts
 {
-    public class ModuleDbContext : LuckDbContext
+    public class ModuleDbContext : LuckDbContextBase
     {
         public ModuleDbContext(DbContextOptions options, IServiceProvider serviceProvider) : base(options, serviceProvider)
         {

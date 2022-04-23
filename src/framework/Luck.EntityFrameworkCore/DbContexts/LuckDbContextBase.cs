@@ -2,29 +2,21 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Luck.EntityFrameworkCore.DbContexts
 {
     /// <summary>
     /// 类类上下文
     /// </summary>
-    public abstract class DbContextBase:DbContext
+    public abstract class LuckDbContextBase : DbContext, ILuckDbContext
     {
         protected IMediator? _mediator;
         protected IServiceProvider ServiceProvider { get; set; }
 
-        protected DbContextBase()
-        { 
-        }
-        protected DbContextBase(DbContextOptions options, IServiceProvider serviceProvider) : base(options)
+        public LuckDbContextBase(DbContextOptions options, IServiceProvider serviceProvider) : base(options)
         {
             ServiceProvider = serviceProvider;
-            _mediator = ServiceProvider?.GetService<IMediator>();
+            _mediator = ServiceProvider.GetService<IMediator>() ?? throw new ArgumentNullException(nameof(_mediator));
         }
 
 
@@ -38,7 +30,7 @@ namespace Luck.EntityFrameworkCore.DbContexts
 
         }
 
-       
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             base.OnConfiguring(optionsBuilder);
@@ -55,12 +47,14 @@ namespace Luck.EntityFrameworkCore.DbContexts
         {
             OnBeforeSaveChange();
 
-            if (this._mediator != null)
+
+
+            var count = await base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+
+            if (this._mediator != null && count > 0)
             {
                 await _mediator.DispatchDomainEventsAsync(this, cancellationToken);
             }
-
-            var count = await base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
             return count;
 
         }

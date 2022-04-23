@@ -24,7 +24,7 @@ namespace Microsoft.Extensions.DependencyInjection
             return services;
         }
 
-        public static IServiceCollection AddLuckDbContext<TDbContext>(this IServiceCollection services, Action<EFDbContextConfig> efDbContextAction, Action<IServiceProvider, DbContextOptionsBuilder>? optionsAction = null) where TDbContext : LuckDbContext
+        public static IServiceCollection AddLuckDbContext<TDbContext>(this IServiceCollection services, Action<EFDbContextConfig> efDbContextAction, Action<IServiceProvider, DbContextOptionsBuilder>? optionsAction = null) where TDbContext : LuckDbContextBase
         {
             if (efDbContextAction == null)
                 throw new LuckException(nameof(efDbContextAction));
