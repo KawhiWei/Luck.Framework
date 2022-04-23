@@ -9,7 +9,7 @@ using Luck.Framework.UnitOfWorks;
 using Microsoft.EntityFrameworkCore;
 namespace Microsoft.Extensions.DependencyInjection
 {
-    public static class ServiceCollectionExtensions
+    public static class ServiceCollectionExtension
     {
         /// <summary>
         /// 添加工作单元
