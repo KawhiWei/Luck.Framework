@@ -9,13 +9,13 @@ namespace Luck.EntityFrameworkCore.Repositories
     public class EFCoreEntityRepository<TEntity, TKey> : IEntityRepository<TEntity, TKey> where TEntity : class, IEntityWithIdentity where TKey : IEquatable<TKey>
     {
 
-        private readonly LuckDbContext _dbContext;
+        private readonly LuckDbContextBase _dbContext;
 
-        public LuckDbContext DbContext => _dbContext;
+        public LuckDbContextBase DbContext => _dbContext;
 
         public EFCoreEntityRepository(ILuckDbContext dbContext)
         {
-            _dbContext = dbContext as LuckDbContext ?? throw new NotSupportedException();
+            _dbContext = dbContext as LuckDbContextBase ?? throw new NotSupportedException();
         }
 
         public TEntity? Find(TKey primaryKey)

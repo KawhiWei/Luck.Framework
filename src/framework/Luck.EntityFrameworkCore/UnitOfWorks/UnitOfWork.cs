@@ -6,12 +6,16 @@ namespace Luck.EntityFrameworkCore.UnitOfWorks
 {
     public class UnitOfWork: IUnitOfWork
     {
-        private readonly LuckDbContext _dbContext;
+
+        private readonly LuckDbContextBase _dbContext;
 
         public UnitOfWork(ILuckDbContext dbContext)
         {
-            _dbContext = dbContext as LuckDbContext ?? throw new NotSupportedException();
+            _dbContext = dbContext as LuckDbContextBase ?? throw new NotSupportedException();
+
+
         }
+
         public async Task<int> CommitAsync(CancellationToken cancellationToken = default)
         {
             try

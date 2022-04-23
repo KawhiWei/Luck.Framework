@@ -1,13 +1,22 @@
-﻿using Luck.Framework.Infrastructure.Caching;
+﻿using Luck.Framework.Extensions;
+using Luck.Framework.Infrastructure.Caching;
+using StackExchange.Redis;
 
 namespace Luck.Redis.StackExchange
 {
-    public partial class RedisCache : ICache
+    public partial class StackExchangeRedisCache : ICache
     {
+        private readonly ConnectionMultiplexer _connectionMultiplexer;
+        public IDatabase database { get; }
+        public StackExchangeRedisCache(ConnectionMultiplexer connectionMultiplexer)
+        {
+            _connectionMultiplexer = connectionMultiplexer;
+            database= _connectionMultiplexer.GetDatabase();
+        }
 
         public void Add<T>(string key, T value, TimeSpan? expiration = null)
         {
-            throw new NotImplementedException();
+            database.SetAdd(key, value.Serialize());
         }
 
         public void ClearAllKeys()
@@ -55,6 +64,31 @@ namespace Luck.Redis.StackExchange
             throw new NotImplementedException();
         }
 
-        
+        public bool SetString(string key, string cacheValue, TimeSpan? expiration)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string GetString(string key)
+        {
+            throw new NotImplementedException();
+        }
+
+        public long GetKeyLeng(string key)
+        {
+            throw new NotImplementedException();
+        }
+
+        public long SetStringRange(string key, long offest, string value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string StringGetRange(string key, long start, long end)
+        {
+            throw new NotImplementedException();
+        }
+
+
     }
 }

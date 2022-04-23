@@ -25,17 +25,17 @@ namespace Luck.DDD.Domain
 
 
         [NotMapped]
-        private readonly List<INotification> domainEvents = new();
+        private readonly Queue<INotification> domainEvents = new();
         public void AddDomainEvent(INotification notification)
         {
-            domainEvents.Add(notification);
+            domainEvents.Enqueue(notification);
         }
 
         public void AddDomainEventIfAbsent(INotification notification)
         {
             if (!domainEvents.Contains(notification))
             {
-                domainEvents.Add(notification);
+                domainEvents.Enqueue(notification);
             }
         }
 
