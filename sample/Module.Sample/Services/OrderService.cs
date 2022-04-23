@@ -24,7 +24,6 @@ namespace Module.Sample.Services
         {
             var order = new Order("asdasdsa", "asdasdadas");
             _aggregateRootRepository.Add(order);
-            order.AddDomainEvent(new OrderCreatedEto());
             await _unitOfWork.CommitAsync();
         }
 
