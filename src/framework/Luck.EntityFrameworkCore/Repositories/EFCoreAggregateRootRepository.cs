@@ -24,62 +24,42 @@ namespace Luck.EntityFrameworkCore.Repositories
             _dbContext.Add(entity);
         }
 
-        public override void AddRange(params object[] entities)
-        {
-            _dbContext.AddRange(entities);
-        }
-
+ 
         public override void Attach(TEntity entity)
         {
             _dbContext.Attach(entity);
         }
 
-        public override void AttachRange(params object[] entities)
-        {
-            _dbContext.AttachRange(entities);
-        }
 
         public override void Update(TEntity entity)
         {
             _dbContext.Update(entity);
         }
 
-        public override void UpdateRange(params object[] entities)
-        {
-            _dbContext.UpdateRange(entities);
-        }
 
         public override void Remove(TEntity entity)
         {
             _dbContext.Remove(entity);
         }
 
-        public override void RemoveRange(params object[] entities)
-        {
-            _dbContext.RemoveRange(entities);
-        }
 
-        public override void BulkInsert(params object[] entities)
-        {
-            throw new NotImplementedException();
-        }
 
         public override TEntity? Find(TKey primaryKey)
         {
             return _dbContext.Find<TEntity>(primaryKey);
         }
 
-        public async override Task<TEntity?> FindAsync(TKey primaryKey)
+        public  override  ValueTask<TEntity?> FindAsync(TKey primaryKey)
         {
-            return await _dbContext.FindAsync<TEntity>(primaryKey);
+            return  _dbContext.FindAsync<TEntity>(primaryKey);
         }
 
-        public override async Task<TEntity?> FindAsync(Expression<Func<TEntity, bool>> predicate)
+        public override  Task<TEntity?> FindAsync(Expression<Func<TEntity, bool>> predicate)
         {
-            return await _dbContext.Set<TEntity>().FirstOrDefaultAsync(predicate);
+            return  _dbContext.Set<TEntity>().FirstOrDefaultAsync(predicate);
         }
 
-        protected override IQueryable<TEntity> DoFindQueryable()
+        protected override IQueryable<TEntity> FindQueryable()
         {
             return _dbContext.Set<TEntity>();
         }

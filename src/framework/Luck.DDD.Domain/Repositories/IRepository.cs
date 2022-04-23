@@ -8,7 +8,7 @@ namespace Luck.DDD.Domain.Repositories
 
         TEntity? Find(TKey primaryKey);
 
-        Task<TEntity?> FindAsync(TKey primaryKey);
+        ValueTask<TEntity?> FindAsync(TKey primaryKey);
 
         Task<TEntity?> FindAsync(Expression<Func<TEntity, bool>> predicate);
 

@@ -33,14 +33,14 @@ namespace Luck.EntityFrameworkCore.Repositories
             return FindAll().Where(predicate);
         }
 
-        public async Task<TEntity?> FindAsync(TKey primaryKey)
+        public  ValueTask<TEntity?> FindAsync(TKey primaryKey)
         {
-            return await _dbContext.FindAsync<TEntity>(primaryKey);
+            return  _dbContext.FindAsync<TEntity>(primaryKey);
         }
 
-        public async Task<TEntity?> FindAsync(Expression<Func<TEntity, bool>> predicate)
+        public  Task<TEntity?> FindAsync(Expression<Func<TEntity, bool>> predicate)
         {
-            return await _dbContext.Set<TEntity>().FirstOrDefaultAsync(predicate);
+            return  _dbContext.Set<TEntity>().FirstOrDefaultAsync(predicate);
         }
     }
 }
