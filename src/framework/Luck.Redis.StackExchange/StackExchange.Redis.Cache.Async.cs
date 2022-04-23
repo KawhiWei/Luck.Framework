@@ -20,10 +20,8 @@ namespace Luck.Redis.StackExchange
             throw new NotImplementedException();
         }
 
-        public async ValueTask<bool> ExistAsync(string key)
-        {
-            return await database.KeyExistsAsync(key);
-        }
+        public async ValueTask<bool> ExistAsync(string key)=>await database.KeyExistsAsync(key);
+ 
 
         public async Task<T?> GetAsync<T>(string key)
         {
@@ -35,9 +33,11 @@ namespace Luck.Redis.StackExchange
             return default(T);
         }
 
-        public Task<IEnumerable<string>> GetKeysAsync()
+        public async Task<IEnumerable<string>> GetKeysAsync()
         {
-            throw new NotImplementedException();
+            var endpoint = _connectionMultiplexer.GetEndPoints().First();
+            //var keys = await _connectionMultiplexer.GetServer(endpoint).KeysAsync();
+            return new List<string>();
         }
 
         public Task<T> GetOrAddAsync<T>(string key, TimeSpan? expiration = null)
