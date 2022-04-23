@@ -13,5 +13,7 @@ namespace Module.Sample.Domain
         public string Name { get; private set; } = default!;
 
         public string Address { get; private set; } = default!;
+
+
     }
 }
