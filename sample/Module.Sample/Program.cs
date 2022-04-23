@@ -1,5 +1,7 @@
 using Luck.Framework.Infrastructure;
+using MediatR;
 using Module.Sample;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,6 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddApplication<AppWebModule>();
 
 builder.Services.AddControllers();
+builder.Services.AddMediatR(Assembly.GetExecutingAssembly());
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

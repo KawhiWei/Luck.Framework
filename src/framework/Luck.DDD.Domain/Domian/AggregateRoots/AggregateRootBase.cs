@@ -1,6 +1,9 @@
-﻿namespace Luck.DDD.Domain
+﻿using MediatR;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Luck.DDD.Domain
 {
-    public class AggregateRootBase : IAggregateRootBase
+    public class AggregateRootBase : IAggregateRootBase, IDomainEvents
     {
         private string? _aggregateRootType;
 
@@ -18,6 +21,32 @@
 
                 return _aggregateRootType;
             }
+        }
+
+
+        [NotMapped]
+        private readonly List<INotification> domainEvents = new();
+        public void AddDomainEvent(INotification notification)
+        {
+            domainEvents.Add(notification);
+        }
+
+        public void AddDomainEventIfAbsent(INotification notification)
+        {
+            if (!domainEvents.Contains(notification))
+            {
+                domainEvents.Add(notification);
+            }
+        }
+
+        public void ClearDomainEvents()
+        {
+            domainEvents.Clear();
+        }
+
+        public IEnumerable<INotification> GetDomainEvents()
+        {
+            return domainEvents;
         }
 
     }
