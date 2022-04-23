@@ -1,4 +1,5 @@
-﻿using Luck.Framework.Infrastructure.Caching;
+﻿using Luck.Framework.Extensions;
+using Luck.Framework.Infrastructure.Caching;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,24 +10,29 @@ namespace Luck.Redis.StackExchange
 {
     public partial class StackExchangeRedisCache : ICache
     {
-        public ValueTask AddAsync<T>(string key, T value, TimeSpan? expiration = null)
+        public async ValueTask<bool> AddAsync<T>(string key, T value, TimeSpan? expiration = null)
+        {
+            return await database.SetAddAsync(key, value.Serialize());
+        }
+
+        public Task<bool> ClearAllKeysAsync()
         {
             throw new NotImplementedException();
         }
 
-        public Task ClearAllKeysAsync()
+        public async ValueTask<bool> ExistAsync(string key)
         {
-            throw new NotImplementedException();
+            return await database.KeyExistsAsync(key);
         }
 
-        public ValueTask<bool> ExistAsync(string key)
+        public async Task<T?> GetAsync<T>(string key)
         {
-            throw new NotImplementedException();
-        }
-
-        public Task<T> GetAsync<T>(string key)
-        {
-            throw new NotImplementedException();
+            var str = await database.StringGetAsync(key);
+            if (str.HasValue)
+            {
+                return str.ToString().Deserialize<T>(); ;
+            }
+            return default(T);
         }
 
         public Task<IEnumerable<string>> GetKeysAsync()
@@ -54,7 +60,7 @@ namespace Luck.Redis.StackExchange
             throw new NotImplementedException();
         }
 
-        public ValueTask TryAddAsync<T>(string key, T value, TimeSpan? expiration = null)
+        public ValueTask<bool> TryAddAsync<T>(string key, T value, TimeSpan? expiration = null)
         {
             throw new NotImplementedException();
         }

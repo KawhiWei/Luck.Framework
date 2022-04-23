@@ -10,7 +10,7 @@ namespace Luck.EntityFrameworkCore.DbContexts
     /// </summary>
     public abstract class LuckDbContextBase : DbContext, ILuckDbContext
     {
-        protected IMediator? _mediator;
+        protected IMediator _mediator;
         protected IServiceProvider ServiceProvider { get; set; }
 
         public LuckDbContextBase(DbContextOptions options, IServiceProvider serviceProvider) : base(options)
@@ -23,9 +23,9 @@ namespace Luck.EntityFrameworkCore.DbContexts
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-
-
+            
             modelBuilder.UseModification();
+
             modelBuilder.UseDeletion();
 
         }
@@ -46,15 +46,11 @@ namespace Luck.EntityFrameworkCore.DbContexts
         public override async Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
         {
             OnBeforeSaveChange();
-
-
+            
+            await _mediator.DispatchDomainEventsAsync(this, cancellationToken);
 
             var count = await base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
 
-            if (this._mediator != null && count > 0)
-            {
-                await _mediator.DispatchDomainEventsAsync(this, cancellationToken);
-            }
             return count;
 
         }

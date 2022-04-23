@@ -16,8 +16,6 @@ namespace Luck.Redis.StackExchange
 
         public void Add<T>(string key, T value, TimeSpan? expiration = null)
         {
-
-
             database.SetAdd(key, value.Serialize());
         }
 

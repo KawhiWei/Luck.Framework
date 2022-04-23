@@ -1,14 +1,10 @@
 ﻿using Luck.Framework.Infrastructure.Caching;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Luck.Redis.StackExchange
 {
-    public partial class  StackExchangeRedisCache:ICache
+    public partial class StackExchangeRedisCache : ICache
     {
+
         public Task<bool> SetStringAsync(string key, string cacheValue, TimeSpan? expiration)
         {
             throw new NotImplementedException();

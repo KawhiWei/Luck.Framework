@@ -4,15 +4,15 @@ namespace Luck.Framework.Infrastructure.Caching
 {
     public partial interface ICache
     {
-        ValueTask AddAsync<T>(string key, T value, TimeSpan? expiration = null);
+        ValueTask<bool> AddAsync<T>(string key, T value, TimeSpan? expiration = null);
 
-        ValueTask TryAddAsync<T>(string key, T value, TimeSpan? expiration = null);
+        ValueTask<bool> TryAddAsync<T>(string key, T value, TimeSpan? expiration = null);
 
         ValueTask<bool> ExistAsync(string key);
 
         Task<string> RemoveAsync(string key);
 
-        Task<T> GetAsync<T>(string key);
+        Task<T?> GetAsync<T>(string key);
 
         Task<T> GetOrAddAsync<T>(string key, TimeSpan? expiration = null);
 
@@ -20,7 +20,7 @@ namespace Luck.Framework.Infrastructure.Caching
 
         Task<IEnumerable<string>> GetKeysAsync();
 
-        Task ClearAllKeysAsync();
+        Task<bool> ClearAllKeysAsync();
 
         Task RemoveByPrefixAsync(string prefix);
     }
