@@ -5,7 +5,6 @@ namespace Microsoft.Extensions.DependencyInjection
 {
     public static class ServiceCollectionExtension
     {
-        [Obsolete]
         public static IServiceCollection AddRedis(this IServiceCollection services, Action<RedisEndpoint> redisEndpoint)
         {
 
@@ -24,7 +23,7 @@ namespace Microsoft.Extensions.DependencyInjection
             if (endpoint.Timeout is not null && endpoint.Timeout > 0)
             {
                 options.SyncTimeout = endpoint.Timeout.Value;
-                options.ResponseTimeout = endpoint.Timeout.Value * 2;
+                //options.ResponseTimeout = endpoint.Timeout.Value * 2;
                 options.ConnectTimeout = endpoint.Timeout.Value * 5;
             }
 

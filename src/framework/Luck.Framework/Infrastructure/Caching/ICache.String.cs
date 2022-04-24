@@ -8,7 +8,7 @@
 
         long GetKeyLeng(string key);
 
-        long SetStringRange(string key, long offest, string value);
+        string SetStringRange(string key, long offest, string value);
 
         string StringGetRange(string key, long start, long end);
     }
