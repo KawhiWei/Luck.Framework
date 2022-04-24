@@ -10,6 +10,12 @@ builder.Services.AddApplication<AppWebModule>();
 
 builder.Services.AddControllers();
 builder.Services.AddMediatR(Assembly.GetExecutingAssembly());
+builder.Services.AddRedis(x =>
+{
+    x.Timeout = 1000;
+    x.Host = "127.0.0.1:6379";
+
+});
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

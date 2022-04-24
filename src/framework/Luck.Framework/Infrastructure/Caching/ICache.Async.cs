@@ -10,15 +10,15 @@ namespace Luck.Framework.Infrastructure.Caching
 
         ValueTask<bool> ExistAsync(string key);
 
-        Task<string> RemoveAsync(string key);
+        Task<bool> RemoveAsync(string key);
 
         Task<T?> GetAsync<T>(string key);
 
-        Task<T> GetOrAddAsync<T>(string key, TimeSpan? expiration = null);
+        Task<T> GetOrAddAsync<T>(string key, T value, TimeSpan? expiration = null);
 
         Task<T> GetOrUpdateAsync<T>(string key, Func<Task<T>> func, TimeSpan? expiration = null);
 
-        Task<IEnumerable<string>> GetKeysAsync();
+        IAsyncEnumerable<string> GetKeysAsync();
 
         Task<bool> ClearAllKeysAsync();
 

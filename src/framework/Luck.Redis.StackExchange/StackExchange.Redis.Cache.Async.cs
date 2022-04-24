@@ -1,56 +1,64 @@
 ﻿using Luck.Framework.Extensions;
 using Luck.Framework.Infrastructure.Caching;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Luck.Redis.StackExchange
 {
     public partial class StackExchangeRedisCache : ICache
     {
-        public async ValueTask<bool> AddAsync<T>(string key, T value, TimeSpan? expiration = null)
+        public async ValueTask<bool> AddAsync<T>(string key, T value, TimeSpan? expiration = null) => await SetStringAsync(key, value.Serialize(), expiration);
+
+
+        public async Task<T?> GetOrAddAsync<T>(string key, T value, TimeSpan? expiration = null)
         {
-            return await database.SetAddAsync(key, value.Serialize());
+            var exist = await ExistAsync(key);
+            if (exist)
+            {
+                var str = await GetStringAsync(key);
+                if (!string.IsNullOrEmpty(str))
+                {
+                    return str.Deserialize<T>();
+                }
+            }
+            else
+            {
+                await SetStringAsync(key,value.Serialize(),expiration);
+                return value;
+            }
+            return value;
+
         }
 
-        public Task<bool> ClearAllKeysAsync()
-        {
-            throw new NotImplementedException();
-        }
+        public async ValueTask<bool> TryAddAsync<T>(string key, T value, TimeSpan? expiration = null) => await SetStringAsync(key, value.Serialize(), expiration);
 
-        public async ValueTask<bool> ExistAsync(string key)=>await database.KeyExistsAsync(key);
- 
+        public async ValueTask<bool> ExistAsync(string key) => await ExistAsync(key);
 
         public async Task<T?> GetAsync<T>(string key)
         {
-            var str = await database.StringGetAsync(key);
-            if (str.HasValue)
+            var str = await GetStringAsync(key);
+            if (!string.IsNullOrEmpty(str))
             {
-                return str.ToString().Deserialize<T>(); ;
+                return str.Deserialize<T>(); ;
             }
             return default(T);
         }
 
-        public async Task<IEnumerable<string>> GetKeysAsync()
+        public async IAsyncEnumerable<string> GetKeysAsync()
         {
             var endpoint = _connectionMultiplexer.GetEndPoints().First();
-            //var keys = await _connectionMultiplexer.GetServer(endpoint).KeysAsync();
-            return new List<string>();
+            await foreach (var key in _connectionMultiplexer.GetServer(endpoint).KeysAsync())
+            {
+                yield return key;
+            }
         }
 
-        public Task<T> GetOrAddAsync<T>(string key, TimeSpan? expiration = null)
-        {
-            throw new NotImplementedException();
-        }
+        public async Task<bool> RemoveAsync(string key)=>await database.KeyDeleteAsync(key);
+
+
+
+
+
 
         public Task<T> GetOrUpdateAsync<T>(string key, Func<Task<T>> func, TimeSpan? expiration = null)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<string> RemoveAsync(string key)
         {
             throw new NotImplementedException();
         }
@@ -60,8 +68,18 @@ namespace Luck.Redis.StackExchange
             throw new NotImplementedException();
         }
 
-        public ValueTask<bool> TryAddAsync<T>(string key, T value, TimeSpan? expiration = null)
+        public async Task<bool> ClearAllKeysAsync()
         {
+            var endpoint = _connectionMultiplexer.GetEndPoints().First();
+
+            var keys = _connectionMultiplexer.GetServer(endpoint).KeysAsync();
+
+
+            //await foreach (var key in keys)
+            //{
+            //     await database.KeyDeleteAsync(key);
+            //    yield return true;
+            //}
             throw new NotImplementedException();
         }
     }

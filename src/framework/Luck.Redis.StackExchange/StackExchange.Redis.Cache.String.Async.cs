@@ -5,29 +5,16 @@ namespace Luck.Redis.StackExchange
     public partial class StackExchangeRedisCache : ICache
     {
 
-        public Task<bool> SetStringAsync(string key, string cacheValue, TimeSpan? expiration)
-        {
-            throw new NotImplementedException();
-        }
+        public async Task<bool> SetStringAsync(string key, string value, TimeSpan? expiration = null) => await SetStringAsync(key, value, expiration);
 
-        public Task<string> GetStringAsync(string key)
-        {
-            throw new NotImplementedException();
-        }
+        public async Task<string> GetStringAsync(string key) => await GetStringAsync(key);
 
-        public Task<long> GetKeyLengAsync(string key)
-        {
-            throw new NotImplementedException();
-        }
+        public async Task<long> GetKeyLengAsync(string key) => await database.StringLengthAsync(key);
 
-        public Task<long> SetStringRangeAsync(string key, long offest, string value)
-        {
-            throw new NotImplementedException();
-        }
+        public async Task<string> SetStringRangeAsync(string key, long offest, string value) => await database.StringSetRangeAsync(key, offest, value);
 
-        public Task<string> StringGetRangeAsync(string key, long start, long end)
-        {
-            throw new NotImplementedException();
-        }
+        public async Task<string> StringGetRangeAsync(string key, long start, long end) => await database.StringGetRangeAsync(key, start, end);
+
+
     }
 }

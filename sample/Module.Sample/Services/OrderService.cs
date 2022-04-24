@@ -1,4 +1,6 @@
 ﻿using Luck.DDD.Domain.Repositories;
+using Luck.Framework.Extensions;
+using Luck.Framework.Infrastructure.Caching;
 using Luck.Framework.Infrastructure.DependencyInjectionModule;
 using Luck.Framework.UnitOfWorks;
 using MediatR;
@@ -13,11 +15,13 @@ namespace Module.Sample.Services
         private readonly IAggregateRootRepository<Order, string> _aggregateRootRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMediator _mediator;
-        public OrderService(IAggregateRootRepository<Order, string> aggregateRootRepository, IUnitOfWork unitOfWork, IMediator mediator)
+        private readonly ICache _cache;
+        public OrderService(IAggregateRootRepository<Order, string> aggregateRootRepository, IUnitOfWork unitOfWork, IMediator mediator, ICache cache)
         {
             _aggregateRootRepository = aggregateRootRepository;
             _unitOfWork = unitOfWork;
             _mediator = mediator;
+            _cache = cache;
         }
 
         public async Task CreateAsync()
@@ -38,14 +42,12 @@ namespace Module.Sample.Services
             _aggregateRootRepository.Add(order);
             order.AddDomainEvent(new OrderCreatedEto() { Id = order.Id, Name = order.Name });
             await _unitOfWork.CommitAsync();
-
-
-            //TODO 领域事件是否需要显示的发送出去？？
-            foreach (var item in order.GetDomainEvents())
+            await _cache.AddAsync("order_a1", order);
+            var test=await _cache.GetAsync<Order>("order_a1");
+            await foreach (var item in _cache.GetKeysAsync())
             {
-                await _mediator.Publish(item);
+                Console.WriteLine(item);
             }
-
 
         }
     }
