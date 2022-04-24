@@ -4,8 +4,15 @@
 		<TargetFramework>net6.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
+
 	</PropertyGroup>
 
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+		<TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+		<NoWarn>1701;1702;8618;8603</NoWarn>
+	</PropertyGroup>
+
+	
 	<ItemGroup>
 		<Folder Include="Infrastructure\Excel\" />
 	</ItemGroup>

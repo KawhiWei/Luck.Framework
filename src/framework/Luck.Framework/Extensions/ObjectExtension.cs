@@ -15,7 +15,7 @@ namespace Luck.Framework.Extensions
         /// <typeparam name="TException">异常类型</typeparam>
         /// <param name="assertion">要验证的断言。</param>
         /// <param name="message">异常消息。</param>
-        private static void Require<TException>(bool assertion, string message)
+        public static void Require<TException>(bool assertion, string message)
             where TException : Exception
         {
             if (assertion)

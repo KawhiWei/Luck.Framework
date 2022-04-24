@@ -13,21 +13,38 @@ namespace Luck.Framework.Utilities
     public static class Check
     {
 
+     
         /// <summary>
-        /// 判断是否为NULL
+        /// 检查参数不能为空引用，否则抛出<see cref="ArgumentNullException"/>异常。
         /// </summary>
-        /// <typeparam name="T">动态类型</typeparam>
-        /// <param name="value">动态类型值</param>
-        /// <param name="parameterName">参数名</param>
-        /// <returns>若NULL就抛异常，否则就返回本身</returns>
-        public static T NotNull<T>([NotNull] T value, [InvokerParameterName] string parameterName)
+        /// <param name="value">要验证的值</param>
+        /// <param name="paramName">参数名称</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        public static T NotNull<T>(T value, string paramName)
         {
-
-            value.NotNull(parameterName);
+            ObjectExtension.Require<ArgumentNullException>(value != null, paramName);
             return value;
         }
 
 
-      
+
+
+        /// <summary>
+        /// 检查字符串不能为空引用或空字符串，否则抛出<see cref="ArgumentNullException"/>异常或<see cref="ArgumentException"/>异常。
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="paramName">参数名称。</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="ArgumentException"></exception>
+        public static string NotNullOrEmpty(string value, string paramName)
+        {
+            ObjectExtension.Require<ArgumentException>(!string.IsNullOrEmpty(value), paramName);
+            return value;
+        }
+
+    
+
+
+
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Luck.EntityFrameworkCore.Extensions;
+using Luck.Framework.Utilities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,8 +16,8 @@ namespace Luck.EntityFrameworkCore.DbContexts
 
         public LuckDbContextBase(DbContextOptions options, IServiceProvider serviceProvider) : base(options)
         {
-            ServiceProvider = serviceProvider;
-            _mediator = ServiceProvider.GetService<IMediator>() ?? throw new ArgumentNullException(nameof(_mediator));
+            ServiceProvider = Check.NotNull(serviceProvider,nameof(serviceProvider));
+            _mediator = Check.NotNull(ServiceProvider.GetService<IMediator>(), nameof(_mediator));
         }
 
 

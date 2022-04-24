@@ -16,12 +16,12 @@ namespace Luck.Framework.Infrastructure
             AddAutoInjection(services);
         }
 
+
+
         private void AddAutoInjection(IServiceCollection services)
         {
-            var typeFinder = services.GetOrAddSingletonService<ITypeFinder, TypeFinder>();
             var baseTypes = new Type[] { typeof(IScopedDependency), typeof(ITransientDependency), typeof(ISingletonDependency) };
-            var types = typeFinder.FindAll().Distinct();
-            types = types.Where(type => type.IsClass && !type.IsAbstract && (baseTypes.Any(b => b.IsAssignableFrom(type))) || type.GetCustomAttribute<DependencyInjectionAttribute>() != null);
+            var types = AssemblyHelper.FindTypes(type => type.IsClass && !type.IsAbstract && (baseTypes.Any(b => b.IsAssignableFrom(type))) || type.GetCustomAttribute<DependencyInjectionAttribute>() != null);
             foreach (var implementedInterType in types)
             {
                 var attr = implementedInterType.GetCustomAttribute<DependencyInjectionAttribute>();
