@@ -16,7 +16,7 @@
 
         IList<T> GetRange<T>(string redisKey, long start, long end);
 
-        T GetByIndex<T>(string key, long index);
+        T? GetByIndex<T>(string key, long index);
 
         string GetByIndex(string key, long index);
 

@@ -30,7 +30,7 @@ namespace Luck.Redis.StackExchange
             var str = GetString(key);
             if (!string.IsNullOrEmpty(str))
             {
-                return str.Deserialize<T>(); ;
+                return str.Deserialize<T>();
             }
             return default(T);
         }
