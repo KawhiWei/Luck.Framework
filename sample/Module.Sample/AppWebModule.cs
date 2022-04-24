@@ -12,8 +12,9 @@ namespace Module.Sample
     {
         public override void ConfigureServices(ConfigureServicesContext context)
         {
-
+            
             base.ConfigureServices(context);
+            
         }
     }
 }

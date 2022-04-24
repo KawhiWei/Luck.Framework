@@ -24,8 +24,7 @@ namespace Luck.Framework.Infrastructure
         {
             StartupModuleType = startupModuleType;
             Services = services;
-            services.TryAddSingleton<IAssemblyFinder, AssemblyFinder>();
-            services.TryAddSingleton<ITypeFinder, TypeFinder>();
+      
             services.AddSingleton<IModuleApplication>(this);
             services.TryAddObjectAccessor<IServiceProvider>();
             Source = this.GetAllModule(services);
@@ -34,8 +33,7 @@ namespace Luck.Framework.Infrastructure
 
         protected virtual List<IAppModule> GetAllModule(IServiceCollection services)
         {
-            var typeFinder = services.GetOrAddSingletonService<ITypeFinder, TypeFinder>();
-            var typs = typeFinder.Find(o => AppModule.IsAppModule(o));
+            var typs = AssemblyHelper.FindTypes(o => AppModule.IsAppModule(o));
             var modules = typs.Select(o => CreateModule(services, o)).Distinct();
             return modules.ToList();
         }
@@ -63,7 +61,7 @@ namespace Luck.Framework.Infrastructure
             var dependeds = module.GetDependedTypes();
             foreach (var dependType in dependeds.Where(o => AppModule.IsAppModule(o)))
             {
-                var dependModule = Source.ToList().Find(m => m.GetType() == dependType);
+                var dependModule = Source.Find(m => m.GetType() == dependType);
                 if (dependModule == null)
                 {
                     throw new Exception($"加载模块{module.GetType().FullName}时无法找到依赖模块{dependType.FullName}");

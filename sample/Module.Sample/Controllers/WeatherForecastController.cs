@@ -1,3 +1,4 @@
+using Luck.Framework.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using Module.Sample.Services;
 
@@ -14,10 +15,10 @@ namespace Module.Sample.Controllers
 
         private readonly ILogger<WeatherForecastController> _logger;
         private readonly IOrderService _orderService;
-        public WeatherForecastController(IOrderService orderService, ILogger<WeatherForecastController> logger)
+        public WeatherForecastController(IOrderService orderService)
         {
-            _logger = logger;
-            _orderService = orderService;
+      
+            _orderService = Check.NotNull(orderService,nameof(orderService)) ;
         }
 
         [HttpGet(Name = "GetWeatherForecast")]
