@@ -11,7 +11,7 @@ namespace Luck.Redis.StackExchange
             var service = context.Services;
 
             service.TryAddSingleton<ICache, StackExchangeRedisCache>();
-
+            service.TryAddSingleton<IRedisList, StackExchangeRedisList>();
         }
     }
 }

@@ -1,6 +1,7 @@
 using Luck.Framework.Infrastructure;
 using MediatR;
 using Module.Sample;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +11,7 @@ builder.Services.AddApplication<AppWebModule>();
 builder.Services.AddControllers();
 
 builder.Services.AddMediatR(AssemblyHelper.AllAssemblies);
+
 builder.Services.AddRedis(x =>
 {
     x.Timeout = 1000;

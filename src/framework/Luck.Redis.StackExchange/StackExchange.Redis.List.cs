@@ -11,136 +11,134 @@ namespace Luck.Redis.StackExchange
         public StackExchangeRedisList(ConnectionMultiplexer connectionMultiplexer)
         {
             _connectionMultiplexer = connectionMultiplexer;
-            database = _connectionMultiplexer.GetDatabase();
+            Database = _connectionMultiplexer.GetDatabase();
         }
 
-        public IDatabase database { get; }
+        public IDatabase Database { get; }
 
         public T? GetByIndex<T>(string key, long index)
         {
-            return database.ListGetByIndex(key, index).ToString().Deserialize<T>();
+            return Database.ListGetByIndex(key, index).ToString().Deserialize<T>();
         }
 
         public string GetByIndex(string key, long index)
         {
-            return database.ListGetByIndex(key, index).ToString();
+            return Database.ListGetByIndex(key, index).ToString();
         }
 
+        public bool SetByIndex(string key, long index, string value)
+        {
+            Database.ListSetByIndex(key, index, value);
+            return true;
+        }
+
+        public bool SetByIndex<T>(string key, long index, T value)
+        {
+            return SetByIndex(key, index, value.Serialize());
+        }
 
         public long GetLen(string key)
         {
-            return database.ListLength(key);
+            return Database.ListLength(key);
         }
 
 
         public IList<string> GetRange(string key, long start, long end)
         {
-            return database.ListRange(key, start, end).Select(x => x.ToString()).ToList();
+            return Database.ListRange(key, start, end).Select(x => x.ToString()).ToList();
         }
-            
-        public IList<T> GetRange<T>(string key, long start, long end)
-        {
-            var list = database.ListRange(key, start, end);
 
-            //list.Select(x => ).ToList();
-            return new List<T>();
+        public IList<T?> GetRange<T>(string key, long start, long end)
+        {
+            var list = Database.ListRange(key, start, end);
+            return list.Select(x => x.ToString().Deserialize<T>()).ToList();
         }
 
 
 
         public string LPop(string key)
         {
-            throw new NotImplementedException();
+            return Database.ListLeftPop(key).ToString();
         }
 
-        public T LPop<T>(string key)
+        public T? LPop<T>(string key)
         {
-            throw new NotImplementedException();
+            return LPop(key).Deserialize<T>();
         }
 
 
-        public long LPush(string redisKey, params string[] values)
+        public long LPush(string key, params string[] values)
         {
-            throw new NotImplementedException();
+            return Database.ListLeftPush(key, values.ToRedisValue());
         }
 
-        public long LPush<T>(string redisKey, params T[] values)
+        public long LPush<T>(string key, params T[] values)
         {
-            throw new NotImplementedException();
+            return Database.ListLeftPush(key, values.ToRedisValue());
         }
-
-
 
         public long LPushExists(string key, string value)
         {
-            throw new NotImplementedException();
+            return Database.ListLeftPush(key, value, When.Exists);
         }
 
         public long LPushExists<T>(string key, T value)
         {
-            throw new NotImplementedException();
+            return Database.ListLeftPush(key, value.Serialize(), When.Exists);
         }
 
         public long LRemove(string key, string value, long count = 0)
         {
-            throw new NotImplementedException();
+            return Database.ListRemove(key, value, count);
         }
 
         public long LRemove<T>(string key, T value, long count = 0)
         {
-            throw new NotImplementedException();
+            return Database.ListRemove(key, value.Serialize(), count);
         }
 
 
 
-        public void LTrim(string redisKey)
+        public void LTrim(string key, long start, long end)
         {
-            throw new NotImplementedException();
+            Database.ListTrim(key, start, end);
         }
 
 
         public string RPop(string key)
         {
-            throw new NotImplementedException();
+            return Database.ListRightPop(key);
         }
 
-        public T RPop<T>(string key)
+        public T? RPop<T>(string key)
         {
-            throw new NotImplementedException();
+            return RPop(key).Deserialize<T>();
         }
 
 
 
-        public long RPush(string redisKey, params string[] values)
+        public long RPush(string key, params string[] values)
         {
-            throw new NotImplementedException();
+            return Database.ListRightPush(key, values.ToRedisValue());
         }
 
-        public long RPush<T>(string redisKey, params T[] values)
+        public long RPush<T>(string key, params T[] values)
         {
-            throw new NotImplementedException();
+            return Database.ListRightPush(key, values.ToRedisValue());
         }
 
         public long RPushExists(string key, string value)
         {
-            throw new NotImplementedException();
+            return Database.ListRightPush(key, value, When.Exists);
         }
 
         public long RPushExists<T>(string key, T value)
         {
-            throw new NotImplementedException();
+            return Database.ListRightPush(key, value.Serialize());
         }
 
 
-        public bool SetByIndex(string key, long index, string value)
-        {
-            throw new NotImplementedException();
-        }
 
-        public bool SetByIndex<T>(string key, long index, T value)
-        {
-            throw new NotImplementedException();
-        }
 
     }
 }
