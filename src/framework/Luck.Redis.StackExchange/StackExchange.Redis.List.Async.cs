@@ -1,125 +1,79 @@
-﻿using Luck.Framework.Infrastructure.Caching;
+﻿using Luck.Framework.Extensions;
+using Luck.Framework.Infrastructure.Caching;
+using StackExchange.Redis;
 
 namespace Luck.Redis.StackExchange
 {
     public partial class StackExchangeRedisList : IRedisList
     {
 
-        public Task<T> GetByIndexAsync<T>(string key, long index)
-        {
-            throw new NotImplementedException();
-        }
+        public async Task<T?> GetByIndexAsync<T>(string key, long index) => (await Database.ListGetByIndexAsync(key, index)).ToString().Deserialize<T>();
 
-        public Task<string> GetByIndexAsync(string key, long index)
-        {
-            throw new NotImplementedException();
-        }
 
-        public Task<long> GetLenAsync(string key)
-        {
-            throw new NotImplementedException();
-        }
+        public async Task SetByIndexAsync(string key, long index, string value) => await Database.ListSetByIndexAsync(key, index, value);
 
-        public Task<IList<string>> GetRangeAsync(string redisKey, long start, long end)
-        {
-            throw new NotImplementedException();
-        }
+        public async Task SetByIndexAsync<T>(string key, long index, T value) => await SetByIndexAsync(key, index, value);
 
-        public Task<IList<T>> GetRangeAsync<T>(string redisKey, long start, long end)
-        {
-            throw new NotImplementedException();
-        }
+        public async Task<string> GetByIndexAsync(string key, long index) => (await Database.ListGetByIndexAsync(key, index)).ToString();
 
-        public Task LTrimAsync(string redisKey)
-        {
-            throw new NotImplementedException();
-        }
+
+        public async Task<long> GetLenAsync(string key) => await Database.ListLengthAsync(key);
+
+
+        public async Task<IList<string>> GetRangeAsync(string key, long start, long end) => (await Database.ListRangeAsync(key, start, end)).Select(x => x.ToString()).ToList();
+
+
+        public async Task<IList<T?>> GetRangeAsync<T>(string key, long start, long end) => (await GetRangeAsync(key, start, end)).Select(x => x.Deserialize<T>()).ToList();
+
+
+        public async Task LTrimAsync(string key, long start, long end) => await Database.ListTrimAsync(key, start, end);
 
 
 
 
-        public Task<string> LPopAsync(string key)
-        {
-            throw new NotImplementedException();
-        }
 
-        public Task<T> LPopAsync<T>(string key)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<long> LPushAsync(string redisKey, params string[] values)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<long> LPushAsync<T>(string redisKey, params T[] values)
-        {
-            throw new NotImplementedException();
-        }
+        public async Task<string> LPopAsync(string key) => await Database.ListLeftPopAsync(key);
 
 
-        public Task<long> LPushExistsAsync(string key, string value)
-        {
-            throw new NotImplementedException();
-        }
+        public async Task<T?> LPopAsync<T>(string key) => (await LPopAsync(key)).Deserialize<T>();
 
-        public Task<long> LPushExistsAsync<T>(string key, T value)
-        {
-            throw new NotImplementedException();
-        }
 
-        public Task<long> LRemoveAsync(string key, string value, long count = 0)
-        {
-            throw new NotImplementedException();
-        }
+        public async Task<long> LPushAsync(string key, params string[] values) => await Database.ListLeftPushAsync(key, values.Serialize());
 
-        public Task<long> LRemoveAsync<T>(string key, T value, long count = 0)
-        {
-            throw new NotImplementedException();
-        }
+
+        public async Task<long> LPushAsync<T>(string key, params T[] values) => await Database.ListLeftPushAsync(key, values.Serialize());
 
 
 
-        public Task<string> RPopAsync(string key)
-        {
-            throw new NotImplementedException();
-        }
+        public async Task<long> LPushExistsAsync(string key, string value) => await Database.ListLeftPushAsync(key, value, When.Exists);
 
-        public Task<T> RPopAsync<T>(string key)
-        {
-            throw new NotImplementedException();
-        }
 
-        public Task<long> RPushAsync(string redisKey, params string[] values)
-        {
-            throw new NotImplementedException();
-        }
+        public async Task<long> LPushExistsAsync<T>(string key, T value) => await Database.ListLeftPushAsync(key, value.Serialize(), When.Exists);
 
-        public Task<long> RPushAsync<T>(string redisKey, params T[] values)
-        {
-            throw new NotImplementedException();
-        }
 
-        public Task<long> RPushExistsAsync(string key, string value)
-        {
-            throw new NotImplementedException();
-        }
+        public async Task<long> LRemoveAsync(string key, string value, long count = 0) => await Database.ListRemoveAsync(key, value, count);
 
-        public Task<long> RPushExistsAsync<T>(string key, T value)
-        {
-            throw new NotImplementedException();
-        }
 
-        public Task<bool> SetByIndexAsync(string key, long index, string value)
-        {
-            throw new NotImplementedException();
-        }
+        public async Task<long> LRemoveAsync<T>(string key, T value, long count = 0) => await Database.ListRemoveAsync(key, value.Serialize(), count);
 
-        public Task<bool> SetByIndexAsync<T>(string key, long index, T value)
-        {
-            throw new NotImplementedException();
-        }
+
+
+
+        public async Task<string> RPopAsync(string key) => await Database.ListRightPopAsync(key);
+
+
+        public async Task<T?> RPopAsync<T>(string key) => (await RPopAsync(key)).Deserialize<T>();
+
+
+        public async Task<long> RPushAsync(string key, params string[] values) => await Database.ListRightPushAsync(key, values.ToRedisValue());
+
+        public async Task<long> RPushAsync<T>(string key, params T[] values) => await Database.ListRightPushAsync(key, values.ToRedisValue());
+
+        public async Task<long> RPushExistsAsync(string key, string value) => await Database.ListRightPushAsync(key, value, When.Exists);
+
+        public async Task<long> RPushExistsAsync<T>(string key, T value) => await Database.ListRightPushAsync(key, value.Serialize(), When.Exists);
+
+
 
     }
 }

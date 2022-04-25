@@ -2,7 +2,7 @@
 {
     public partial interface IRedisList
     {
-        Task LTrimAsync(string redisKey);
+        Task LTrimAsync(string key, long start, long end);
 
         Task<long> LRemoveAsync(string key, string value, long count = 0);
 
@@ -12,27 +12,27 @@
 
 
 
-        Task<IList<string>> GetRangeAsync(string redisKey, long start, long end);
+        Task<IList<string>> GetRangeAsync(string key, long start, long end);
 
-        Task<IList<T>> GetRangeAsync<T>(string redisKey, long start, long end);
+        Task<IList<T?>> GetRangeAsync<T>(string key, long start, long end);
 
-        Task<T> GetByIndexAsync<T>(string key, long index);
+        Task<T?> GetByIndexAsync<T>(string key, long index);
 
         Task<string> GetByIndexAsync(string key, long index);
 
         Task<long> GetLenAsync(string key);
 
-        Task<bool> SetByIndexAsync(string key, long index, string value);
+        Task SetByIndexAsync(string key, long index, string value);
 
-        Task<bool> SetByIndexAsync<T>(string key, long index, T value);
-
-
+        Task SetByIndexAsync<T>(string key, long index, T value);
 
 
 
-        Task<long> LPushAsync(string redisKey, params string[] values);
 
-        Task<long> LPushAsync<T>(string redisKey, params T[] values);
+
+        Task<long> LPushAsync(string key, params string[] values);
+
+        Task<long> LPushAsync<T>(string key, params T[] values);
 
         Task<long> LPushExistsAsync(string key, string value);
 
@@ -40,15 +40,15 @@
 
         Task<string> LPopAsync(string key);
 
-        Task<T> LPopAsync<T>(string key);
+        Task<T?> LPopAsync<T>(string key);
 
 
 
 
 
-        Task<long> RPushAsync(string redisKey, params string[] values);
+        Task<long> RPushAsync(string key, params string[] values);
 
-        Task<long> RPushAsync<T>(string redisKey, params T[] values);
+        Task<long> RPushAsync<T>(string key, params T[] values);
 
         Task<long> RPushExistsAsync(string key, string value);
 
@@ -56,7 +56,7 @@
 
         Task<string> RPopAsync(string key);
 
-        Task<T> RPopAsync<T>(string key);
+        Task<T?> RPopAsync<T>(string key);
 
 
 

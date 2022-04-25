@@ -18,10 +18,16 @@ namespace Module.Sample.Controllers
         [HttpGet]
         public bool GetRedis()
         {
-            _redislist.LPush("key_list", new[] { "adsadas", "adasda" });
+            _redislist.LPush("key_ladsaist", "asdasda","adasdas","asdasda","sadadass");
 
             var test = _redislist.LPop("key_list");
             return true;
         }
+    }
+
+    public class RedisDemo
+    {
+        public string Name { get; set; } = default!;
+        public string Password { get; set; }=default!;
     }
 }
