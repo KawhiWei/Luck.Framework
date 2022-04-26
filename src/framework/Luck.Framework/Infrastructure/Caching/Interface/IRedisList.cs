@@ -55,13 +55,23 @@
         long LPushExists<T>(string key, T value);
 
         string LPop(string key);
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="key"></param>
+        /// <returns></returns>
         T? LPop<T>(string key);
 
 
 
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="values"></param>
+        /// <returns></returns>
         long RPush(string key, params string[] values);
 
         long RPush<T>(string key, params T[] values);
