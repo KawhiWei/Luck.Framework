@@ -1,5 +1,4 @@
 ﻿using Luck.DDD.Domain;
-using System.Collections.Generic;
 
 namespace Luck.Walnut.Domain.AggregateRoots.Applications
 {
