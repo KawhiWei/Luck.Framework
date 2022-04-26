@@ -15,8 +15,8 @@ namespace Module.Sample.Services
         private readonly IAggregateRootRepository<Order, string> _aggregateRootRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMediator _mediator;
-        private readonly ICache _cache;
-        public OrderService(IAggregateRootRepository<Order, string> aggregateRootRepository, IUnitOfWork unitOfWork, IMediator mediator, ICache cache)
+        private readonly IRedisHash _cache;
+        public OrderService(IAggregateRootRepository<Order, string> aggregateRootRepository, IUnitOfWork unitOfWork, IMediator mediator, IRedisHash cache)
         {
             _aggregateRootRepository = aggregateRootRepository;
             _unitOfWork = unitOfWork;
@@ -42,12 +42,12 @@ namespace Module.Sample.Services
             _aggregateRootRepository.Add(order);
             order.AddDomainEvent(new OrderCreatedEto() { Id = order.Id, Name = order.Name });
             await _unitOfWork.CommitAsync();
-            await _cache.AddAsync("order_a1", order);
-            var test=await _cache.GetAsync<Order>("order_a1");
-            await foreach (var item in _cache.GetKeysAsync())
-            {
-                Console.WriteLine(item);
-            }
+            //await _cache.AddAsync("order_a1", order);
+            //var test=await _cache.GetAsync<Order>("order_a1");
+            //await foreach (var item in _cache.GetKeysAsync())
+            //{
+            //    Console.WriteLine(item);
+            //}
 
         }
     }
