@@ -6,8 +6,4 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\src\framework\Luck.EntityFrameworkCore\Luck.EntityFrameworkCore.csproj" />
-  </ItemGroup>
-
 </Project>
