@@ -1,6 +1,6 @@
 ﻿namespace Luck.DDD.Domain
 {
-    public class EntityWithIdentity<TIdentityKey> : Entity
+    public abstract class EntityWithIdentity<TIdentityKey> : Entity
     {
         protected EntityWithIdentity(TIdentityKey id)
         {

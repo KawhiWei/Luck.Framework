@@ -2,7 +2,7 @@
 
 namespace Luck.DDD.Domain
 {
-    public class FullEntity : EntityWithIdentity<string>, IUpdatable, ISoftDeletable
+    public abstract class FullEntity : EntityWithIdentity<string>, IUpdatable, ISoftDeletable
     {
         protected FullEntity() : base(SnowflakeId.GenerateNewStringId())
         {
