@@ -29,19 +29,25 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Luck.Redis.StackExchange", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1.Luck.Walnut", "1.Luck.Walnut", "{207B054E-C022-4679-82AC-94464968BDE3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Luck.Walnut.Infrastructure", "application\src\Luck.Walnut.Infrastructure\Luck.Walnut.Infrastructure.csproj", "{FC076552-4B1E-4A1C-99F3-3ECB612D4B7F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Luck.Walnut.Infrastructure", "application\src\Luck.Walnut.Infrastructure\Luck.Walnut.Infrastructure.csproj", "{FC076552-4B1E-4A1C-99F3-3ECB612D4B7F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Luck.Walnut.Persistence", "application\src\Luck.Walnut.Persistence\Luck.Walnut.Persistence.csproj", "{82733736-5D84-46F8-AB5F-FB31ECC98F7E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Luck.Walnut.Persistence", "application\src\Luck.Walnut.Persistence\Luck.Walnut.Persistence.csproj", "{82733736-5D84-46F8-AB5F-FB31ECC98F7E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Luck.Walnut.Domain", "application\src\Luck.Walnut.Domain\Luck.Walnut.Domain.csproj", "{11EBCE56-7128-4E46-895B-F8CFA83EB51B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Luck.Walnut.Domain", "application\src\Luck.Walnut.Domain\Luck.Walnut.Domain.csproj", "{11EBCE56-7128-4E46-895B-F8CFA83EB51B}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1.", "1.", "{4AA5D12F-AA93-4B84-9D33-312743662DF3}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1.Presentation", "1.Presentation", "{4AA5D12F-AA93-4B84-9D33-312743662DF3}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2.Domain", "2.Domain", "{5F339ABD-9A6A-44A5-8365-68B77F9F9E7E}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3.Domain", "3.Domain", "{5F339ABD-9A6A-44A5-8365-68B77F9F9E7E}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3.", "3.", "{016D3474-ACC9-406B-8932-44E1EDF24F2C}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "4.Infrastructure", "4.Infrastructure", "{016D3474-ACC9-406B-8932-44E1EDF24F2C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Luck.Walnut.Domain.Shared", "application\src\Luck.Walnut.Domain.Shared\Luck.Walnut.Domain.Shared.csproj", "{92E51BAB-AC15-4F78-BA95-B4B8CF586683}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Luck.Walnut.Domain.Shared", "application\src\Luck.Walnut.Domain.Shared\Luck.Walnut.Domain.Shared.csproj", "{92E51BAB-AC15-4F78-BA95-B4B8CF586683}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2.Application", "2.Application", "{6746C4E5-9E1C-4E9A-9AE0-7ECA3F5258B3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Luck.Walnut.Api", "application\src\Luck.Walnut.Api\Luck.Walnut.Api.csproj", "{5FF599EC-8EEB-46E0-B7B8-6E4229589BF9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Luck.Walnut.Application", "application\src\Luck.Walnut.Application\Luck.Walnut.Application.csproj", "{531372CF-167E-44AF-A0A1-9AC923624256}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -93,6 +99,14 @@ Global
 		{92E51BAB-AC15-4F78-BA95-B4B8CF586683}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{92E51BAB-AC15-4F78-BA95-B4B8CF586683}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{92E51BAB-AC15-4F78-BA95-B4B8CF586683}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5FF599EC-8EEB-46E0-B7B8-6E4229589BF9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5FF599EC-8EEB-46E0-B7B8-6E4229589BF9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5FF599EC-8EEB-46E0-B7B8-6E4229589BF9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5FF599EC-8EEB-46E0-B7B8-6E4229589BF9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{531372CF-167E-44AF-A0A1-9AC923624256}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{531372CF-167E-44AF-A0A1-9AC923624256}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{531372CF-167E-44AF-A0A1-9AC923624256}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{531372CF-167E-44AF-A0A1-9AC923624256}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -114,6 +128,9 @@ Global
 		{5F339ABD-9A6A-44A5-8365-68B77F9F9E7E} = {207B054E-C022-4679-82AC-94464968BDE3}
 		{016D3474-ACC9-406B-8932-44E1EDF24F2C} = {207B054E-C022-4679-82AC-94464968BDE3}
 		{92E51BAB-AC15-4F78-BA95-B4B8CF586683} = {5F339ABD-9A6A-44A5-8365-68B77F9F9E7E}
+		{6746C4E5-9E1C-4E9A-9AE0-7ECA3F5258B3} = {207B054E-C022-4679-82AC-94464968BDE3}
+		{5FF599EC-8EEB-46E0-B7B8-6E4229589BF9} = {4AA5D12F-AA93-4B84-9D33-312743662DF3}
+		{531372CF-167E-44AF-A0A1-9AC923624256} = {6746C4E5-9E1C-4E9A-9AE0-7ECA3F5258B3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4719568B-E10A-4815-AAAA-8C6D6CEE798F}
