@@ -8,15 +8,10 @@ namespace Luck.EntityFrameworkCore.DbContextDrivenProvides
     {
         public DataBaseType Type => DataBaseType.MySql;
 
-        public DbContextOptionsBuilder Builder<TDbContext>(DbContextOptionsBuilder builder, EFDbContextConfig contextConfig) where TDbContext : ILuckDbContext
+        public DbContextOptionsBuilder Builder<TDbContext>(DbContextOptionsBuilder builder,string connnectionString) where TDbContext : ILuckDbContext
         {
-            var migrationsAssemblyName = contextConfig.MigrationsAssemblyName;
-            if (contextConfig.MigrationsAssemblyName.IsNullOrEmpty())
-            {
 
-                migrationsAssemblyName = typeof(TDbContext).Assembly.GetName().Name;
-            }
-            builder.UseMySql(contextConfig.ConnnectionString, new MySqlServerVersion(new Version()), opt => opt.MigrationsAssembly(migrationsAssemblyName)).EnableSensitiveDataLogging().UseSnakeCaseNamingConvention();
+            builder.UseMySql(connnectionString, new MySqlServerVersion(new Version()), opt => opt.MigrationsAssembly(typeof(TDbContext).Assembly.GetName().Name)).EnableSensitiveDataLogging().UseSnakeCaseNamingConvention();
             return builder;
         }
     }

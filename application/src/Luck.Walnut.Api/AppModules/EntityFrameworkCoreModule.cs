@@ -14,7 +14,6 @@ namespace Luck.Walnut.Api.AppModules
             {
                 x.ConnnectionString = "server=127.0.0.1;userid=root;pwd=123456;database=luck.walnut;connectiontimeout=3000;port=3306;Pooling=true;Max Pool Size=300; Min Pool Size=5;";
                 x.Type = DataBaseType.MySql;
-                x.MigrationsAssemblyName = "Luck.Walnut.Api";
             });
         }
     }
