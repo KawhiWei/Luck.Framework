@@ -2,14 +2,9 @@
 using Luck.Walnut.Domain.AggregateRoots.Applications;
 using Luck.Walnut.Domain.AggregateRoots.Environments;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Luck.Walnut.Infrastructure
+namespace Luck.Walnut.Persistence
 {
     public class WalnutDbContext : LuckDbContextBase
     {

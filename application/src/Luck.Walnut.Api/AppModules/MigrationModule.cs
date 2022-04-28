@@ -1,5 +1,4 @@
 ﻿using Luck.Framework.Infrastructure;
-using Luck.Walnut.Infrastructure;
 
 namespace Luck.Walnut.Api.AppModules
 {
@@ -13,7 +12,7 @@ namespace Luck.Walnut.Api.AppModules
 
         public override void ApplicationInitialization(ApplicationContext context)
         {
-         
+
             var moduleDbContext = context.ServiceProvider.GetService<WalnutDbContext>();
             moduleDbContext?.Database.EnsureCreated();
         }

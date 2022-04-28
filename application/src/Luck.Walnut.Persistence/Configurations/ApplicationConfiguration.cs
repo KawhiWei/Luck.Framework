@@ -4,13 +4,13 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 
 
-namespace Luck.Walnut.Infrastructure.Configurations
+namespace Luck.Walnut.Persistence
 {
     public class ApplicationConfiguration : IEntityTypeConfiguration<Application>
     {
         public void Configure(EntityTypeBuilder<Application> builder)
         {
-            builder.ToTable("application");
+            builder.ToTable("applications");
             builder.HasKey(e => e.Id);
             builder.Property(e => e.EnglishName);
             builder.Property(e => e.DepartmentName);

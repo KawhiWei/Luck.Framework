@@ -2,7 +2,6 @@
 
 using Luck.EntityFrameworkCore;
 using Luck.EntityFrameworkCore.DbContextDrivenProvides;
-using Luck.Walnut.Infrastructure;
 
 namespace Luck.Walnut.Api.AppModules
 {

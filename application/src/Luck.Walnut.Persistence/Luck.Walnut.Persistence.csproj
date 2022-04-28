@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\src\framework\Luck.EntityFrameworkCore\Luck.EntityFrameworkCore.csproj" />
+    <ProjectReference Include="..\Luck.Walnut.Domain\Luck.Walnut.Domain.csproj" />
   </ItemGroup>
 
 </Project>
