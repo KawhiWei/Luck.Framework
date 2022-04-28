@@ -16,7 +16,7 @@ namespace Luck.Walnut.Infrastructure.Configurations
             builder.Property(x => x.Type);
             builder.Property(x => x.IsOpen);
             builder.Property(x => x.IsPublish);
-            builder.Property<string>("EnvironmentId").HasMaxLength(95).IsRequired();
+ 
             builder.HasIndex(x => new { x.Key,x.Value});
         }
     }

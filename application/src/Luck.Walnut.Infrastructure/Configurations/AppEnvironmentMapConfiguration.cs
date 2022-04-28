@@ -18,6 +18,7 @@ namespace Luck.Walnut.Infrastructure.Configurations
             builder.Property(e => e.EnvironmentName);
             builder.Property(e => e.ApplicationId).HasMaxLength(95);
             builder.HasIndex(e => e.EnvironmentName);
+            builder.HasMany(o => o.Configurations).WithOne();
             //var navigation = builder.Metadata.FindNavigation(nameof(AppEnvironment.Configurations));
             //navigation.SetPropertyAccessMode(PropertyAccessMode.Property);
 
