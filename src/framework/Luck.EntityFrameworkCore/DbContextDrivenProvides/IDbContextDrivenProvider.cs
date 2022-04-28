@@ -12,6 +12,6 @@ namespace Luck.EntityFrameworkCore.DbContextDrivenProvides
     {
         DataBaseType Type { get; }
 
-        DbContextOptionsBuilder Builder<TDbContext>(DbContextOptionsBuilder builder, string connectionString) where TDbContext : ILuckDbContext;
+        DbContextOptionsBuilder Builder<TDbContext>(DbContextOptionsBuilder builder, EFDbContextConfig contextConfig) where TDbContext : ILuckDbContext;
     }
 }

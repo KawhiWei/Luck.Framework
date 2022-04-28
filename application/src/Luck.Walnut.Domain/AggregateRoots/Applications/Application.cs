@@ -31,7 +31,7 @@ namespace Luck.Walnut.Domain.AggregateRoots.Applications
         /// <summary>
         /// 应用唯一标识
         /// </summary>
-        public string UK { get; private set; } = default!;
+        public string AppId { get; private set; } = default!;
 
         /// <summary>
         /// 应用状态

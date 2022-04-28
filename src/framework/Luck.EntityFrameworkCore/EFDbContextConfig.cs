@@ -9,5 +9,10 @@ namespace Luck.EntityFrameworkCore
 
         public DataBaseType Type { get; set; }
 
+        /// <summary>
+        /// 迁移Assembly名字
+        /// </summary>
+        public string MigrationsAssemblyName { get; set; }
+
     }
 }

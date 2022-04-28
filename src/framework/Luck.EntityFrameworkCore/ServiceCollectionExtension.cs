@@ -38,7 +38,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
                 if (drivenProvider == null)
                     throw new LuckException($"{nameof(drivenProvider)}没有对应的{dbType}的实现！");
-                var builder = drivenProvider.Builder<TDbContext>(dbcontextbuilder, config.ConnnectionString);
+                var builder = drivenProvider.Builder<TDbContext>(dbcontextbuilder, config);
                 optionsAction?.Invoke(provider, builder);
             });
 
