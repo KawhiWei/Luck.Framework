@@ -3,12 +3,8 @@
 namespace Luck.Walnut.Domain.AggregateRoots.Environments
 {
     
-    public class Configuration : FullEntity
+    public class AppConfiguration : FullEntity
     {
-
-
-
-
 
         /// <summary>
         /// 配置项Key
@@ -35,34 +31,35 @@ namespace Luck.Walnut.Domain.AggregateRoots.Environments
         /// </summary>
         public bool IsPublish { get; private set; } = default!;
 
-
-        private Configuration()
+        private AppConfiguration()
         {
 
         }
 
-
-        ///key  - value -type 要不要使用值对象  ？？
-        public static Configuration Create(string key, string value, string type)
+        public AppConfiguration(string key, string value, string type,bool isOpen) :this()
         {
-
-
-            Configuration configuration = new();
-            configuration.Key = key;
-            configuration.Value = value;
-            configuration.Type = type;
-            return configuration;
+            Key = key;
+            Value = value;
+            Type = type;
+            IsOpen = isOpen;
         }
 
+        public AppConfiguration UpdateConfiguration(string key, string value, string type, bool isOpen, bool isPublish)
+        {
+            Key = key;
+            Value = value;
+            Type = type;
+            return this;
+        }
 
-        public Configuration ChangeKey(string key)
+        public AppConfiguration ChangeKey(string key)
         {
 
             this.Key = key;
             return this;
         }
 
-        public Configuration ChangeValue(string value)
+        public AppConfiguration ChangeValue(string value)
         {
 
             this.Value = value;
@@ -70,7 +67,7 @@ namespace Luck.Walnut.Domain.AggregateRoots.Environments
         }
 
 
-        public Configuration ChangeType(string type)
+        public AppConfiguration ChangeType(string type)
         {
 
             this.Type = type;
@@ -81,7 +78,7 @@ namespace Luck.Walnut.Domain.AggregateRoots.Environments
         /// 更改开启
         /// </summary>
         /// <param name="isOpen"></param>
-        public Configuration ChangeOpen(bool isOpen)
+        public AppConfiguration ChangeOpen(bool isOpen)
         {
 
 
@@ -94,7 +91,7 @@ namespace Luck.Walnut.Domain.AggregateRoots.Environments
         /// </summary>
         /// <param name="isPublish"></param>
 
-        public Configuration ChangePublish(bool isPublish)
+        public AppConfiguration ChangePublish(bool isPublish)
         {
 
             this.IsPublish = isPublish;

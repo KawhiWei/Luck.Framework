@@ -1,11 +1,12 @@
 ﻿using Luck.DDD.Domain;
+using Luck.DDD.Domain.Exceptions;
 
 namespace Luck.Walnut.Domain.AggregateRoots.Environments
 {
     /// <summary>
     /// 环境
     /// </summary>
-    public class Environment : FullAggregateRoot
+    public class AppEnvironment : FullAggregateRoot
     {
 
         /// <summary>
@@ -20,28 +21,25 @@ namespace Luck.Walnut.Domain.AggregateRoots.Environments
         /// <summary>
         /// 配置项
         /// </summary>
-        public ICollection<Configuration> Configurations { get; private set; } = new HashSet<Configuration>();
+        public ICollection<AppConfiguration> Configurations { get; private set; } = new HashSet<AppConfiguration>();
 
-
-
-
-        private Environment()
+        private AppEnvironment()
         {
-
-
         }
 
-        public Environment(string environmentName, string applicationId)
+        public AppEnvironment(string environmentName, string applicationId) : this()
         {
 
             EnvironmentName = environmentName;
             ApplicationId = applicationId;
         }
 
-        public void AddConfiguration(string key, string value, string type)
+        public void AddConfiguration(string key, string value, string type, bool isOpen)
         {
+            if (Configurations.Any(x => x.Key == key))
+                throw new DomainException($"【{key}】已存在");
 
-            Configurations.Add(Configuration.Create(key, value, type));
+            Configurations.Add(new AppConfiguration(key, value, type, isOpen));
         }
     }
 

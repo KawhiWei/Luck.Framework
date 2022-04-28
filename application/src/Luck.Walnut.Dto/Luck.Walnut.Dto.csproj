@@ -6,9 +6,4 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Luck.Walnut.Domain\Luck.Walnut.Domain.csproj" />
-    <ProjectReference Include="..\Luck.Walnut.Dto\Luck.Walnut.Dto.csproj" />
-  </ItemGroup>
-
 </Project>
