@@ -14,6 +14,10 @@ namespace Luck.Walnut.Application.Applications
         Task CheckAppIdAsync(string appid, bool isUpdate = false, string? id = null);
 
         Task UpdateApplicationAsync(string id, ApplicationInputDto input);
+
+        Task<IEnumerable<ApplicationOutputDto>> GetApplicationListAsync();
+
+        Task DeleteApplicationAsync(string id);
     }
 
     public class ApplicationService : IApplicationService
@@ -53,13 +57,40 @@ namespace Luck.Walnut.Application.Applications
         {
 
             await CheckAppIdAsync(input.AppId, true, id);
-
-            var application = await _applicationRepository.FindAsync(id);
-            if (application is null)
-                throw new BusinessException($"{input.AppId}应用不存在");
+            var application = await GetApplicationByIdAsync(id);
             application.UpdateInfo(input.EnglishName, input.DepartmentName, input.ChinessName, input.LinkMan, input.AppId, input.Status);
             await _unitOfWork.CommitAsync();
 
+        }
+
+        public async Task<IEnumerable<ApplicationOutputDto>> GetApplicationListAsync()
+        {
+            return await _applicationRepository.FindAll()
+                 .Select(c => new ApplicationOutputDto
+                 {
+                     Id = c.Id,
+                     AppId = c.AppId,
+                     Status = c.Status,
+                     EnglishName = c.EnglishName,
+                     ChinessName = c.ChinessName,
+                     DepartmentName = c.DepartmentName,
+                     LinkMan = c.LinkMan,
+                 }).ToListAsync();
+        }
+
+        public async Task DeleteApplicationAsync(string id)
+        {
+            var application = await GetApplicationByIdAsync(id);
+            _applicationRepository.Remove(application);
+            await _unitOfWork.CommitAsync();
+        }
+
+        private async Task<Domain.AggregateRoots.Applications.Application> GetApplicationByIdAsync(string id)
+        {
+            var application = await _applicationRepository.FindAsync(id);
+            if (application is null)
+                throw new BusinessException($"应用不存在");
+            return application;
         }
     }
 }

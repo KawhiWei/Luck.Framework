@@ -20,8 +20,14 @@ namespace Luck.Walnut.Api.Controllers
         [HttpPost]
         public Task AddApplication([FromBody] ApplicationInputDto input) => _applicationService.AddApplicationAsync(input);
 
+        [HttpGet]
+        public Task<IEnumerable<ApplicationOutputDto>> GetApplicationList() => _applicationService.GetApplicationListAsync();
 
         [HttpPut("{id}")]
         public Task AddApplication(string id, [FromBody] ApplicationInputDto input) => _applicationService.UpdateApplicationAsync(id, input);
+
+        [HttpDelete("{id}")]
+        public Task DeleteApplication(string id) => _applicationService.DeleteApplicationAsync(id);
+
     }
 }
