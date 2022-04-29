@@ -348,7 +348,7 @@ namespace Microsoft.Extensions.DependencyInjection
             if (fileProvider == null)
             {
 
-                throw new BusinessException("IFileProvider接口不存在");
+                throw new LuckException("IFileProvider接口不存在");
             }
 
 
@@ -357,14 +357,14 @@ namespace Microsoft.Extensions.DependencyInjection
             {
                 if (!fileNotExistsMsg.IsNullOrEmpty())
                 {
-                    throw new BusinessException(fileNotExistsMsg);
+                    throw new LuckException(fileNotExistsMsg);
                 }
 
             }
             var text = ReadAllText(fileInfo);
             if (text.IsNullOrEmpty())
             {
-                throw new BusinessException("文件内容不存在");
+                throw new LuckException("文件内容不存在");
             }
             return text;
         }

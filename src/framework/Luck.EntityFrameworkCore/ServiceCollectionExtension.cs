@@ -27,7 +27,7 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IServiceCollection AddLuckDbContext<TDbContext>(this IServiceCollection services, Action<EFDbContextConfig> efDbContextAction, Action<IServiceProvider, DbContextOptionsBuilder>? optionsAction = null) where TDbContext : LuckDbContextBase
         {
             if (efDbContextAction == null)
-                throw new BusinessException(nameof(efDbContextAction));
+                throw new LuckException(nameof(efDbContextAction));
 
             services.AddDbContext<ILuckDbContext, TDbContext>((provider, dbcontextbuilder) =>
             {
@@ -37,7 +37,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 var drivenProvider = provider.GetServices<IDbContextDrivenProvider>().FirstOrDefault(x => x.Type.Equals(dbType));
 
                 if (drivenProvider == null)
-                    throw new BusinessException($"{nameof(drivenProvider)}没有对应的{dbType}的实现！");
+                    throw new LuckException($"{nameof(drivenProvider)}没有对应的{dbType}的实现！");
                 var builder = drivenProvider.Builder<TDbContext>(dbcontextbuilder, config.ConnnectionString);
                 optionsAction?.Invoke(provider, builder);
             });

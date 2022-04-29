@@ -20,7 +20,7 @@ namespace Luck.Framework.Infrastructure
             {
                 if (_configureServicesContext == null)
                 {
-                    throw new BusinessException($"{nameof(ConfigureServicesContext)}仅适用于{nameof(ConfigureServices)}方法。");
+                    throw new LuckException($"{nameof(ConfigureServicesContext)}仅适用于{nameof(ConfigureServices)}方法。");
                 }
 
                 return _configureServicesContext;

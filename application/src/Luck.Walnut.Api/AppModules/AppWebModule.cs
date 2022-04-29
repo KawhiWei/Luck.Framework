@@ -12,7 +12,6 @@ namespace Luck.Walnut.Api.AppModules
     {
         public override void ConfigureServices(ConfigureServicesContext context)
         {
-            
             base.ConfigureServices(context);
             
         }
