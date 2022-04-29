@@ -1,3 +1,4 @@
+using Luck.Walnut.Application.Applications;
 using Luck.Walnut.Dto.Applications;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,22 +9,19 @@ namespace Luck.Walnut.Api.Controllers
     public class ApplicationController : BaseController
     {
         private readonly ILogger<ApplicationController> _logger;
+        private readonly IApplicationService _applicationService;
 
-        public ApplicationController(ILogger<ApplicationController> logger)
+        public ApplicationController(ILogger<ApplicationController> logger, IApplicationService applicationService)
         {
             _logger = logger;
+            _applicationService = applicationService;
         }
-
-        //[HttpGet]
-        //public IEnumerable<WeatherForecast> Get()
-        //{
-           
-        //}
 
         [HttpPost]
-        public Task AddApplication([FromBody] ApplicationInputDto input)
-        {
-            return Task.CompletedTask;
-        }
+        public Task AddApplication([FromBody] ApplicationInputDto input) => _applicationService.AddApplicationAsync(input);
+
+
+        [HttpPut("{id}")]
+        public Task AddApplication(string id, [FromBody] ApplicationInputDto input) => _applicationService.UpdateApplicationAsync(id, input);
     }
 }

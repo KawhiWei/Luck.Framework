@@ -1,11 +1,12 @@
 ﻿using Luck.DDD.Domain.Repositories;
+
 using Luck.Framework.UnitOfWorks;
 using Luck.Walnut.Domain.AggregateRoots.Environments;
 using Luck.Walnut.Dto.Environments;
 
 namespace Luck.Walnut.Application.Environments
 {
-    public interface IEnvironmentService
+    public interface IEnvironmentService: IScopedDependency
     {
 
         /// <summary>
