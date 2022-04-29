@@ -16,6 +16,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\src\framework\Luck.AspNetCore\Luck.AspNetCore.csproj" />
+    <ProjectReference Include="..\Luck.Walnut.Application\Luck.Walnut.Application.csproj" />
     <ProjectReference Include="..\Luck.Walnut.Infrastructure\Luck.Walnut.Infrastructure.csproj" />
     <ProjectReference Include="..\Luck.Walnut.Persistence\Luck.Walnut.Persistence.csproj" />
   </ItemGroup>
