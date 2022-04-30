@@ -16,7 +16,7 @@ namespace Luck.Walnut.Api.AppModules
 
                    .Enrich.FromLogContext()
                    .WriteTo.Console()
-                      .WriteTo.File(Path.Combine("Logs", @$"{DateTime.Now.ToString("yyyy-MM-dd")}","log.txt"))
+                      .WriteTo.File(Path.Combine("Logs", @$"{DateTime.Now.ToString("yyyy-MM-dd")}","log.log"))
                       .CreateLogger();
 
                 builder.AddSerilog();
