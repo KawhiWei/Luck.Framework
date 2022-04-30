@@ -34,6 +34,8 @@ namespace Luck.Walnut.Domain.AggregateRoots.Environments
             ApplicationId = applicationId;
         }
 
+
+    
         public void AddConfiguration(string key, string value, string type, bool isOpen)
         {
             if (Configurations.Any(x => x.Key == key))
