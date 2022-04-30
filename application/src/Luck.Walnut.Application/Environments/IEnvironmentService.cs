@@ -4,7 +4,7 @@ using Luck.Framework.Extensions;
 using Luck.Framework.UnitOfWorks;
 using Luck.Walnut.Domain.AggregateRoots.Environments;
 using Luck.Walnut.Dto.Environments;
-
+using Microsoft.EntityFrameworkCore;
 namespace Luck.Walnut.Application.Environments
 {
     public interface IEnvironmentService: IScopedDependency
@@ -38,6 +38,13 @@ namespace Luck.Walnut.Application.Environments
         /// <returns></returns>
         Task AddAppConfiguration(string environmentId, AppConfigurationInput input);
 
+
+        /// <summary>
+        /// 分页
+        /// </summary>
+        /// <returns></returns>
+        Task<List<AppEnvironmentPageListOutputDto>> GetAppEnvironmentPageAsync();
+
     }
 
     public class EnvironmentService : IEnvironmentService
@@ -68,14 +75,15 @@ namespace Luck.Walnut.Application.Environments
 
 
         private const string FindEnvironmentNotExistErrorMsg = "环境数据不存在!!!!";
-        private async Task<AppEnvironment> FindAppEnvironmentById(string environmentId)
+        private async Task<AppEnvironment?> FindAppEnvironmentById(string environmentId)
         {
             environmentId.NotNullOrEmpty(nameof(environmentId));
             var appEnvironment = await _appEnvironmentRepository.FindAsync(environmentId);
-            if (appEnvironment is null)
-            {
-                throw new BusinessException(FindEnvironmentNotExistErrorMsg);
-            }
+            IsBusinessException(appEnvironment is null, FindEnvironmentNotExistErrorMsg);
+            //if (appEnvironment is null)
+            //{
+            //    throw new BusinessException(FindEnvironmentNotExistErrorMsg);
+            //}
 
             return appEnvironment;
         }
@@ -88,10 +96,43 @@ namespace Luck.Walnut.Application.Environments
             await _unitOfWork.CommitAsync();
         }
 
+        private void IsBusinessException(bool isExp, string msg)
+        {
+            if (isExp)
+            {
+                throw new BusinessException(FindEnvironmentNotExistErrorMsg);
+            }
+
+        }
+        private async Task<AppEnvironment?> FindAll(string environmentId)
+        {
+
+            var appEnvironment =await _appEnvironmentRepository.FindAll(o => o.Id == environmentId).Include(o => o.Configurations).FirstOrDefaultAsync();
+            IsBusinessException(appEnvironment is null, FindEnvironmentNotExistErrorMsg);
+            return appEnvironment;
+        }
         public async Task UpdateEnvironmentAsnyc(string environmentId, AppEnvironmentInputDto input)
         {
             var appEnvironment = await FindAppEnvironmentById(environmentId);
          
+        }
+
+        public async Task<List<AppEnvironmentPageListOutputDto>> GetAppEnvironmentPageAsync()
+        {
+
+           var list=(await _appEnvironmentRepository.FindAll().Include(o => o.Configurations)
+
+
+                .Select(o => new AppEnvironmentPageListOutputDto()
+                {
+
+                    Id = o.Id,
+                    EnvironmentName = o.EnvironmentName,
+                    ApplicationId = o.ApplicationId,
+
+                })
+                .ToListAsync());
+            return list;
         }
     }
 }
