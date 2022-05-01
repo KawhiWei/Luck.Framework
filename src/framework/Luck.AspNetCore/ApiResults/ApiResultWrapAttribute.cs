@@ -52,7 +52,7 @@ namespace Luck.AspNetCore.ApiResults
                 else
                 {
                     var hostEnvironmenet = context.HttpContext.RequestServices.GetService<IHostEnvironment>();
-                    var logger = context.HttpContext.RequestServices.GetService<ILoggerFactory>()
+                    var logger = context.HttpContext.RequestServices.GetService<ILoggerFactory>()?
                                         .CreateLogger(context.Controller.GetType());
 
                     string errorCode;
@@ -60,7 +60,7 @@ namespace Luck.AspNetCore.ApiResults
                     {
                         errorCode = businessException.ErrorCode ?? string.Empty;
 
-                        logger.LogDebug(businessException, $"action failed due to business exception");
+                        logger?.LogDebug(businessException, $"action failed due to business exception");
                     }
                     else
                     {
@@ -68,7 +68,7 @@ namespace Luck.AspNetCore.ApiResults
 
                         context.HttpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
-                        logger.LogError(ex, $"action failed due to exception");
+                        logger?.LogError(ex, $"action failed due to exception");
                     }
 
                     context.Exception = null;
