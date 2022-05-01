@@ -1,0 +1,21 @@
+syntax = "proto3";
+option csharp_namespace = "Luck.Walnut.V1";
+
+package Luck.Walnut.v1;
+
+service GetConfig {
+  rpc GetAppliactionConfig (ApplicationConfigRequest) returns (ApplicationConfigResponse){
+    }
+}
+
+//获取配置项的参数
+message ApplicationConfigRequest {
+  string appId = 1;//应用标识
+  string environmentName = 2;//应用环境
+}
+//配置项返回类型
+message ApplicationConfigResponse {
+  string key = 1;//配置唯一标识
+  string value = 2;//配置value
+  string type=3;//配置项类型
+}

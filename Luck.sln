@@ -51,7 +51,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Luck.Walnut.Application", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Luck.Walnut.Dto", "application\src\Luck.Walnut.Dto\Luck.Walnut.Dto.csproj", "{8A246ABF-8C1A-447F-B85A-283CFEBA07D7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Luck.AspNetCore", "src\framework\Luck.AspNetCore\Luck.AspNetCore.csproj", "{46118D89-703B-4CC8-9A7C-824F6AA930C3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Luck.AspNetCore", "src\framework\Luck.AspNetCore\Luck.AspNetCore.csproj", "{46118D89-703B-4CC8-9A7C-824F6AA930C3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
