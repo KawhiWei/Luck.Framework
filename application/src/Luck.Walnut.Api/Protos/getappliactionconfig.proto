@@ -13,9 +13,13 @@ message ApplicationConfigRequest {
   string appId = 1;//应用标识
   string environmentName = 2;//应用环境
 }
-//配置项返回类型
-message ApplicationConfigResponse {
+message Result{
   string key = 1;//配置唯一标识
   string value = 2;//配置value
   string type=3;//配置项类型
 }
+//配置项返回类型
+message ApplicationConfigResponse {
+    repeated  Result result =1;
+}
+

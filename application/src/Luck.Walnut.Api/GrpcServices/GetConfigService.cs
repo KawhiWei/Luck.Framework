@@ -13,11 +13,18 @@ namespace Luck.Walnut.Api.GrpcServices
             _environmentService = environmentService;
         }
 
-        public override Task<ApplicationConfigResponse> GetAppliactionConfig(ApplicationConfigRequest request, ServerCallContext context)
+        public override async Task<ApplicationConfigResponse> GetAppliactionConfig(ApplicationConfigRequest request, ServerCallContext context)
         {
-            //_environmentService.GetAppEnvironmentPageAsync();
-
-            return Task.FromResult(new ApplicationConfigResponse());
+            var configs = await _environmentService.GetAppConfigurationByAppIdAndEnvironmentName(request.AppId, request.EnvironmentName);
+            var results = configs.Select(config => new Result
+            {
+                Key = config.Key,
+                Value = config.Value,
+                Type = config.Type,
+            });
+            var response = new ApplicationConfigResponse();
+            response.Result.AddRange(results);
+            return response;
         }
     }
 }
