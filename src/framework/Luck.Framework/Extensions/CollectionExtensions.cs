@@ -46,7 +46,7 @@ namespace Luck.Framework.Extensions
         /// <paramref name="values" /> 为 null。</exception>
         public static string ToJoin<TSource>(this IEnumerable<TSource> values, string separator = ",") where TSource : IEnumerable
         {
-            values = values.Where(o => !o.AsTo<string>().IsNullOrEmpty());
+            values = values.Where(predicate: o => o.AsTo<string>()!.IsNullOrEmpty());
             return string.Join(separator, values);
         }
 
@@ -72,8 +72,7 @@ namespace Luck.Framework.Extensions
         /// <param name="source">数据源</param>
         /// <param name="keySelector">键条件</param>
         /// <returns>返回去重后集合数据</returns>
-        public static IList<TSource> ToDistinctBy<TSource, TKey>(this IEnumerable<TSource> source,
-             Func<TSource, TKey> keySelector)
+        public static IList<TSource> ToDistinctBy<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector)
         {
             return source.DistinctBy(keySelector).ToList();
         }
