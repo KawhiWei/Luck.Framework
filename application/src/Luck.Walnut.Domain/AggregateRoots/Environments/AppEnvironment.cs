@@ -35,7 +35,7 @@ namespace Luck.Walnut.Domain.AggregateRoots.Environments
         }
 
 
-    
+
         public void AddConfiguration(string key, string value, string type, bool isOpen)
         {
             if (Configurations.Any(x => x.Key == key))
@@ -44,11 +44,17 @@ namespace Luck.Walnut.Domain.AggregateRoots.Environments
             Configurations.Add(new AppConfiguration(key, value, type, isOpen));
         }
 
-        public void UpdateConfiguration(string id,string key, string value, string type, bool isOpen, bool isPublish)
+        public void UpdateConfiguration(string id, string key, string value, string type, bool isOpen, bool isPublish)
         {
 
-          var configuration= Configurations.FirstOrDefault(o => o.Id == id);
-           configuration.UpdateConfiguration(key,value,type,isOpen, isPublish);
+            var configuration = Configurations.FirstOrDefault(o => o.Id == id);
+
+            if (configuration is null)
+            {
+                throw new DomainException($"【{id}】配置不存在");
+            }
+
+            configuration.UpdateConfiguration(key, value, type, isOpen, isPublish);
         }
     }
 

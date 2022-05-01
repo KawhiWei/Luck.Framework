@@ -48,7 +48,7 @@ namespace Luck.Walnut.Application.Environments
         Task DeleteAppConfigurationAsync(string environmentId, string configurationId);
 
 
-        Task UpdateAppConfigurationAsync(UpdateAppConfigurationInputDto input);
+
 
         /// <summary>
         /// 根据应用Id和环境名称获取配置列表
@@ -57,6 +57,8 @@ namespace Luck.Walnut.Application.Environments
         /// <param name="environmentName"></param>
         /// <returns></returns>
         Task<List<AppConfigurationOutput>> GetAppConfigurationByAppIdAndEnvironmentName(string appId, string environmentName);
+
+        Task UpdateAppConfigurationAsync(string environmentId, string id, AppConfigurationInput input);
 
     }
 
@@ -169,13 +171,7 @@ namespace Luck.Walnut.Application.Environments
             await _unitOfWork.CommitAsync();
         }
 
-        public async Task UpdateAppConfigurationAsync(UpdateAppConfigurationInputDto input)
-        {
-
-
-            var environments = await _appEnvironmentRepository.FindAll(o => o.Id == input.EnvironmentId).Include(o => o.Id == input.Id).FirstOrDefaultAsync(); ;
-        }
-
+    
 
         public async Task<List<AppConfigurationOutput>> GetAppConfigurationByAppIdAndEnvironmentName(string appId, string environmentName)
         {
@@ -186,6 +182,17 @@ namespace Luck.Walnut.Application.Environments
                 Type=a.Type
             }).ToListAsync();
 
+        }
+
+
+        public async Task UpdateAppConfigurationAsync(string environmentId, string id, AppConfigurationInput input)
+        {
+            id.NotNullOrEmpty(nameof(id));
+            environmentId.NotNullOrEmpty(nameof(environmentId));
+            var environment = await _appEnvironmentRepository.FindAll(o => o.Id == environmentId).Include(o => o.Configurations).FirstOrDefaultAsync();
+            environment?.UpdateConfiguration(id, input.Key, input.Value, input.Type, input.IsOpen, input.IsPublish);
+            _appEnvironmentRepository.Update(environment);
+            await _unitOfWork.CommitAsync();
         }
     }
 }
