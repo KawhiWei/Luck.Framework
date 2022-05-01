@@ -17,6 +17,8 @@ namespace Luck.Walnut.Application.Applications
 
         Task<IEnumerable<ApplicationOutputDto>> GetApplicationListAsync();
 
+        Task<ApplicationDetailOutputDto> GetApplicationDetailAsync(string id);
+
         Task DeleteApplicationAsync(string id);
     }
 
@@ -55,7 +57,6 @@ namespace Luck.Walnut.Application.Applications
 
         public async Task UpdateApplicationAsync(string id, ApplicationInputDto input)
         {
-
             await CheckAppIdAsync(input.AppId, true, id);
             var application = await GetApplicationByIdAsync(id);
             application.UpdateInfo(input.EnglishName, input.DepartmentName, input.ChinessName, input.LinkMan, input.AppId, input.Status);
@@ -76,6 +77,23 @@ namespace Luck.Walnut.Application.Applications
                      DepartmentName = c.DepartmentName,
                      LinkMan = c.LinkMan,
                  }).ToListAsync();
+        }
+
+        public async Task<ApplicationDetailOutputDto> GetApplicationDetailAsync(string id)
+        {
+
+            var application = await GetApplicationByIdAsync(id);
+
+            return new ApplicationDetailOutputDto()
+            {
+                Id=application.Id,
+                ChinessName=application.ChinessName,
+                EnglishName=application.EnglishName,
+                Status=application.Status,
+                DepartmentName=application.DepartmentName,
+                LinkMan=application.LinkMan,
+                AppId=application.AppId,
+            };
         }
 
         public async Task DeleteApplicationAsync(string id)

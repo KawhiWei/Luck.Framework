@@ -66,4 +66,9 @@
         /// </summary>
         public string Status { get; set; } = default!;
     }
+
+    public class ApplicationDetailOutputDto: ApplicationOutputDto
+    {
+        
+    }
 }
