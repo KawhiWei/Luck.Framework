@@ -6,7 +6,7 @@ namespace Luck.EntityFrameworkCore
 {
     public static class MediatorExtensions
     {
-        public static async Task DispatchDomainEventsAsync(this IMediator mediator, DbContext ctx, CancellationToken cancellationToken = default(CancellationToken))
+        public static async Task DispatchDomainEventsAsync(this IMediator mediator, DbContext ctx, CancellationToken cancellationToken = default)
         {
             var domainEntities = ctx.ChangeTracker
                 .Entries<IDomainEvents>()
