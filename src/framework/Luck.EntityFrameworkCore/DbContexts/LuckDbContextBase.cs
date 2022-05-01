@@ -17,7 +17,7 @@ namespace Luck.EntityFrameworkCore.DbContexts
         public LuckDbContextBase(DbContextOptions options, IServiceProvider serviceProvider) : base(options)
         {
             ServiceProvider = Check.NotNull(serviceProvider,nameof(serviceProvider));
-            _mediator = Check.NotNull(ServiceProvider.GetService<IMediator>(), nameof(_mediator));
+            _mediator = Check.NotNull(ServiceProvider.GetService<IMediator>()!, nameof(_mediator));
         }
 
 
