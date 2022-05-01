@@ -49,6 +49,8 @@ namespace Luck.Walnut.Domain.AggregateRoots.Environments
             Key = key;
             Value = value;
             Type = type;
+            IsOpen = isOpen;
+            IsPublish = isPublish;
             return this;
         }
 

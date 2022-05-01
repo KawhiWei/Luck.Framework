@@ -18,7 +18,7 @@ namespace Luck.Walnut.Api.Controllers
         }
 
         [HttpPost]
-        public Task AddEnvironment([FromBody] AppEnvironmentInputDto input) => _environmentService.AddAppEnvironment(input);
+        public Task AddEnvironment([FromBody] AppEnvironmentInputDto input) => _environmentService.AddAppEnvironmentAsync(input);
 
         [HttpDelete("{id}")]
         public Task DeleteEnvironment(string id) => _environmentService.DeleteAppEnvironmentAsnyc(id);

@@ -28,4 +28,13 @@
         public bool IsPublish { get;  set; } = default!;
 
     }
+
+
+    public class UpdateAppConfigurationInputDto: AppConfigurationInput
+    {
+      public string Id { get; set; }
+
+      public string EnvironmentId { get; set; }
+
+    }
 }

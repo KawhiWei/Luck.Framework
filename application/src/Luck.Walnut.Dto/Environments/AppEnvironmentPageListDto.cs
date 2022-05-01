@@ -22,7 +22,7 @@
         public string ApplicationId { get; set; } = default!;
 
 
-        public IEnumerable<AppConfigurationOutputDto> AppConfigurationOutputDtos { get; set; }
+        public IEnumerable<AppConfigurationOutputDto> AppConfigurationOutputDtos { get; set; } = new List<AppConfigurationOutputDto>(); 
     }
 
     public class AppConfigurationOutputDto
