@@ -1,15 +1,24 @@
 using Luck.Framework.Infrastructure;
 using Luck.Walnut.Api.AppModules;
+using Luck.Walnut.Api.GrpcServices;
 using MediatR;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 
-using Serilog;
-using Serilog.Events;
 var builder = WebApplication.CreateBuilder(args);
+
+builder.WebHost.ConfigureKestrel(x =>
+{
+    x.ListenAnyIP(5000, opt => opt.Protocols = HttpProtocols.Http2);
+    x.ListenAnyIP(5099, opt => opt.Protocols = HttpProtocols.Http1);
+});
 
 // Add services to the container.
 builder.Services.AddApplication<AppWebModule>();
 
 builder.Services.AddControllers();
+
+builder.Services.AddGrpc();
+
 builder.Services.AddMediatR(AssemblyHelper.AllAssemblies);
 
 
@@ -29,6 +38,11 @@ if (app.Environment.IsDevelopment())
 
 //app.UseAuthorization();
 app.UseRouting();
+
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapGrpcService<GetConfigService>();
+});
 
 app.MapControllers();
 app.InitializeApplication();
