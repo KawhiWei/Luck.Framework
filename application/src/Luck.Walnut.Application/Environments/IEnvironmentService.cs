@@ -50,6 +50,14 @@ namespace Luck.Walnut.Application.Environments
 
         Task UpdateAppConfigurationAsync(UpdateAppConfigurationInputDto input);
 
+        /// <summary>
+        /// 根据应用Id和环境名称获取配置列表
+        /// </summary>
+        /// <param name="appId"></param>
+        /// <param name="environmentName"></param>
+        /// <returns></returns>
+        Task<List<AppConfigurationOutput>> GetAppConfigurationByAppIdAndEnvironmentName(string appId, string environmentName);
+
     }
 
     public class EnvironmentService : IEnvironmentService
@@ -166,6 +174,18 @@ namespace Luck.Walnut.Application.Environments
 
 
             var environments = await _appEnvironmentRepository.FindAll(o => o.Id == input.EnvironmentId).Include(o => o.Id == input.Id).FirstOrDefaultAsync(); ;
+        }
+
+
+        public async Task<List<AppConfigurationOutput>> GetAppConfigurationByAppIdAndEnvironmentName(string appId, string environmentName)
+        {
+           return await  _appEnvironmentRepository.FindAll(x => x.ApplicationId == appId && x.EnvironmentName == environmentName).Include(x => x.Configurations).SelectMany(x =>  x.Configurations).Select(a=>new AppConfigurationOutput
+            {
+                Key= a.Key,
+                Value=a.Value,
+                Type=a.Type
+            }).ToListAsync();
+
         }
     }
 }
