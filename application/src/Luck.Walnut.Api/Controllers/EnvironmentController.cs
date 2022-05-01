@@ -33,5 +33,12 @@ namespace Luck.Walnut.Api.Controllers
         [HttpDelete("{id}")]
         public Task DeleteEnvironment(string id) => _environmentService.DeleteAppEnvironmentAsnyc(id);
 
+        [HttpDelete("{environmentId}/{configurationId}")]
+        public Task DeleteAppConfiguration(string environmentId, string configurationId) => _environmentService.DeleteAppConfigurationAsync
+            (environmentId, configurationId);
+
+
+
+
     }
 }

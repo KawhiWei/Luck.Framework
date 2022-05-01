@@ -241,5 +241,23 @@ namespace Luck.Framework.Extensions
             source.Add(item);
             return true;
         }
+
+        /// <summary>
+        /// 移除
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="source"></param>
+        /// <param name="predicate"></param>
+        /// <returns></returns>
+        public static bool Remove<T>([NotNull] this ICollection<T> source, Func<T, bool> predicate)
+        {
+            source.NotNull(nameof(source));
+            var collections = source.Where(predicate);
+            foreach (var item in collections)
+            {
+                source.Remove(item);
+            }
+            return true;
+        }
     }
 }

@@ -40,7 +40,7 @@ namespace Luck.Walnut.Application.Environments
         Task<List<AppEnvironmentPageListOutputDto>> GetAppEnvironmentPageAsync();
 
         /// <summary>
-        ///删除我
+        ///删除
         /// </summary>
         /// <param name="environmentId"></param>
         /// <param name="configurationId"></param>
@@ -59,6 +59,8 @@ namespace Luck.Walnut.Application.Environments
         Task<List<AppConfigurationOutput>> GetAppConfigurationByAppIdAndEnvironmentName(string appId, string environmentName);
 
         Task UpdateAppConfigurationAsync(string environmentId, string id, AppConfigurationInput input);
+
+
 
     }
 
@@ -161,13 +163,25 @@ namespace Luck.Walnut.Application.Environments
         {
             environmentId.NotNullOrEmpty(nameof(environmentId));
             configurationId.NotNullOrEmpty(nameof(configurationId));
-            var environments = await _appEnvironmentRepository.FindAll(o => o.Id == environmentId).Include(o => o.Configurations.Where(o => o.Id == configurationId)).ToListAsync();
+            var environment = await _appEnvironmentRepository.FindAll(o => o.Id == environmentId).Include(o => o.Configurations).FirstOrDefaultAsync();
 
-            foreach (var item in environments)
+            if (!environment?.Configurations.Any()==true )
             {
-                _appEnvironmentRepository.Remove(item);
-                 
+                throw new BusinessException();
             }
+
+            foreach (var item in 
+            environment?.Configurations.Where(o => o.Id == configurationId))
+            {
+                //item.UpdateCreation();
+                //item.UpdateDeletion();
+                //item.UpdateModification();
+                //environment?.Configurations.Remove(item);
+
+
+            }
+
+            _appEnvironmentRepository.Update(environment);
             await _unitOfWork.CommitAsync();
         }
 
@@ -190,6 +204,10 @@ namespace Luck.Walnut.Application.Environments
             id.NotNullOrEmpty(nameof(id));
             environmentId.NotNullOrEmpty(nameof(environmentId));
             var environment = await _appEnvironmentRepository.FindAll(o => o.Id == environmentId).Include(o => o.Configurations).FirstOrDefaultAsync();
+            if (environment is null)
+            {
+                throw new BusinessException(FindEnvironmentNotExistErrorMsg);
+            }
             environment?.UpdateConfiguration(id, input.Key, input.Value, input.Type, input.IsOpen, input.IsPublish);
             _appEnvironmentRepository.Update(environment);
             await _unitOfWork.CommitAsync();
