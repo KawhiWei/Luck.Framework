@@ -167,21 +167,20 @@ namespace Luck.Walnut.Application.Environments
 
             if (!environment?.Configurations.Any()==true )
             {
-                throw new BusinessException();
+                throw new BusinessException("环境下没有对应的配置");
             }
 
-            foreach (var item in 
-            environment?.Configurations.Where(o => o.Id == configurationId))
+            var configuration = environment?.Configurations.FirstOrDefault(o => o.Id == configurationId);
+
+            if (configuration is null)
             {
-                //item.UpdateCreation();
-                //item.UpdateDeletion();
-                //item.UpdateModification();
-                //environment?.Configurations.Remove(item);
-
-
+                throw new BusinessException($"{configurationId}没有找到对应的配置");
             }
 
-            _appEnvironmentRepository.Update(environment);
+
+            //要在映射上添加AppEnvironmentId这个，不是操作导航属性Remove,会把AppEnvironmentId字段值清空!!
+            environment?.Configurations.Remove(configuration);
+
             await _unitOfWork.CommitAsync();
         }
 
