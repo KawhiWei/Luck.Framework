@@ -165,6 +165,12 @@ namespace Luck.Walnut.Application.Environments
             configurationId.NotNullOrEmpty(nameof(configurationId));
             var environment = await _appEnvironmentRepository.FindAll(o => o.Id == environmentId).Include(o => o.Configurations).FirstOrDefaultAsync();
 
+            if (environment is null)
+            {
+                throw new BusinessException(FindEnvironmentNotExistErrorMsg);
+            }
+
+
             if (!environment?.Configurations.Any()==true )
             {
                 throw new BusinessException("环境下没有对应的配置");
