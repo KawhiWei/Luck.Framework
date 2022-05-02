@@ -67,11 +67,13 @@ namespace Luck.Walnut.Application.Environments
     public class EnvironmentService : IEnvironmentService
     {
         private readonly IAggregateRootRepository<AppEnvironment, string> _appEnvironmentRepository;
+        private readonly IAggregateRootRepository<Domain.AggregateRoots.Applications.Application, string> _applicationRepository;
         private readonly IUnitOfWork _unitOfWork;
-        public EnvironmentService(IAggregateRootRepository<AppEnvironment, string> appEnvironmentRepository, IUnitOfWork unitOfWork)
+        public EnvironmentService(IAggregateRootRepository<AppEnvironment, string> appEnvironmentRepository, IUnitOfWork unitOfWork, IAggregateRootRepository<Domain.AggregateRoots.Applications.Application, string> applicationRepository)
         {
             _appEnvironmentRepository = appEnvironmentRepository;
             _unitOfWork = unitOfWork;
+            _applicationRepository = applicationRepository;
         }
 
         public async Task AddAppEnvironmentAsync(AppEnvironmentInputDto input)
@@ -194,7 +196,12 @@ namespace Luck.Walnut.Application.Environments
 
         public async Task<List<AppConfigurationOutput>> GetAppConfigurationByAppIdAndEnvironmentName(string appId, string environmentName)
         {
-           return await  _appEnvironmentRepository.FindAll(x => x.ApplicationId == appId && x.EnvironmentName == environmentName).Include(x => x.Configurations).SelectMany(x =>  x.Configurations).Select(a=>new AppConfigurationOutput
+            var application =await  _applicationRepository.FindAll(x => x.AppId == appId).FirstOrDefaultAsync();
+            if (application is null)
+                throw new BusinessException($"{appId}应用不存在");
+
+
+           return await  _appEnvironmentRepository.FindAll(x => x.ApplicationId == application.Id && x.EnvironmentName == environmentName).Include(x => x.Configurations).SelectMany(x =>  x.Configurations).Select(a=>new AppConfigurationOutput
             {
                 Key= a.Key,
                 Value=a.Value,
