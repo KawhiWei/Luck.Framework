@@ -11,6 +11,9 @@ namespace Luck.Walnut.Application.Environments
     public interface IEnvironmentService : IScopedDependency
     {
 
+
+        Task<IEnumerable<AppEnvironmentOptputListDto>> GetEnvironmentListAsync();
+
         /// <summary>
         /// 添加环境
         /// </summary>
@@ -68,7 +71,7 @@ namespace Luck.Walnut.Application.Environments
     public class EnvironmentService : IEnvironmentService
     {
         private readonly IAggregateRootRepository<AppEnvironment, string> _appEnvironmentRepository;
-        private readonly IAggregateRootRepository<Domain.AggregateRoots.Applications.Application, string> _applicationRepository; //todo这种最好封装一个Application领域服务
+        private readonly IAggregateRootRepository<Domain.AggregateRoots.Applications.Application, string> _applicationRepository; 
         private readonly IUnitOfWork _unitOfWork;
 
         private readonly ICancellationTokenProvider _cancellationTokenProvider;  //当中断请求时，所以有操作同时也中断
@@ -233,7 +236,22 @@ namespace Luck.Walnut.Application.Environments
 
         public async Task<IEnumerable<SelectedItem>> SelectedEnvironmentListAsync()
         {
-           return await  _appEnvironmentRepository.FindAll().Select(o => new SelectedItem(o.Id, o.EnvironmentName)).ToListAsync();
+           return await  _appEnvironmentRepository.FindAll().Select(o => new SelectedItem(o.Id, o.EnvironmentName)).ToListAsync(_cancellationTokenProvider.Token);
+        }
+
+        public async  Task<IEnumerable<AppEnvironmentOptputListDto>> GetEnvironmentListAsync()
+        {
+
+
+            return await  _appEnvironmentRepository.FindAll().Select(o=>new AppEnvironmentOptputListDto() { 
+            
+            
+                Id=o.Id,
+                ApplicationId=o.ApplicationId,
+                EnvironmentName=o.EnvironmentName,
+                AppId =_applicationRepository.FindAll().FirstOrDefault(a => a.Id == o.ApplicationId).AppId
+            }).ToListAsync();
+
         }
     }
 }
