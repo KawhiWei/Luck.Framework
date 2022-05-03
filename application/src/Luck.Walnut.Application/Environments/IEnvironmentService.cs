@@ -1,6 +1,7 @@
 ﻿using Luck.DDD.Domain.Repositories;
 using Luck.Framework.Exceptions;
 using Luck.Framework.Extensions;
+using Luck.Framework.Threading;
 using Luck.Framework.UnitOfWorks;
 using Luck.Walnut.Domain.AggregateRoots.Environments;
 using Luck.Walnut.Dto.Environments;
@@ -68,17 +69,19 @@ namespace Luck.Walnut.Application.Environments
     {
         private readonly IAggregateRootRepository<AppEnvironment, string> _appEnvironmentRepository;
         private readonly IUnitOfWork _unitOfWork;
-        public EnvironmentService(IAggregateRootRepository<AppEnvironment, string> appEnvironmentRepository, IUnitOfWork unitOfWork)
+        private readonly ICancellationTokenProvider _cancellationTokenProvider;  //当中断请求时，所以有操作同时也中断
+        public EnvironmentService(IAggregateRootRepository<AppEnvironment, string> appEnvironmentRepository, IUnitOfWork unitOfWork, ICancellationTokenProvider cancellationTokenProvider)
         {
             _appEnvironmentRepository = appEnvironmentRepository;
             _unitOfWork = unitOfWork;
+            _cancellationTokenProvider = cancellationTokenProvider;
         }
 
         public async Task AddAppEnvironmentAsync(AppEnvironmentInputDto input)
         {
             var appEnvironment = new AppEnvironment(input.EnvironmentName, input.ApplicationId);
             _appEnvironmentRepository.Add(appEnvironment);
-            await _unitOfWork.CommitAsync();
+            await _unitOfWork.CommitAsync(_cancellationTokenProvider.Token);
         }
 
         public async Task AddAppConfigurationAsync(string environmentId, AppConfigurationInput input)
@@ -87,7 +90,7 @@ namespace Luck.Walnut.Application.Environments
             _ = appEnvironment ?? throw new ArgumentNullException(nameof(appEnvironment));
             //appEnvironment = Check.NotNull(appEnvironment, nameof(appEnvironment));
             appEnvironment.AddConfiguration(input.Key, input.Value, input.Type, input.IsOpen);
-            await _unitOfWork.CommitAsync();
+            await _unitOfWork.CommitAsync(_cancellationTokenProvider.Token);
         }
 
 
@@ -110,7 +113,7 @@ namespace Luck.Walnut.Application.Environments
 
             //只删除环境？ 要不要把配置也删除？级联删除？
             _appEnvironmentRepository.Remove(appEnvironment);
-            await _unitOfWork.CommitAsync();
+            await _unitOfWork.CommitAsync(_cancellationTokenProvider.Token);
         }
 
 
@@ -187,7 +190,7 @@ namespace Luck.Walnut.Application.Environments
             //要在映射上添加AppEnvironmentId这个，不是操作导航属性Remove,会把AppEnvironmentId字段值清空!!
             environment?.Configurations.Remove(configuration);
 
-            await _unitOfWork.CommitAsync();
+            await _unitOfWork.CommitAsync(_cancellationTokenProvider.Token);
         }
 
     
@@ -199,7 +202,7 @@ namespace Luck.Walnut.Application.Environments
                 Key= a.Key,
                 Value=a.Value,
                 Type=a.Type
-            }).ToListAsync();
+            }).ToListAsync(_cancellationTokenProvider.Token);
 
         }
 
@@ -215,7 +218,7 @@ namespace Luck.Walnut.Application.Environments
             }
             environment?.UpdateConfiguration(id, input.Key, input.Value, input.Type, input.IsOpen, input.IsPublish);
             _appEnvironmentRepository.Update(environment);
-            await _unitOfWork.CommitAsync();
+            await _unitOfWork.CommitAsync(_cancellationTokenProvider.Token);
         }
     }
 }

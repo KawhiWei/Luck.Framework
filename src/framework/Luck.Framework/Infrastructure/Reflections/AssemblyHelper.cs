@@ -70,6 +70,18 @@ namespace Luck.Framework.Infrastructure
             return AllTypes.Where(predicate).ToArray();
         }
 
+        public static Type[] FindTypesByAttribute<TAttribute>()
+        
+        {
+            var attrbuteType = typeof(TAttribute);
+            return FindTypesByAttribute(attrbuteType);
+        }
+
+
+        public static Type[] FindTypesByAttribute(Type type)
+        {
+            return AllTypes.Where(a=>a.IsDefined(type,true)).Distinct().ToArray();
+        }
         /// <summary>
         /// 查找指定条件的类型
         /// </summary>

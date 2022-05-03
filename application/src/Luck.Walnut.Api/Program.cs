@@ -1,8 +1,12 @@
+using Luck.AspNetCore;
 using Luck.Framework.Infrastructure;
+using Luck.Framework.Threading;
 using Luck.Walnut.Api.AppModules;
 using Luck.Walnut.Api.GrpcServices;
 using MediatR;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,8 +24,8 @@ builder.Services.AddControllers();
 builder.Services.AddGrpc();
 
 builder.Services.AddMediatR(AssemblyHelper.AllAssemblies);
-
-
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<ICancellationTokenProvider, HttpContextCancellationTokenProvider>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -42,6 +46,13 @@ app.UseRouting();
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapGrpcService<GetConfigService>();
+
+    var grpcSevviceTypes = AssemblyHelper.FindTypesByAttribute<AutoMapGrpcServiceAttribute>(); 
+    foreach (var item in grpcSevviceTypes)
+    {
+        endpoints.MapGrpcService(item);
+    }
+
 });
 
 app.MapControllers();

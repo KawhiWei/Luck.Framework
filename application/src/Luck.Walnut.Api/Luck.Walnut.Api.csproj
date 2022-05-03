@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
 	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
@@ -30,5 +30,6 @@
 		<ProjectReference Include="..\Luck.Walnut.Infrastructure\Luck.Walnut.Infrastructure.csproj" />
 		<ProjectReference Include="..\Luck.Walnut.Persistence\Luck.Walnut.Persistence.csproj" />
 	</ItemGroup>
+
 
 </Project>
