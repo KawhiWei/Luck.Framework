@@ -31,4 +31,6 @@
 		<ProjectReference Include="..\Luck.Walnut.Persistence\Luck.Walnut.Persistence.csproj" />
 	</ItemGroup>
 
+	<ProjectExtensions><VisualStudio><UserProperties properties_4launchsettings_1json__JsonSchema="https://json.schemastore.org/appsettings.json" /></VisualStudio></ProjectExtensions>
+
 </Project>

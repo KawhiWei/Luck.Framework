@@ -12,6 +12,8 @@ builder.WebHost.ConfigureKestrel(x =>
     x.ListenAnyIP(5099, opt => opt.Protocols = HttpProtocols.Http1);
 });
 
+
+var test= Environment.GetEnvironmentVariable("AppId");
 // Add services to the container.
 builder.Services.AddApplication<AppWebModule>();
 

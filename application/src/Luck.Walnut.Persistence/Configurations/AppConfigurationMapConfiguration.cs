@@ -9,16 +9,16 @@ namespace Luck.Walnut.Persistence
         public void Configure(EntityTypeBuilder<AppConfiguration> builder)
         {
             builder.HasKey(x => x.Id);
-
-            builder.ToTable("configurations");
             builder.Property(x => x.Key);
-            builder.Property(x => x.Value);
+            builder.Property(x => x.Value).HasColumnType("longtext");
             builder.Property(x => x.Type);
             builder.Property(x => x.IsOpen);
             builder.Property(x => x.IsPublish);
-            //todo 不这样，当Remove时候，会把AppEnvironmentId清空
-            builder.Property<string>("AppEnvironmentId").IsRequired().HasMaxLength(95);
+            ////todo 不这样，当Remove时候，会把AppEnvironmentId清空
+            //builder.Property<string>("AppEnvironmentId").IsRequired().HasMaxLength(95);
             builder.HasIndex(x => new { x.Key, x.Value });
+
+            builder.ToTable("configurations");
         }
     }
 }
