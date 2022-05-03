@@ -17,6 +17,13 @@ namespace Luck.Walnut.Api.Controllers
             
         }
 
+
+        [HttpGet]
+        public Task<List<AppEnvironmentPageListOutputDto>> GetAppEnvironmentPage() =>_environmentService.GetAppEnvironmentPageAsync();
+
+        [HttpGet("getselectedenvironmentlist")]
+        public Task<IEnumerable<SelectedItem>> GetSelectedEnvironmentList()=>_environmentService.SelectedEnvironmentListAsync();
+
         [HttpPost]
         public Task AddEnvironment([FromBody] AppEnvironmentInputDto input) => _environmentService.AddAppEnvironmentAsync(input);
 

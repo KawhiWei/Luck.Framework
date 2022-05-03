@@ -62,7 +62,7 @@ namespace Luck.Walnut.Application.Environments
         Task UpdateAppConfigurationAsync(string environmentId, string id, AppConfigurationInput input);
 
 
-
+        Task<IEnumerable<SelectedItem>> SelectedEnvironmentListAsync();
     }
 
     public class EnvironmentService : IEnvironmentService
@@ -229,6 +229,11 @@ namespace Luck.Walnut.Application.Environments
             environment?.UpdateConfiguration(id, input.Key, input.Value, input.Type, input.IsOpen, input.IsPublish);
             _appEnvironmentRepository.Update(environment);
             await _unitOfWork.CommitAsync(_cancellationTokenProvider.Token);
+        }
+
+        public async Task<IEnumerable<SelectedItem>> SelectedEnvironmentListAsync()
+        {
+           return await  _appEnvironmentRepository.FindAll().Select(o => new SelectedItem(o.Id, o.EnvironmentName)).ToListAsync();
         }
     }
 }
