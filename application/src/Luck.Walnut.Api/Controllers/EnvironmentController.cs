@@ -31,25 +31,57 @@ namespace Luck.Walnut.Api.Controllers
         [HttpGet("getappEnvironmentandconfigurationlist")]
         public Task<List<AppEnvironmentPageListOutputDto>> GetAppEnvironmentAndConfigurationPage() => _environmentService.GetAppEnvironmentConfigurationPageAsync();
 
+        /// <summary>
+        /// 得到环境下拉数据
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("getselectedenvironmentlist")]
         public Task<IEnumerable<SelectedItem>> GetSelectedEnvironmentList()=>_environmentService.SelectedEnvironmentListAsync();
 
+        /// <summary>
+        /// 添加环境
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
         [HttpPost]
         public Task AddEnvironment([FromBody] AppEnvironmentInputDto input) => _environmentService.AddAppEnvironmentAsync(input);
 
 
+        /// <summary>
+        /// 添加配置
+        /// </summary>
+        /// <param name="environmentId"></param>
+        /// <param name="input"></param>
+        /// <returns></returns>
         [HttpPost("{environmentId}")]
    
         public Task AddAppConfiguration(string environmentId,[FromBody] AppConfigurationInput input) => _environmentService.AddAppConfigurationAsync(environmentId, input);
 
 
-
+        /// <summary>
+        ///更新配置
+        /// </summary>
+        /// <param name="environmentId"></param>
+        /// <param name="id"></param>
+        /// <param name="input"></param>
+        /// <returns></returns>
         [HttpPut("{environmentId}/{id}")]
         public Task UpdageAppConfiguration(string environmentId, string id, [FromBody] AppConfigurationInput input) => _environmentService.UpdateAppConfigurationAsync(environmentId, id, input);
 
+        /// <summary>
+        /// 删除环境
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpDelete("{id}")]
         public Task DeleteEnvironment(string id) => _environmentService.DeleteAppEnvironmentAsnyc(id);
 
+        /// <summary>
+        /// 删除配置
+        /// </summary>
+        /// <param name="environmentId"></param>
+        /// <param name="configurationId"></param>
+        /// <returns></returns>
         [HttpDelete("{environmentId}/{configurationId}")]
         public Task DeleteAppConfiguration(string environmentId, string configurationId) => _environmentService.DeleteAppConfigurationAsync
             (environmentId, configurationId);
