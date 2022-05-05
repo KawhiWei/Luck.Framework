@@ -27,7 +27,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Luck.DDD.Domain", "src\fram
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Luck.Redis.StackExchange", "src\framework\Luck.Redis.StackExchange\Luck.Redis.StackExchange.csproj", "{AE2000C1-A5BE-4804-88DC-26B3BCE71EF5}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1.Luck.Walnut", "1.Luck.Walnut", "{207B054E-C022-4679-82AC-94464968BDE3}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2.Luck.Walnut", "2.Luck.Walnut", "{207B054E-C022-4679-82AC-94464968BDE3}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Luck.Walnut.Infrastructure", "application\src\Luck.Walnut.Infrastructure\Luck.Walnut.Infrastructure.csproj", "{FC076552-4B1E-4A1C-99F3-3ECB612D4B7F}"
 EndProject
@@ -52,6 +52,11 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Luck.Walnut.Dto", "application\src\Luck.Walnut.Dto\Luck.Walnut.Dto.csproj", "{8A246ABF-8C1A-447F-B85A-283CFEBA07D7}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Luck.AspNetCore", "src\framework\Luck.AspNetCore\Luck.AspNetCore.csproj", "{46118D89-703B-4CC8-9A7C-824F6AA930C3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "0.Solution Items", "0.Solution Items", "{7A15866E-8E80-4602-BFF5-5865B63ED086}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
