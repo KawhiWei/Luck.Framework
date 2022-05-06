@@ -28,8 +28,8 @@ namespace Luck.Walnut.Api.Controllers
         /// 得到环境下配置列表
         /// </summary>
         /// <returns></returns>
-        [HttpGet("getappEnvironmentandconfigurationlist")]
-        public Task<List<AppEnvironmentPageListOutputDto>> GetAppEnvironmentAndConfigurationPage() => _environmentService.GetAppEnvironmentConfigurationPageAsync();
+        [HttpGet("{environmentId}")]
+        public Task<List<AppEnvironmentPageListOutputDto>> GetAppEnvironmentAndConfigurationPage(string environmentId) => _environmentService.GetAppEnvironmentConfigurationPageAsync(environmentId);
 
         /// <summary>
         /// 得到环境下拉数据

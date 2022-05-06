@@ -41,7 +41,7 @@ namespace Luck.Walnut.Application.Environments
         /// 分页
         /// </summary>
         /// <returns></returns>
-        Task<List<AppEnvironmentPageListOutputDto>> GetAppEnvironmentConfigurationPageAsync();
+        Task<List<AppEnvironmentPageListOutputDto>> GetAppEnvironmentConfigurationPageAsync(string environmentId);
 
         /// <summary>
         ///删除
@@ -143,10 +143,10 @@ namespace Luck.Walnut.Application.Environments
         }
 
 
-        public async Task<List<AppEnvironmentPageListOutputDto>> GetAppEnvironmentConfigurationPageAsync()
+        public async Task<List<AppEnvironmentPageListOutputDto>> GetAppEnvironmentConfigurationPageAsync(string environmentId)
         {
 
-            var list = await _appEnvironmentRepository.FindAll().Include(o => o.Configurations).SelectMany(o => o.Configurations).Select(a => new AppEnvironmentPageListOutputDto
+            var list = await _appEnvironmentRepository.FindAll().Where(o=>o.Id== environmentId).Include(o => o.Configurations).SelectMany(o => o.Configurations).Select(a => new AppEnvironmentPageListOutputDto
             {
 
                 Id=a.Id,
