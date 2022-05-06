@@ -21,7 +21,7 @@ namespace Luck.Walnut.Api.Controllers
         /// 得到环境列表
         /// </summary>
         /// <returns></returns>
-        [HttpGet("getenvironmentlist")]
+        [HttpGet]
         public Task<IEnumerable<AppEnvironmentOptputListDto>> GetEnvironmentList()=>_environmentService.GetEnvironmentListAsync();
 
         /// <summary>
