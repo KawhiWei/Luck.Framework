@@ -71,11 +71,11 @@ namespace Luck.Walnut.Application.Environments
     public class EnvironmentService : IEnvironmentService
     {
         private readonly IAggregateRootRepository<AppEnvironment, string> _appEnvironmentRepository;
-        private readonly IAggregateRootRepository<Domain.AggregateRoots.Applications.Application, string> _applicationRepository; 
+        private readonly IAggregateRootRepository<Domain.AggregateRoots.Applications.Application, string> _applicationRepository;
         private readonly IUnitOfWork _unitOfWork;
 
         private readonly ICancellationTokenProvider _cancellationTokenProvider;  //当中断请求时，所以有操作同时也中断
-        public EnvironmentService(IAggregateRootRepository<AppEnvironment, string> appEnvironmentRepository, IUnitOfWork unitOfWork, ICancellationTokenProvider cancellationTokenProvider,IAggregateRootRepository<Domain.AggregateRoots.Applications.Application, string> applicationRepository)
+        public EnvironmentService(IAggregateRootRepository<AppEnvironment, string> appEnvironmentRepository, IUnitOfWork unitOfWork, ICancellationTokenProvider cancellationTokenProvider, IAggregateRootRepository<Domain.AggregateRoots.Applications.Application, string> applicationRepository)
         {
             _appEnvironmentRepository = appEnvironmentRepository;
             _unitOfWork = unitOfWork;
@@ -146,22 +146,22 @@ namespace Luck.Walnut.Application.Environments
         public async Task<List<AppEnvironmentPageListOutputDto>> GetAppEnvironmentConfigurationPageAsync(string environmentId)
         {
 
-            var list = await _appEnvironmentRepository.FindAll().Where(o=>o.Id== environmentId).Include(o => o.Configurations).SelectMany(o => o.Configurations).Select(a => new AppEnvironmentPageListOutputDto
+            var list = await _appEnvironmentRepository.FindAll().Where(o => o.Id == environmentId).Include(o => o.Configurations).SelectMany(o => o.Configurations).Select(a => new AppEnvironmentPageListOutputDto
             {
 
-                Id=a.Id,
-                IsOpen=a.IsOpen,
-                IsPublish=a.IsPublish,
-                Key =a.Key,
-                Type =a.Type,
-                Value =a.Value,
+                Id = a.Id,
+                IsOpen = a.IsOpen,
+                IsPublish = a.IsPublish,
+                Key = a.Key,
+                Type = a.Type,
+                Value = a.Value,
 
             }).ToListAsync();
 
 
 
 
-               
+
             return list;
         }
 
@@ -171,45 +171,37 @@ namespace Luck.Walnut.Application.Environments
             configurationId.NotNullOrEmpty(nameof(configurationId));
             var environment = await _appEnvironmentRepository.FindAll(o => o.Id == environmentId).Include(o => o.Configurations).FirstOrDefaultAsync();
 
-            if (environment is null)
+            if (environment is not null)
             {
-                throw new BusinessException(FindEnvironmentNotExistErrorMsg);
+                var configuration = environment.Configurations.FirstOrDefault(o => o.Id == configurationId);
+                if (configuration is null)
+                {
+                    throw new BusinessException($"{configurationId}没有找到对应的配置");
+                }
+
+                //要在映射上添加AppEnvironmentId这个，不是操作导航属性Remove,会把AppEnvironmentId字段值清空!!
+                environment.Configurations.Remove(configuration);
+
+                await _unitOfWork.CommitAsync(_cancellationTokenProvider.Token);
             }
+            throw new BusinessException(FindEnvironmentNotExistErrorMsg);
 
-
-            if (!environment?.Configurations.Any()==true )
-            {
-                throw new BusinessException("环境下没有对应的配置");
-            }
-
-            var configuration = environment?.Configurations.FirstOrDefault(o => o.Id == configurationId);
-
-            if (configuration is null)
-            {
-                throw new BusinessException($"{configurationId}没有找到对应的配置");
-            }
-
-
-            //要在映射上添加AppEnvironmentId这个，不是操作导航属性Remove,会把AppEnvironmentId字段值清空!!
-            environment?.Configurations.Remove(configuration);
-
-            await _unitOfWork.CommitAsync(_cancellationTokenProvider.Token);
         }
 
-    
+
 
         public async Task<List<AppConfigurationOutput>> GetAppConfigurationByAppIdAndEnvironmentName(string appId, string environmentName)
         {
-            var application =await  _applicationRepository.FindAll(x => x.AppId == appId).FirstOrDefaultAsync();
+            var application = await _applicationRepository.FindAll(x => x.AppId == appId).FirstOrDefaultAsync();
             if (application is null)
                 throw new BusinessException($"{appId}应用不存在");
 
 
-           return await  _appEnvironmentRepository.FindAll(x => x.ApplicationId == application.Id && x.EnvironmentName == environmentName).Include(x => x.Configurations).SelectMany(x =>  x.Configurations).Select(a=>new AppConfigurationOutput
+            return await _appEnvironmentRepository.FindAll(x => x.ApplicationId == application.Id && x.EnvironmentName == environmentName).Include(x => x.Configurations).SelectMany(x => x.Configurations).Select(a => new AppConfigurationOutput
             {
-                Key= a.Key,
-                Value=a.Value,
-                Type=a.Type
+                Key = a.Key,
+                Value = a.Value,
+                Type = a.Type
             }).ToListAsync(_cancellationTokenProvider.Token);
 
         }
@@ -231,20 +223,21 @@ namespace Luck.Walnut.Application.Environments
 
         public async Task<IEnumerable<SelectedItem>> SelectedEnvironmentListAsync()
         {
-           return await  _appEnvironmentRepository.FindAll().Select(o => new SelectedItem(o.Id, o.EnvironmentName)).ToListAsync(_cancellationTokenProvider.Token);
+            return await _appEnvironmentRepository.FindAll().Select(o => new SelectedItem(o.Id, o.EnvironmentName)).ToListAsync(_cancellationTokenProvider.Token);
         }
 
-        public async  Task<IEnumerable<AppEnvironmentOptputListDto>> GetEnvironmentListAsync()
+        public async Task<IEnumerable<AppEnvironmentOptputListDto>> GetEnvironmentListAsync()
         {
 
 
-            return await  _appEnvironmentRepository.FindAll().Select(o=>new AppEnvironmentOptputListDto() { 
-            
-            
-                Id=o.Id,
-                ApplicationId=o.ApplicationId,
-                EnvironmentName=o.EnvironmentName,
-                AppId =_applicationRepository.FindAll().FirstOrDefault(a => a.Id == o.ApplicationId).AppId
+            return await _appEnvironmentRepository.FindAll().Select(o => new AppEnvironmentOptputListDto()
+            {
+
+
+                Id = o.Id,
+                ApplicationId = o.ApplicationId,
+                EnvironmentName = o.EnvironmentName,
+                AppId = _applicationRepository.FindAll().FirstOrDefault(a => a.Id == o.ApplicationId).AppId
             }).ToListAsync();
 
         }

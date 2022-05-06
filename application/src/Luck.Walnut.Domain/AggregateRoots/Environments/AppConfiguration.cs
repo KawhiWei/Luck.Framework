@@ -31,6 +31,11 @@ namespace Luck.Walnut.Domain.AggregateRoots.Environments
         /// </summary>
         public bool IsPublish { get; private set; } = default!;
 
+        /// <summary>
+        /// 环境Id
+        /// </summary>
+        public string AppEnvironmentId { get; private set; } = default!;
+
         private AppConfiguration()
         {
 
