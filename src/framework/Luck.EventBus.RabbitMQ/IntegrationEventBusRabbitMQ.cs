@@ -49,6 +49,10 @@ namespace Luck.EventBus.RabbitMQ
 
             if (rabbitMQAttribute is null)
                 throw new ArgumentNullException($"{nameof(@event)}未设置<RabbitMQAttribute>特性,无法发布事件");
+
+            if (string.IsNullOrEmpty(rabbitMQAttribute.Queue))
+                rabbitMQAttribute.Queue = type.Name;
+
             var body = JsonSerializer.SerializeToUtf8Bytes(@event, @event.GetType(), new JsonSerializerOptions
             {
                 WriteIndented = true
@@ -58,10 +62,13 @@ namespace Luck.EventBus.RabbitMQ
             {
                 var properties = channel.CreateBasicProperties();
 
+                //创建交换机
                 channel.ExchangeDeclare(exchange: rabbitMQAttribute.Exchange, type: rabbitMQAttribute.Type);
-
+                //创建队列
+                channel.QueueDeclare(queue: rabbitMQAttribute.Queue, durable: false);
                 if (!string.IsNullOrEmpty(rabbitMQAttribute.RoutingKey) && !string.IsNullOrEmpty(rabbitMQAttribute.Queue))
                 {
+                    //通过RoutingKey将队列绑定交换机
                     channel.QueueBind(rabbitMQAttribute.Queue, rabbitMQAttribute.Exchange, rabbitMQAttribute.RoutingKey);
                 }
                 policy.Execute(() =>

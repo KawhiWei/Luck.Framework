@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\framework\Luck.EntityFrameworkCore\Luck.EntityFrameworkCore.csproj" />
+    <ProjectReference Include="..\..\src\framework\Luck.EventBus.RabbitMQ\Luck.EventBus.RabbitMQ.csproj" />
     <ProjectReference Include="..\..\src\framework\Luck.Framework\Luck.Framework.csproj" />
     <ProjectReference Include="..\..\src\framework\Luck.Redis.StackExchange\Luck.Redis.StackExchange.csproj" />
   </ItemGroup>

@@ -6,8 +6,10 @@
 
         public string PassWord { get; set; } = default!;
 
-        public string Name { get; set; } = default!;
+        public string UserName { get; set; } = default!;
 
         public int RetryCount { get; set; } = default!;
+
+        public int Port { get; set; } = default!;
     }
 }
