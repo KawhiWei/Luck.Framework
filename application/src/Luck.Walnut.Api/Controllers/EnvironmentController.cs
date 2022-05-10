@@ -80,6 +80,13 @@ namespace Luck.Walnut.Api.Controllers
         public Task DeleteAppConfiguration(string environmentId, string configurationId) => _environmentService.DeleteAppConfigurationAsync
             (environmentId, configurationId);
 
+        /// <summary>
+        /// 根据配置项id获取详情
+        /// </summary>
+        /// <param name="configId"></param>
+        /// <returns></returns>
+        [HttpGet("ConfigurationDetail/{configId}")]
+        public Task<AppEnvironmentDetailOutPutDto> GetAppEnvironmentConfigurationDetail(string configId) => _environmentService.GetAppEnvironmentConfigurationDetail(configId);
 
 
 

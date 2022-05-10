@@ -51,9 +51,14 @@ namespace Luck.Walnut.Application.Environments
         /// <returns></returns>
         Task DeleteAppConfigurationAsync(string environmentId, string configurationId);
 
+        /// <summary>
+        /// 根据配置项id获取详情
+        /// </summary>
+        /// <param name="configId">配置项id</param>
+        /// <returns></returns>
+        Task<AppEnvironmentDetailOutPutDto> GetAppEnvironmentConfigurationDetail(string configId);
 
-
-
+      
         /// <summary>
         /// 根据应用Id和环境名称获取配置列表
         /// </summary>
@@ -74,12 +79,15 @@ namespace Luck.Walnut.Application.Environments
         private readonly IUnitOfWork _unitOfWork;
 
         private readonly ICancellationTokenProvider _cancellationTokenProvider;  //当中断请求时，所以有操作同时也中断
-        public EnvironmentService(IAggregateRootRepository<AppEnvironment, string> appEnvironmentRepository, IUnitOfWork unitOfWork, ICancellationTokenProvider cancellationTokenProvider, IAggregateRootRepository<Domain.AggregateRoots.Applications.Application, string> applicationRepository)
+
+        private readonly IEntityRepository<AppConfiguration, string> _configRepository;
+        public EnvironmentService(IAggregateRootRepository<AppEnvironment, string> appEnvironmentRepository, IUnitOfWork unitOfWork, ICancellationTokenProvider cancellationTokenProvider, IAggregateRootRepository<Domain.AggregateRoots.Applications.Application, string> applicationRepository, IEntityRepository<AppConfiguration, string> configRepository)
         {
             _appEnvironmentRepository = appEnvironmentRepository;
             _unitOfWork = unitOfWork;
             _cancellationTokenProvider = cancellationTokenProvider;
             _applicationRepository = applicationRepository;
+            _configRepository = configRepository;
         }
 
 
@@ -163,6 +171,22 @@ namespace Luck.Walnut.Application.Environments
 
             return list;
         }
+
+        public async Task<AppEnvironmentDetailOutPutDto> GetAppEnvironmentConfigurationDetail(string configId)
+        {
+            var info = await _configRepository.FindAsync(p => p.Id == configId);
+            var result = new AppEnvironmentDetailOutPutDto
+            {
+                Id = info.Id,
+                IsOpen = info.IsOpen,
+                IsPublish = info.IsPublish,
+                Key = info.Key,
+                Type = info.Type,
+                Value = info.Value,
+            };
+            return result;
+        }
+
 
         public async Task DeleteAppConfigurationAsync(string environmentId, string configurationId)
         {
