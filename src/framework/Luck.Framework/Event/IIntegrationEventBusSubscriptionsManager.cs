@@ -48,7 +48,14 @@
         bool HasSubscriptionsForEvent(string eventName);
 
         /// <summary>
-        /// 获取事件密钥
+        /// 判断订阅者是否存在
+        /// </summary>
+        /// <param name="t"></param>
+        /// <returns></returns>
+        bool HasSubscriptionsForEvent<T>() where T : IntegrationEvent;
+
+        /// <summary>
+        /// 获取事件
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>

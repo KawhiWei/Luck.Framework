@@ -5,10 +5,10 @@ namespace Luck.EventBus.RabbitMQ
 {
 
 
-    public class RabbitMQEventBusSubscriptionsManager: IIntegrationEventBusSubscriptionsManager
+    public class RabbitMQEventBusSubscriptionsManager : IIntegrationEventBusSubscriptionsManager
     {
 
-        private readonly Dictionary<string, List<Type>> _handlers= new Dictionary<string, List<Type>>();
+        private readonly Dictionary<string, List<Type>> _handlers = new Dictionary<string, List<Type>>();
 
         public void AddSubscription<T, TH>()
             where T : IntegrationEvent
@@ -19,22 +19,36 @@ namespace Luck.EventBus.RabbitMQ
 
         public string GetEventKey<T>()
         {
-            throw new NotImplementedException();
+
+            return typeof(T).Name;
         }
 
         public IEnumerable<Type> GetHandlersForEvent<T>() where T : IIntegrationEvent
         {
-            throw new NotImplementedException();
+
+            var eventKey = GetEventKey<T>();
+            return GetHandlersForEvent(eventKey);
+
         }
 
         public IEnumerable<Type> GetHandlersForEvent(string eventName)
         {
-            throw new NotImplementedException();
+
+            return _handlers[eventName];
         }
 
         public bool HasSubscriptionsForEvent(string eventName)
         {
-            throw new NotImplementedException();
+
+
+            return _handlers.ContainsKey(eventName);
+        }
+
+        public bool HasSubscriptionsForEvent<T>() where T : IntegrationEvent
+        {
+
+            var eventKey = GetEventKey<T>();
+            return HasSubscriptionsForEvent(eventKey);
         }
 
         public void RemoveSubscription<T, TH>()
@@ -44,6 +58,6 @@ namespace Luck.EventBus.RabbitMQ
             throw new NotImplementedException();
         }
 
-       
+
     }
 }
