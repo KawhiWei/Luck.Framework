@@ -1,6 +1,6 @@
-﻿using Luck.Framework.Event;
+﻿
 
-namespace Luck.EventBus.RabbitMQ
+namespace Luck.Framework.Event
 {
 
     /// <summary>
