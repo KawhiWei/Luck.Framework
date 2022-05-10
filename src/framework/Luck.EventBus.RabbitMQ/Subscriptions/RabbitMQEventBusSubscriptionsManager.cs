@@ -17,7 +17,17 @@ namespace Luck.EventBus.RabbitMQ
             throw new NotImplementedException();
         }
 
+        public string GetEventKey<T>()
+        {
+            throw new NotImplementedException();
+        }
+
         public IEnumerable<Type> GetHandlersForEvent<T>() where T : IIntegrationEvent
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<Type> GetHandlersForEvent(string eventName)
         {
             throw new NotImplementedException();
         }
@@ -33,5 +43,7 @@ namespace Luck.EventBus.RabbitMQ
         {
             throw new NotImplementedException();
         }
+
+       
     }
 }
