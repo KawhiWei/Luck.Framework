@@ -9,20 +9,20 @@ namespace Module.Sample.Controllers
     public class RedisDemoController : ControllerBase
     {
 
-        private readonly IRedisList _redislist;
+        //private readonly IRedisList _redislist;
 
-        public RedisDemoController(IRedisList redislist)
-        {
-            _redislist = redislist;
-        }
-        [HttpGet]
-        public bool GetRedis()
-        {
-            _redislist.LPush("key_ladsaist", "asdasda","adasdas","asdasda","sadadass");
+        //public RedisDemoController(IRedisList redislist)
+        //{
+        //    _redislist = redislist;
+        //}
+        //[HttpGet]
+        //public bool GetRedis()
+        //{
+        //    _redislist.LPush("key_ladsaist", "asdasda","adasdas","asdasda","sadadass");
 
-            var test = _redislist.LPop("key_list");
-            return true;
-        }
+        //    var test = _redislist.LPop("key_list");
+        //    return true;
+        //}
     }
 
     public class RedisDemo

@@ -1,28 +1,64 @@
 ﻿using Luck.EventBus.RabbitMQ.Attributes;
 using Luck.Framework.Event;
+using Luck.Framework.Exceptions;
+using Luck.Framework.Extensions;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Polly;
 using Polly.Retry;
 using RabbitMQ.Client;
+using RabbitMQ.Client.Events;
 using RabbitMQ.Client.Exceptions;
 using System.Net.Sockets;
 using System.Reflection;
+using System.Text;
 using System.Text.Json;
 
 namespace Luck.EventBus.RabbitMQ
 {
-    public class IntegrationEventBusRabbitMQ : IIntegrationEventBus
+    public class IntegrationEventBusRabbitMQ : IIntegrationEventBus, IDisposable
     {
 
         private readonly IRabbitMQPersistentConnection _persistentConnection;
         private readonly ILogger<IntegrationEventBusRabbitMQ> _logger;
         private readonly int _retryCount;
+        private readonly IIntegrationEventBusSubscriptionsManager _subsManager;
+        private readonly IServiceProvider _serviceProvider;
+        private string _handleName = nameof(IIntegrationEventHandler<IIntegrationEvent>.HandleAsync);
 
-        public IntegrationEventBusRabbitMQ(IRabbitMQPersistentConnection persistentConnection, ILogger<IntegrationEventBusRabbitMQ> logger, int retryCount)
+        public IntegrationEventBusRabbitMQ(IRabbitMQPersistentConnection persistentConnection, ILogger<IntegrationEventBusRabbitMQ> logger, int retryCount, IIntegrationEventBusSubscriptionsManager subsManager, IServiceProvider serviceProvider)
         {
             _persistentConnection = persistentConnection;
             _logger = logger;
             _retryCount = retryCount;
+            _subsManager = subsManager ?? new RabbitMQEventBusSubscriptionsManager();
+            _serviceProvider = serviceProvider;
+            _subsManager.OnEventRemoved += SubsManager_OnEventRemoved;
+        }
+
+        private void SubsManager_OnEventRemoved(object sender, EventRemovedEventArgs args)
+        {
+            var eventName = args.EventType.Name;
+
+            if (!_persistentConnection.IsConnected)
+            {
+                _persistentConnection.TryConnect();
+            }
+
+            
+            using (var channel = _persistentConnection.CreateModel())
+            {
+                var type = args.EventType.GetCustomAttribute<RabbitMQAttribute>();
+                channel.QueueUnbind(queue: type.Queue ?? eventName,
+                    exchange: type.Exchange,
+                    routingKey: type.RoutingKey);
+
+                if (_subsManager.IsEmpty)
+                {
+             
+                    _consumerChannel?.Close();
+                }
+            }
         }
 
         public void Publish<TEvent>(IIntegrationEvent @event) where TEvent : IIntegrationEvent
@@ -65,7 +101,7 @@ namespace Luck.EventBus.RabbitMQ
                 //创建交换机
                 channel.ExchangeDeclare(exchange: rabbitMQAttribute.Exchange, type: rabbitMQAttribute.Type);
                 //创建队列
-                channel.QueueDeclare(queue: rabbitMQAttribute.Queue, durable: false);
+                //channel.QueueDeclare(queue: rabbitMQAttribute.Queue, durable: false);
                 if (!string.IsNullOrEmpty(rabbitMQAttribute.RoutingKey) && !string.IsNullOrEmpty(rabbitMQAttribute.Queue))
                 {
                     //通过RoutingKey将队列绑定交换机
@@ -79,5 +115,186 @@ namespace Luck.EventBus.RabbitMQ
                 });
             }
         }
+
+        public void Subscribe<T, TH>() 
+        where T : IntegrationEvent
+        where TH : IIntegrationEventHandler<T>
+        {
+
+            var rabbitMQAttribute = typeof(T).GetCustomAttribute<RabbitMQAttribute>();
+
+            if (rabbitMQAttribute == null)
+            {
+                throw new ArgumentNullException($"{nameof(T)}未设置<RabbitMQAttribute>特性,无法发布事件");
+            }
+            _consumerChannel = CreateConsumerChannel(rabbitMQAttribute);
+            var eventName = _subsManager.GetEventKey<T>();
+            DoInternalSubscription(eventName, rabbitMQAttribute);
+            _subsManager.AddSubscription<T, TH>();
+            StartBasicConsume<T>(rabbitMQAttribute);
+        }
+
+
+        private IModel _consumerChannel;
+
+        private IModel CreateConsumerChannel(RabbitMQAttribute rabbitMQAttribute)
+        {
+            if (!_persistentConnection.IsConnected)
+            {
+                _persistentConnection.TryConnect();
+            }
+
+            _logger.LogTrace("创建RabbitMQ消费者通道");
+            var channel = _persistentConnection.CreateModel();
+
+            //创建交换机
+            channel.ExchangeDeclare(exchange: rabbitMQAttribute.Exchange, type: rabbitMQAttribute.Type);
+            //创建队列
+            channel.QueueDeclare(queue: rabbitMQAttribute.Queue, durable: true,
+                                exclusive: false,
+                                autoDelete: false,
+                                arguments: null);
+
+            channel.CallbackException += (sender, ea) =>
+            {
+                _logger.LogWarning(ea.Exception, "重新创建RabbitMQ消费者通道");
+                _consumerChannel?.Dispose();
+                _consumerChannel = CreateConsumerChannel(rabbitMQAttribute);
+            };
+
+            //channel.ExchangeDeclare(exchange: rabbitMQAttribute.Exchange,
+            //                        type: rabbitMQAttribute.Type);
+            //channel.QueueDeclare(queue: rabbitMQAttribute.Queue,
+            //            durable: true,
+            //            exclusive: false,
+            //            autoDelete: false,
+            //            arguments: null);
+            return channel;
+        }
+
+        private void StartBasicConsume<T>(RabbitMQAttribute rabbitMQAttribute)
+                    where T : IntegrationEvent
+        {
+            _logger.LogTrace("启动RabbitMQ基本消耗");
+            if (_consumerChannel != null)
+            {
+                var consumer = new AsyncEventingBasicConsumer(_consumerChannel);
+
+                //consumer.Received += Consumer_Received;
+                consumer.Received += async (model, ea) =>
+                {
+                    var message = Encoding.UTF8.GetString(ea.Body.Span);
+                    try
+                    {
+                        if (message.ToLowerInvariant().Contains("throw-fake-exception"))
+                        {
+                            throw new InvalidOperationException($"假异常请求: \"{message}\"");
+                        }
+
+                        await ProcessEvent<T>(message);
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogWarning(ex, "----- 错误处理消息 \"{Message}\"", message);
+                    }
+
+                    // Even on exception we take the message off the queue.
+                    // in a REAL WORLD app this should be handled with a Dead Letter Exchange (DLX). 
+                    // For more information see: https://www.rabbitmq.com/dlx.html
+                    _consumerChannel.BasicAck(ea.DeliveryTag, multiple: false);
+
+                };
+
+                _consumerChannel.BasicConsume(
+                    queue: rabbitMQAttribute.Queue,
+                    autoAck: false,
+                    consumer: consumer);
+            }
+            else
+            {
+                _logger.LogError("StartBasicConsume不能调用_consumerChannel == null");
+            }
+        }
+
+      
+        private async Task ProcessEvent<T>(string message)
+                       where T : IntegrationEvent
+        {
+            var eventName = typeof(T).Name;
+            _logger.LogTrace("处理RabbitMQ事件: {EventName}", typeof(T).Name);
+
+            if (_subsManager.HasSubscriptionsForEvent<T>())
+            {
+                using (var scope = _serviceProvider.GetService<IServiceScopeFactory>().CreateScope())
+                {
+                    var subscriptionTypes = _subsManager.GetHandlersForEvent<T>();
+                    foreach (var subscriptionType in subscriptionTypes)
+                    {
+                        var handler = scope.ServiceProvider.GetService(subscriptionType);
+                        if (handler == null) {
+
+                            continue;
+                        }
+                        var eventType = typeof(T);
+                        //var eventType = _subsManager.GetEventTypeByName(eventName);
+                        var integrationEvent = JsonSerializer.Deserialize(message, eventType, new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
+                        var concreteType = typeof(IIntegrationEventHandler<>).MakeGenericType(eventType);
+
+          
+                        var method= concreteType.GetMethod(_handleName);
+                        if (method == null)
+                        {
+                            _logger.LogError("无法找到IIntegrationEventHandler事件处理器,下处理者方法");
+                            throw new LuckException("无法找到IIntegrationEventHandler事件处理器,下处理者方法");
+                     
+                        }
+                        await Task.Yield();
+                        await (Task)method.Invoke(handler, new object[] { integrationEvent });
+                    }
+                }
+            }
+            else
+            {
+                _logger.LogWarning("没有订阅RabbitMQ事件: {EventName}", eventName);
+            }
+        }
+        private void DoInternalSubscription(string eventName, RabbitMQAttribute rabbitMQAttribute)
+        {
+            var containsKey = _subsManager.HasSubscriptionsForEvent(eventName);
+            if (!containsKey)
+            {
+                if (!_persistentConnection.IsConnected)
+                {
+                    _persistentConnection.TryConnect();
+                }
+
+                _consumerChannel.QueueBind(queue: rabbitMQAttribute.Queue,
+                                    exchange: rabbitMQAttribute.Exchange,
+                                    routingKey: rabbitMQAttribute.RoutingKey);
+            }
+
+        }
+
+        public void Unsubscribe<T, TH>()
+    where T : IntegrationEvent
+    where TH : IIntegrationEventHandler<T>
+        {
+            var eventName = _subsManager.GetEventKey<T>();
+
+            _logger.LogInformation("移除事件 {EventName}", eventName);
+
+            _subsManager.RemoveSubscription<T, TH>();
+        }
+
+        public void Dispose()
+        {
+            if (_consumerChannel != null)
+            {
+                _consumerChannel.Dispose();
+            }
+
+            _subsManager.Clear();
+        }
+      
     }
 }

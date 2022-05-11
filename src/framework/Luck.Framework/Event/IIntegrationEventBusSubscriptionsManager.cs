@@ -2,8 +2,13 @@
 {
     public interface IIntegrationEventBusSubscriptionsManager
     {
-     
 
+        event EventHandler<EventRemovedEventArgs> OnEventRemoved;
+
+
+        bool IsEmpty { get; }
+
+        void Clear();
 
         /// <summary>
         /// 添加订阅
@@ -60,5 +65,16 @@
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         string GetEventKey<T>();
+    }
+
+
+    public class EventRemovedEventArgs : EventArgs
+    { 
+    
+    
+        public Type EventType { get; set; }
+
+
+
     }
 }

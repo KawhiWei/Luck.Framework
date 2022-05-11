@@ -7,8 +7,8 @@ namespace Module.Sample
     [DependsOn(
         typeof(DependencyAppModule),
         typeof(EntityFrameworkCoreModule),
-        typeof(MigrationModule),
-        typeof(StackExchangeRedisModule)
+        typeof(MigrationModule)
+        //typeof(StackExchangeRedisModule)
     )]
     public class AppWebModule: AppModule
     {

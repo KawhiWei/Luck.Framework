@@ -14,7 +14,25 @@ namespace Luck.EventBus.RabbitMQ
             where T : IntegrationEvent
             where TH : IIntegrationEventHandler<T>
         {
-            throw new NotImplementedException();
+            var eventKey = GetEventKey<T>();
+            DoAddSubscription(typeof(TH), eventKey);
+        }
+
+        private void DoAddSubscription(Type handlerType, string eventName)
+        {
+
+            if (!HasSubscriptionsForEvent(eventName))
+            {
+                _handlers.Add(eventName, new List<Type>());
+            }
+
+            if (_handlers[eventName].Any(o => o == handlerType))
+            {
+                throw new ArgumentException(
+                   $"处理器类型 {handlerType.Name} 已经注册 '{eventName}'", nameof(handlerType));
+            }
+
+            _handlers[eventName].Add(handlerType);
         }
 
         public string GetEventKey<T>()
@@ -51,13 +69,34 @@ namespace Luck.EventBus.RabbitMQ
             return HasSubscriptionsForEvent(eventKey);
         }
 
+
+
         public void RemoveSubscription<T, TH>()
             where T : IntegrationEvent
             where TH : IIntegrationEventHandler<T>
         {
-            throw new NotImplementedException();
+
+            if (!HasSubscriptionsForEvent<T>())
+            {
+                return;
+            }
+
+            var eventName = GetEventKey<T>();
+            _handlers[eventName].Remove(typeof(TH));
+            if (!_handlers[eventName].Any())
+            {
+                _handlers.Remove(eventName);
+                EventRemovedEventArgs args = new EventRemovedEventArgs();
+                args.EventType = typeof(T);
+                OnEventRemoved?.Invoke(this, args);
+            }
+
         }
 
+        public event EventHandler<EventRemovedEventArgs> OnEventRemoved;
 
+        public bool IsEmpty => !_handlers.Keys.Any();
+
+        public void Clear() => _handlers.Clear();
     }
 }

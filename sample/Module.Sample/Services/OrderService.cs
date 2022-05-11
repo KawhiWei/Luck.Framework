@@ -15,13 +15,12 @@ namespace Module.Sample.Services
         private readonly IAggregateRootRepository<Order, string> _aggregateRootRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMediator _mediator;
-        private readonly IRedisHash _cache;
-        public OrderService(IAggregateRootRepository<Order, string> aggregateRootRepository, IUnitOfWork unitOfWork, IMediator mediator, IRedisHash cache)
+
+        public OrderService(IAggregateRootRepository<Order, string> aggregateRootRepository, IUnitOfWork unitOfWork, IMediator mediator)
         {
             _aggregateRootRepository = aggregateRootRepository;
             _unitOfWork = unitOfWork;
             _mediator = mediator;
-            _cache = cache;
         }
 
         public async Task CreateAsync()
