@@ -25,7 +25,7 @@ namespace Luck.EventBus.RabbitMQ
         private readonly IIntegrationEventBusSubscriptionsManager _subsManager;
         private readonly IServiceProvider _serviceProvider;
         private string _handleName = nameof(IIntegrationEventHandler<IIntegrationEvent>.HandleAsync);
-
+        private IModel? _consumerChannel;
         public IntegrationEventBusRabbitMQ(IRabbitMQPersistentConnection persistentConnection, ILogger<IntegrationEventBusRabbitMQ> logger, int retryCount, IIntegrationEventBusSubscriptionsManager subsManager, IServiceProvider serviceProvider)
         {
             _persistentConnection = persistentConnection;
@@ -36,7 +36,7 @@ namespace Luck.EventBus.RabbitMQ
             _subsManager.OnEventRemoved += SubsManager_OnEventRemoved;
         }
 
-        private void SubsManager_OnEventRemoved(object sender, EventRemovedEventArgs args)
+        private void SubsManager_OnEventRemoved(object? sender, EventRemovedEventArgs args)
         {
             var eventName = args.EventType.Name;
 
@@ -49,6 +49,9 @@ namespace Luck.EventBus.RabbitMQ
             using (var channel = _persistentConnection.CreateModel())
             {
                 var type = args.EventType.GetCustomAttribute<RabbitMQAttribute>();
+                if (type is null)
+                    throw new ArgumentNullException("事件未配置[RabbitMQAttribute] 特性");
+
                 channel.QueueUnbind(queue: type.Queue ?? eventName,
                     exchange: type.Exchange,
                     routingKey: type.RoutingKey);
@@ -135,7 +138,7 @@ namespace Luck.EventBus.RabbitMQ
         }
 
 
-        private IModel _consumerChannel;
+
 
         private IModel CreateConsumerChannel(RabbitMQAttribute rabbitMQAttribute)
         {
@@ -179,7 +182,6 @@ namespace Luck.EventBus.RabbitMQ
             if (_consumerChannel != null)
             {
                 var consumer = new AsyncEventingBasicConsumer(_consumerChannel);
-
                 //consumer.Received += Consumer_Received;
                 consumer.Received += async (model, ea) =>
                 {
@@ -225,16 +227,12 @@ namespace Luck.EventBus.RabbitMQ
 
             if (_subsManager.HasSubscriptionsForEvent<T>())
             {
-                using (var scope = _serviceProvider.GetService<IServiceScopeFactory>().CreateScope())
+                using (var scope = _serviceProvider.GetService<IServiceScopeFactory>()?.CreateScope())
                 {
                     var subscriptionTypes = _subsManager.GetHandlersForEvent<T>();
                     foreach (var subscriptionType in subscriptionTypes)
                     {
-                        var handler = scope.ServiceProvider.GetService(subscriptionType);
-                        if (handler == null) {
-
-                            continue;
-                        }
+                        
                         var eventType = typeof(T);
                         //var eventType = _subsManager.GetEventTypeByName(eventName);
                         var integrationEvent = JsonSerializer.Deserialize(message, eventType, new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
@@ -248,6 +246,14 @@ namespace Luck.EventBus.RabbitMQ
                             throw new LuckException("无法找到IIntegrationEventHandler事件处理器,下处理者方法");
                      
                         }
+                        var handler = scope?.ServiceProvider.GetService(subscriptionType);
+                        if (handler == null)
+                        {
+
+                            continue;
+                        }
+
+
                         await Task.Yield();
                         await (Task)method.Invoke(handler, new object[] { integrationEvent });
                     }

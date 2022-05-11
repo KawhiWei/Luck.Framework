@@ -17,8 +17,8 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns>日志对象</returns>
         public static ILogger<T> GetLogger<T>(this IServiceProvider provider)
         {
-            ILoggerFactory factory = provider.GetService<ILoggerFactory>();
-            return factory.CreateLogger<T>();
+            ILoggerFactory? factory = provider.GetService<ILoggerFactory>();
+            return factory?.CreateLogger<T>();
         }
 
         /// <summary>

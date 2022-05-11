@@ -11,7 +11,7 @@ namespace Luck.Framework.Helpers
     {
         public static Assembly[] GetAssemblies()
         {
-            Assembly[] assemblies = null;
+            Assembly[]? assemblies = null;
 #if NET45
             if (System.Web.Hosting.HostingEnvironment.IsHosted)
             {

@@ -15,10 +15,10 @@
             if (!stoppingToken.IsCancellationRequested)
             {
 
-                while (true)
-                {
-                    _logger.LogInformation("进入定时任务");
-                }
+                //while (true)
+                //{
+                //    _logger.LogInformation("进入定时任务");
+                //}
             }
             return Task.CompletedTask;
         }

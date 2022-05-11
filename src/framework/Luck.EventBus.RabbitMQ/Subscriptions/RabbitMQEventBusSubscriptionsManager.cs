@@ -93,7 +93,7 @@ namespace Luck.EventBus.RabbitMQ
 
         }
 
-        public event EventHandler<EventRemovedEventArgs> OnEventRemoved;
+        public event EventHandler<EventRemovedEventArgs>? OnEventRemoved;
 
         public bool IsEmpty => !_handlers.Keys.Any();
 

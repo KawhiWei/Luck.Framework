@@ -26,16 +26,16 @@ builder.Services.AddMediatR(AssemblyHelper.AllAssemblies);
 
 builder.Services.AddEventBusRabbitMQ(x =>
 {
-    x.Host = "127.0.0.1";
-    x.UserName = "guest";
-    x.PassWord = "guest";
-    x.Port = 5672;
+    x.UserName = "admin";
+    x.Host = "101.34.26.221";
+    x.PassWord = "&duyu789";
+    x.Port = 40013; // 40014 ç®¡ç†é¢æ¿
 });
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddHostedService<MyBackgroundService>();
-//×¢Èë´¦ÀíÆ÷  ¿ÉÒÔÊ¹ÓÃDependencyInjection ×Ô¶¯×¢Èë
+//×¢ï¿½ë´¦ï¿½ï¿½ï¿½ï¿½  ï¿½ï¿½ï¿½ï¿½Ê¹ï¿½ï¿½DependencyInjection ï¿½Ô¶ï¿½×¢ï¿½ï¿½
 //builder.Services.AddTransient(typeof(CreateOrderIntegrationHandler));
 
 var app = builder.Build();
@@ -53,7 +53,7 @@ app.MapControllers();
 
 app.InitializeApplication();
 /// <summary>
-/// ¶©ÔÄ´¦ÀíÆ÷
+/// ï¿½ï¿½ï¿½Ä´ï¿½ï¿½ï¿½ï¿½ï¿½
 /// </summary>
 var eventBus = app.Services.GetService<IIntegrationEventBus>();
 eventBus?.Subscribe<CreateOrderIntegrationEvent, CreateOrderIntegrationHandler>();
