@@ -34,7 +34,7 @@ builder.Services.AddEventBusRabbitMQ(x =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHttpContextAccessor();
-
+builder.Services.AddHostedService<MyBackgroundService>();
 //注入处理器  可以使用DependencyInjection 自动注入
 //builder.Services.AddTransient(typeof(CreateOrderIntegrationHandler));
 
