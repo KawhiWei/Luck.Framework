@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Luck.Walnut.Domain\Luck.Walnut.Domain.csproj" />
+    <ProjectReference Include="..\Luck.Walnut.Dto\Luck.Walnut.Dto.csproj" />
+    <ProjectReference Include="..\Luck.Walnut.Persistence\Luck.Walnut.Persistence.csproj" />
+  </ItemGroup>
+
+</Project>

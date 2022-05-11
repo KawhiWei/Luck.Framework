@@ -1,5 +1,6 @@
 using Luck.Walnut.Application.Applications;
 using Luck.Walnut.Dto.Applications;
+using Luck.Walnut.Query.Applications;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Luck.Walnut.Api.Controllers
@@ -21,20 +22,16 @@ namespace Luck.Walnut.Api.Controllers
         public Task AddApplication([FromBody] ApplicationInputDto input) => _applicationService.AddApplicationAsync(input);
 
         [HttpGet]
-        public Task<IEnumerable<ApplicationOutputDto>> GetApplicationList() => _applicationService.GetApplicationListAsync();
+        public Task<IEnumerable<ApplicationOutputDto>> GetApplicationList([FromServices] IApplicationQueryService applicationQueryService) => applicationQueryService.GetApplicationListAsync();
 
         [HttpGet("{id}")]
-        public Task<ApplicationDetailOutputDto> GetApplicationDetail(string id) => _applicationService.GetApplicationDetailAsync(id);
+        public Task<ApplicationDetailOutputDto> GetApplicationDetail(string id,[FromServices] IApplicationQueryService applicationQueryService) => applicationQueryService.GetApplicationDetailForIdAsync(id);
 
         [HttpPut("{id}")]
         public Task UpdateApplication(string id, [FromBody] ApplicationInputDto input) => _applicationService.UpdateApplicationAsync(id, input);
 
         [HttpDelete("{id}")]
         public Task DeleteApplication(string id) => _applicationService.DeleteApplicationAsync(id);
-
-
-        
-
 
     }
 }

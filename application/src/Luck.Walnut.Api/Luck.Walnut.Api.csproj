@@ -29,6 +29,7 @@
 		<ProjectReference Include="..\Luck.Walnut.Application\Luck.Walnut.Application.csproj" />
 		<ProjectReference Include="..\Luck.Walnut.Infrastructure\Luck.Walnut.Infrastructure.csproj" />
 		<ProjectReference Include="..\Luck.Walnut.Persistence\Luck.Walnut.Persistence.csproj" />
+		<ProjectReference Include="..\Luck.Walnut.Query\Luck.Walnut.Query.csproj" />
 	</ItemGroup>
 
 

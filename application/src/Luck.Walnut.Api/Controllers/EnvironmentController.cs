@@ -1,6 +1,9 @@
 ﻿using Luck.Framework.Utilities;
 using Luck.Walnut.Application.Environments;
+using Luck.Walnut.Dto.Applications;
 using Luck.Walnut.Dto.Environments;
+using Luck.Walnut.Query.Applications;
+using Luck.Walnut.Query.Environments;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Luck.Walnut.Api.Controllers
@@ -21,15 +24,15 @@ namespace Luck.Walnut.Api.Controllers
         /// 得到环境列表
         /// </summary>
         /// <returns></returns>
-        [HttpGet]
-        public Task<IEnumerable<AppEnvironmentOptputListDto>> GetEnvironmentList()=>_environmentService.GetEnvironmentListAsync();
+        [HttpGet("{applicationId}/list")]
+        public Task<ApplicationOutput> GetApplicationDetailAndEnvironmentAsync(string applicationId,[FromServices] IApplicationQueryService applicationQueryService) => applicationQueryService.GetApplicationDetailAndEnvironmentAsync(applicationId);
 
         /// <summary>
         /// 得到环境下配置列表
         /// </summary>
         /// <returns></returns>
         [HttpGet("{environmentId}")]
-        public Task<List<AppEnvironmentPageListOutputDto>> GetAppEnvironmentAndConfigurationPage(string environmentId) => _environmentService.GetAppEnvironmentConfigurationPageAsync(environmentId);
+        public Task<List<AppEnvironmentPageListOutputDto>> GetAppEnvironmentAndConfigurationPage(string environmentId,[FromServices] IEnvironmentQueryService environmentQueryService) => environmentQueryService.GetAppEnvironmentConfigurationPageAsync(environmentId);
 
 
         /// <summary>

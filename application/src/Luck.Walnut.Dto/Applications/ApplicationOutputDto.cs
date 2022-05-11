@@ -1,7 +1,8 @@
 ﻿namespace Luck.Walnut.Dto.Applications
 {
-    public class ApplicationInputDto
+    public class ApplicationOutputDto
     {
+        public string Id { get; set; } = default!;
         /// <summary>
         /// 应用服务名称
         /// </summary>
