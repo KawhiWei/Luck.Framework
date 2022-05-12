@@ -26,6 +26,10 @@ namespace Luck.EventBus.RabbitMQ
 
                 var implementedType = handlerType.GetTypeInfo().ImplementedInterfaces.Where(o => o.IsBaseOn(typeof(IIntegrationEventHandler<>))).FirstOrDefault();
                 var eventType = implementedType?.GetTypeInfo().GenericTypeArguments.FirstOrDefault();
+                if (eventType == null)
+                {
+                    continue;
+                }
                 eventBus.Subscribe(eventType,handlerType);
             }
             return builder;
