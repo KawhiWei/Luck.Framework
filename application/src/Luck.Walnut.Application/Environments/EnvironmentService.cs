@@ -90,21 +90,21 @@ namespace Luck.Walnut.Application.Environments
             configurationId.NotNullOrEmpty(nameof(configurationId));
             var environment = await _appEnvironmentRepository.FindAll(o => o.Id == environmentId).Include(o => o.Configurations).FirstOrDefaultAsync();
 
-            if (environment is not null)
+            if (environment is  null)
             {
-                var configuration = environment.Configurations.FirstOrDefault(o => o.Id == configurationId);
-                if (configuration is null)
-                {
-                    throw new BusinessException($"{configurationId}没有找到对应的配置");
-                }
-
-                //要在映射上添加AppEnvironmentId这个，不是操作导航属性Remove,会把AppEnvironmentId字段值清空!!
-                environment.Configurations.Remove(configuration);
-
-                await _unitOfWork.CommitAsync(_cancellationTokenProvider.Token);
+                throw new BusinessException(FindEnvironmentNotExistErrorMsg);
             }
-            throw new BusinessException(FindEnvironmentNotExistErrorMsg);
 
+            var configuration = environment.Configurations.FirstOrDefault(o => o.Id == configurationId);
+            if (configuration is null)
+            {
+                throw new BusinessException($"{configurationId}没有找到对应的配置");
+            }
+            
+            //要在映射上添加AppEnvironmentId这个，不是操作导航属性Remove,会把AppEnvironmentId字段值清空!!
+            environment.Configurations.Remove(configuration);
+           
+            await _unitOfWork.CommitAsync(_cancellationTokenProvider.Token);
         }
 
 

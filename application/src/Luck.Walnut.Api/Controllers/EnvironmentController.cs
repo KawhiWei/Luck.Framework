@@ -31,7 +31,7 @@ namespace Luck.Walnut.Api.Controllers
         /// 得到环境下配置列表
         /// </summary>
         /// <returns></returns>
-        [HttpGet("{environmentId}")]
+        [HttpGet("{environmentId}/configlist")]
         public Task<List<AppEnvironmentPageListOutputDto>> GetAppEnvironmentAndConfigurationPage(string environmentId,[FromServices] IEnvironmentQueryService environmentQueryService) => environmentQueryService.GetAppEnvironmentConfigurationPageAsync(environmentId);
 
 
@@ -50,7 +50,7 @@ namespace Luck.Walnut.Api.Controllers
         /// <param name="environmentId"></param>
         /// <param name="input"></param>
         /// <returns></returns>
-        [HttpPost("{environmentId}")]
+        [HttpPost("{environmentId}/config")]
    
         public Task AddAppConfiguration(string environmentId,[FromBody] AppConfigurationInput input) => _environmentService.AddAppConfigurationAsync(environmentId, input);
 
@@ -62,7 +62,7 @@ namespace Luck.Walnut.Api.Controllers
         /// <param name="id"></param>
         /// <param name="input"></param>
         /// <returns></returns>
-        [HttpPut("{environmentId}/{id}")]
+        [HttpPut("{environmentId}/{id}/config")]
         public Task UpdageAppConfiguration(string environmentId, string id, [FromBody] AppConfigurationInput input) => _environmentService.UpdateAppConfigurationAsync(environmentId, id, input);
 
         /// <summary>
@@ -79,7 +79,7 @@ namespace Luck.Walnut.Api.Controllers
         /// <param name="environmentId"></param>
         /// <param name="configurationId"></param>
         /// <returns></returns>
-        [HttpDelete("{environmentId}/{configurationId}")]
+        [HttpDelete("{environmentId}/{configurationId}/config")]
         public Task DeleteAppConfiguration(string environmentId, string configurationId) => _environmentService.DeleteAppConfigurationAsync
             (environmentId, configurationId);
 
@@ -88,7 +88,7 @@ namespace Luck.Walnut.Api.Controllers
         /// </summary>
         /// <param name="configId"></param>
         /// <returns></returns>
-        [HttpGet("ConfigurationDetail/{configId}")]
+        [HttpGet("{configId}/config")]
         public Task<AppEnvironmentDetailOutPutDto> GetAppEnvironmentConfigurationDetail(string configId) => _environmentService.GetAppEnvironmentConfigurationDetail(configId);
 
 
