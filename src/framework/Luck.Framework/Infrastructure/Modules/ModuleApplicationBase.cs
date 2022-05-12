@@ -34,7 +34,7 @@ namespace Luck.Framework.Infrastructure
         protected virtual List<IAppModule> GetAllModule(IServiceCollection services)
         {
             var typs = AssemblyHelper.FindTypes(o => AppModule.IsAppModule(o));
-            var modules = typs.Select(o => CreateModule(services, o)).Distinct();
+            var modules = typs.Select(o =>CreateModule(services, o)).Where(o=>o.IsNotNull()).Distinct();
             return modules.ToList();
         }
 
@@ -79,7 +79,18 @@ namespace Luck.Framework.Infrastructure
         /// <returns></returns>
         private IAppModule CreateModule(IServiceCollection services, Type moduleType)
         {
-            var module = (IAppModule)Expression.Lambda(Expression.New(moduleType)).Compile().DynamicInvoke();
+            var invoke=   Expression.Lambda(Expression.New(moduleType)).Compile().DynamicInvoke();
+
+            if (invoke == null)
+            {
+                throw new ArgumentNullException(nameof(invoke));
+            }
+            var module = (IAppModule)invoke;
+
+            if (module.Enable == false)
+            {
+                return null;
+            }
             if (module == null)
                 throw new ArgumentNullException(nameof(module));
             services.AddSingleton(moduleType, module);

@@ -14,6 +14,6 @@ namespace Luck.Framework.Infrastructure
         /// <param name="moduleType"></param>
         /// <returns></returns>
         Type[] GetDependedTypes(Type? moduleType = null);
-        bool Enable { get; set; }
+        bool Enable { get;  set; }
     }
 }

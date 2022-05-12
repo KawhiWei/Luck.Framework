@@ -26,6 +26,7 @@ namespace Luck.EventBus.RabbitMQ
         private readonly IServiceProvider _serviceProvider;
         private string _handleName = nameof(IIntegrationEventHandler<IIntegrationEvent>.HandleAsync);
         private IModel? _consumerChannel;
+        private bool _isDisposed = false;
         public IntegrationEventBusRabbitMQ(IRabbitMQPersistentConnection persistentConnection, ILogger<IntegrationEventBusRabbitMQ> logger, int retryCount, IIntegrationEventBusSubscriptionsManager subsManager, IServiceProvider serviceProvider)
         {
             _persistentConnection = persistentConnection;
@@ -35,7 +36,10 @@ namespace Luck.EventBus.RabbitMQ
             _serviceProvider = serviceProvider;
             _subsManager.OnEventRemoved += SubsManager_OnEventRemoved;
         }
-
+        ~IntegrationEventBusRabbitMQ()
+        {
+            Dispose(false);
+        }
         private void SubsManager_OnEventRemoved(object? sender, EventRemovedEventArgs args)
         {
             var eventName = args.EventType.Name;
@@ -45,7 +49,7 @@ namespace Luck.EventBus.RabbitMQ
                 _persistentConnection.TryConnect();
             }
 
-            
+
             using (var channel = _persistentConnection.CreateModel())
             {
                 var type = args.EventType.GetCustomAttribute<RabbitMQAttribute>();
@@ -58,7 +62,7 @@ namespace Luck.EventBus.RabbitMQ
 
                 if (_subsManager.IsEmpty)
                 {
-             
+
                     _consumerChannel?.Close();
                 }
             }
@@ -119,7 +123,7 @@ namespace Luck.EventBus.RabbitMQ
             }
         }
 
-        public void Subscribe<T, TH>() 
+        public void Subscribe<T, TH>()
         where T : IntegrationEvent
         where TH : IIntegrationEventHandler<T>
         {
@@ -218,7 +222,7 @@ namespace Luck.EventBus.RabbitMQ
             }
         }
 
-      
+
         private async Task ProcessEvent<T>(string message)
                        where T : IntegrationEvent
         {
@@ -232,19 +236,24 @@ namespace Luck.EventBus.RabbitMQ
                     var subscriptionTypes = _subsManager.GetHandlersForEvent<T>();
                     foreach (var subscriptionType in subscriptionTypes)
                     {
-                        
+
                         var eventType = typeof(T);
                         //var eventType = _subsManager.GetEventTypeByName(eventName);
                         var integrationEvent = JsonSerializer.Deserialize(message, eventType, new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
                         var concreteType = typeof(IIntegrationEventHandler<>).MakeGenericType(eventType);
 
-          
-                        var method= concreteType.GetMethod(_handleName);
+                        if (integrationEvent is null)
+                        {
+                            throw new LuckException("集成事件不能为空。。。");
+
+                        }
+
+                        var method = concreteType.GetMethod(_handleName);
                         if (method == null)
                         {
                             _logger.LogError("无法找到IIntegrationEventHandler事件处理器,下处理者方法");
                             throw new LuckException("无法找到IIntegrationEventHandler事件处理器,下处理者方法");
-                     
+
                         }
                         var handler = scope?.ServiceProvider.GetService(subscriptionType);
                         if (handler == null)
@@ -255,7 +264,12 @@ namespace Luck.EventBus.RabbitMQ
 
 
                         await Task.Yield();
-                        await (Task)method.Invoke(handler, new object[] { integrationEvent });
+                        var obj = method.Invoke(handler, new object[] { integrationEvent });
+                        if (obj == null)
+                        {
+                            continue;
+                        }
+                        await (Task)obj;
                     }
                 }
             }
@@ -292,15 +306,38 @@ namespace Luck.EventBus.RabbitMQ
             _subsManager.RemoveSubscription<T, TH>();
         }
 
-        public void Dispose()
+
+   
+        protected virtual void Dispose(bool disposing)
         {
-            if (_consumerChannel != null)
+
+            if (!_isDisposed)
             {
-                _consumerChannel.Dispose();
+                if (disposing)
+                {
+                    if (_consumerChannel != null)
+                    {
+                        _consumerChannel.Dispose();
+                    }
+                    _subsManager.Clear();
+
+
+                }
+                _isDisposed = true;
             }
 
-            _subsManager.Clear();
+
+
         }
-      
+
+        public void Dispose()
+        {
+            Dispose(true);
+
+            //告诉GC，不要调用析构函数
+            GC.SuppressFinalize(this);
+
+        }
+
     }
 }

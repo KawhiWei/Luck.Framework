@@ -5,12 +5,25 @@ namespace Luck.Framework.Infrastructure
 {
     public class AppModule : IAppModule
     {
-        public bool Enable { get; set; } = true;
+
+        
+        public virtual bool Enable { get;  set; } = true;
         private ConfigureServicesContext? _configureServicesContext;
         public virtual void ApplicationInitialization(ApplicationContext context)
         {
         }
 
+        ///// <summary>
+        ///// 是否用
+        ///// </summary>
+        ///// <returns></returns>
+
+        //public virtual void IsEnable()
+        //{
+
+          
+        //    Enable = true;
+        //}
         public virtual void ConfigureServices(ConfigureServicesContext context)
         {
         }
