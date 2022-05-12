@@ -133,14 +133,9 @@ namespace Luck.Walnut.Application.Environments
             {
                 throw new BusinessException(FindEnvironmentNotExistErrorMsg);
             }
-            environment.UpdateConfiguration(id, input.Key, input.Value, input.Type, input.IsOpen, input.IsPublish);
+            environment.UpdateConfiguration(id, input.Key, input.Value, input.Type, input.IsOpen);
             _appEnvironmentRepository.Update(environment);
             await _unitOfWork.CommitAsync(_cancellationTokenProvider.Token);
-        }
-
-        public Task<AppEnvironmentDetailOutPutDto> GetAppEnvironmentConfigurationDetail(string configId)
-        {
-            throw new NotImplementedException();
         }
     }
 }

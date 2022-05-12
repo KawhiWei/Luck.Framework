@@ -86,10 +86,10 @@ namespace Luck.Walnut.Api.Controllers
         /// <summary>
         /// 根据配置项id获取详情
         /// </summary>
-        /// <param name="configId"></param>
+        /// <param name="configurationId"></param>
         /// <returns></returns>
-        [HttpGet("{configId}/config")]
-        public Task<AppEnvironmentDetailOutPutDto> GetAppEnvironmentConfigurationDetail(string configId) => _environmentService.GetAppEnvironmentConfigurationDetail(configId);
+        [HttpGet("{configurationId}/config")]
+        public Task<AppConfigurationOutput> GetAppEnvironmentConfigurationDetail([FromServices] IEnvironmentQueryService environmentQueryService, string configurationId) => environmentQueryService.GetConfigurationDetailForConfigurationIdAsync(configurationId);
 
 
 

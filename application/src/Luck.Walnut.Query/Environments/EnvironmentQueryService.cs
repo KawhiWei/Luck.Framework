@@ -1,4 +1,5 @@
 ﻿using Luck.DDD.Domain.Repositories;
+using Luck.Framework.Exceptions;
 using Luck.Walnut.Domain.AggregateRoots.Applications;
 using Luck.Walnut.Domain.AggregateRoots.Environments;
 using Luck.Walnut.Dto.Environments;
@@ -9,11 +10,15 @@ namespace Luck.Walnut.Query.Environments
     {
         private readonly IAggregateRootRepository<AppEnvironment, string> _appEnvironmentRepository;
         private readonly IAggregateRootRepository<Domain.AggregateRoots.Applications.Application, string> _applicationRepository;
+        private readonly IEntityRepository<AppConfiguration, string> _appConfigurationRepository;
 
-        public EnvironmentQueryService(IAggregateRootRepository<AppEnvironment, string> appEnvironmentRepository, IAggregateRootRepository<Application, string> applicationRepository)
+        private const string FindAppConfigurationNotExistErrorMsg = "配置数据不存在!!!!";
+
+        public EnvironmentQueryService(IAggregateRootRepository<AppEnvironment, string> appEnvironmentRepository, IAggregateRootRepository<Application, string> applicationRepository, IEntityRepository<AppConfiguration, string> appConfigurationRepository)
         {
             _appEnvironmentRepository = appEnvironmentRepository;
             _applicationRepository = applicationRepository;
+            _appConfigurationRepository=appConfigurationRepository;
         }
 
 
@@ -34,6 +39,28 @@ namespace Luck.Walnut.Query.Environments
             return list;
         }
 
+        public async Task<AppConfigurationOutput> GetConfigurationDetailForConfigurationIdAsync(string configurationId)
+        {
+            var appconfigutation= await GetConfigurationDetailByIdAsync(configurationId);
+            return new AppConfigurationOutput()
+            {
+                Id=appconfigutation.Id,
+                Key=appconfigutation.Key,
+                Value=appconfigutation.Value,
+                IsOpen=appconfigutation.IsOpen,
+                IsPublish=appconfigutation.IsPublish,
+                Type= appconfigutation.Type,
+            };
+        }
+
+        private async Task<AppConfiguration> GetConfigurationDetailByIdAsync(string configurationId)
+        {
+
+            var appConfiguration=await _appConfigurationRepository.FindAsync(configurationId);
+            if(appConfiguration is null)
+                throw new BusinessException(FindAppConfigurationNotExistErrorMsg);
+            return appConfiguration;
+        }
 
     }
 }

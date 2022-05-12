@@ -35,14 +35,6 @@ namespace Luck.Walnut.Application.Environments
         /// <param name="configurationId"></param>
         /// <returns></returns>
         Task DeleteAppConfigurationAsync(string environmentId, string configurationId);
-
-        /// <summary>
-        /// 根据配置项id获取详情
-        /// </summary>
-        /// <param name="configId">配置项id</param>
-        /// <returns></returns>
-        Task<AppEnvironmentDetailOutPutDto> GetAppEnvironmentConfigurationDetail(string configId);
-
       
         /// <summary>
         /// 根据应用Id和环境名称获取配置列表

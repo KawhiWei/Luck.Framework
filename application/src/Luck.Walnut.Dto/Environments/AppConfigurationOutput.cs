@@ -2,6 +2,8 @@
 {
     public class AppConfigurationOutput
     {
+        public string Id { get; set; } = default!;
+
         /// <summary>
         /// 配置项Key
         /// </summary>

@@ -22,11 +22,6 @@
         /// </summary>
         public bool IsOpen { get;  set; } = default!;
 
-        /// <summary>
-        /// 是否发布
-        /// </summary>
-        public bool IsPublish { get;  set; } = default!;
-
     }
 
 

@@ -49,13 +49,13 @@ namespace Luck.Walnut.Domain.AggregateRoots.Environments
             IsOpen = isOpen;
         }
 
-        public AppConfiguration UpdateConfiguration(string key, string value, string type, bool isOpen, bool isPublish)
+        public AppConfiguration UpdateConfiguration(string key, string value, string type, bool isOpen)
         {
             Key = key;
             Value = value;
             Type = type;
             IsOpen = isOpen;
-            IsPublish = isPublish;
+            IsPublish = false;
             return this;
         }
 
