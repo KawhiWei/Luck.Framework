@@ -58,12 +58,13 @@ namespace Luck.Walnut.Application.Environments
         {
             var appEnvironment = await FindAppEnvironmentByIdAsync(environmentId);
 
-            if (appEnvironment is not null)
+            if (appEnvironment is  null)
             {
-                //只删除环境？ 要不要把配置也删除？级联删除？
-                _appEnvironmentRepository.Remove(appEnvironment);
-                await _unitOfWork.CommitAsync(_cancellationTokenProvider.Token);
+                throw new BusinessException("没有找到对应环境");
             }
+            //只删除环境？ 要不要把配置也删除？级联删除？
+            _appEnvironmentRepository.Remove(appEnvironment);
+            await _unitOfWork.CommitAsync(_cancellationTokenProvider.Token);
 
         }
 
@@ -76,13 +77,6 @@ namespace Luck.Walnut.Application.Environments
                 throw new BusinessException(FindEnvironmentNotExistErrorMsg);
             }
 
-        }
-        private async Task<AppEnvironment?> FindAll(string environmentId)
-        {
-
-            var appEnvironment = await _appEnvironmentRepository.FindAll(o => o.Id == environmentId).Include(o => o.Configurations).FirstOrDefaultAsync();
-            IsBusinessException(appEnvironment is null, FindEnvironmentNotExistErrorMsg);
-            return appEnvironment;
         }
 
 
