@@ -1,4 +1,5 @@
 ﻿using Luck.Framework.Extensions;
+using Luck.Framework.Utilities;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using System.Linq.Expressions;
@@ -81,24 +82,29 @@ namespace Luck.Framework.Infrastructure
         {
             var invoke=   Expression.Lambda(Expression.New(moduleType)).Compile().DynamicInvoke();
 
+
             if (invoke == null)
             {
                 throw new ArgumentNullException(nameof(invoke));
             }
             var module = (IAppModule)invoke;
 
+  
+            if (module == null)
+                throw new ArgumentNullException(nameof(module));
+
             if (module.Enable == false)
             {
                 return null;
             }
-            if (module == null)
-                throw new ArgumentNullException(nameof(module));
             services.AddSingleton(moduleType, module);
             return module;
         }
 
         public virtual void Dispose()
         {
+
+            Source?.Clear();
         }
     }
 }
