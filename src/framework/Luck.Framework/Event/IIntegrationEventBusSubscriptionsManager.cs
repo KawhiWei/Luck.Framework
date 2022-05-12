@@ -19,6 +19,8 @@
              where T : IntegrationEvent
              where TH : IIntegrationEventHandler<T>;
 
+        void AddSubscription(Type eventType, Type handlerType);
+
         /// <summary>
         /// 移除订阅
         /// </summary>
@@ -65,6 +67,9 @@
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         string GetEventKey<T>();
+
+
+        string GetEventKey(Type type);
     }
 
 

@@ -5,9 +5,9 @@
     /// </summary>
     public interface IIntegrationEvent
     {
-        string Id { get; }
+        string EventId { get; }
 
-        DateTime CreationDate { get; }
+        DateTime EventCreationDate { get; }
     }
 
 

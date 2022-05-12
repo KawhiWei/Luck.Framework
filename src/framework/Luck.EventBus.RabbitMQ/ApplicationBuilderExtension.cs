@@ -1,6 +1,9 @@
 ﻿using Luck.Framework.Event;
+using Luck.Framework.Extensions;
+using Luck.Framework.Infrastructure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
+using System.Reflection;
 
 namespace Luck.EventBus.RabbitMQ
 {
@@ -12,8 +15,18 @@ namespace Luck.EventBus.RabbitMQ
             var eventBus = builder.ApplicationServices.GetService<IIntegrationEventBus>();
 
             if (eventBus is null)
-            { 
-               throw new Exception("RabbitMQ集成事件总线没有注入");
+            {
+                throw new Exception("RabbitMQ集成事件总线没有注入");
+            }
+
+            var handlerTypes = AssemblyHelper.FindTypes(o => o.IsClass && !o.IsAbstract && o.IsBaseOn(typeof(IIntegrationEventHandler<>)));
+
+            foreach (var handlerType in handlerTypes)
+            {
+
+                var implementedType = handlerType.GetTypeInfo().ImplementedInterfaces.Where(o => o.IsBaseOn(typeof(IIntegrationEventHandler<>))).FirstOrDefault();
+                var eventType = implementedType?.GetTypeInfo().GenericTypeArguments.FirstOrDefault();
+                eventBus.Subscribe(eventType,handlerType);
             }
             return builder;
         }

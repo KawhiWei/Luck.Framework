@@ -18,6 +18,12 @@ namespace Luck.EventBus.RabbitMQ
             DoAddSubscription(typeof(TH), eventKey);
         }
 
+        public void AddSubscription(Type eventType, Type handlerType)
+        {
+            var eventKey = GetEventKey(eventType);
+            DoAddSubscription(handlerType, eventKey);
+        }
+
         private void DoAddSubscription(Type handlerType, string eventName)
         {
 
@@ -35,11 +41,7 @@ namespace Luck.EventBus.RabbitMQ
             _handlers[eventName].Add(handlerType);
         }
 
-        public string GetEventKey<T>()
-        {
 
-            return typeof(T).Name;
-        }
 
         public IEnumerable<Type> GetHandlersForEvent<T>() where T : IIntegrationEvent
         {
@@ -98,5 +100,20 @@ namespace Luck.EventBus.RabbitMQ
         public bool IsEmpty => !_handlers.Keys.Any();
 
         public void Clear() => _handlers.Clear();
+
+
+        public string GetEventKey<T>()
+        {
+
+
+            return GetEventKey(typeof(T));
+        }
+        public string GetEventKey(Type type)
+        {
+
+            return type.Name;
+        }
+
+   
     }
 }

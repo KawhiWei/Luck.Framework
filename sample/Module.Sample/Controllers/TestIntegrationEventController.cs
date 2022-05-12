@@ -22,5 +22,14 @@ namespace Module.Sample.Controllers
             _integrationEventBus.Publish<CreateOrderIntegrationEvent>(orderEvent);
 
         }
+
+
+        [HttpGet]
+        public void CreateTestIntegrationEvent()
+        {
+            var test = new TestIntegrationEvent() { Name="大黄瓜18CM，真的猛" };
+            _integrationEventBus.Publish<TestIntegrationEvent>(test);
+
+        }
     }
 }

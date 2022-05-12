@@ -6,13 +6,13 @@ namespace Luck.Framework.Event
     {
         public IntegrationEvent()
         {
-            Id = SnowflakeId.GenerateNewStringId();
-            CreationDate = DateTime.Now;
+            EventId = SnowflakeId.GenerateNewStringId();
+            EventCreationDate = DateTime.Now;
         }
         [JsonInclude]
-        public string Id { get; }
+        public string EventId { get; }
         [JsonInclude]
-        public DateTime CreationDate { get; }
+        public DateTime EventCreationDate { get; }
     }
 
 

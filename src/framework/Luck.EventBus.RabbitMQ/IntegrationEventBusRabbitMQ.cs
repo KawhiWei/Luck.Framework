@@ -2,6 +2,7 @@
 using Luck.Framework.Event;
 using Luck.Framework.Exceptions;
 using Luck.Framework.Extensions;
+using Luck.Framework.Utilities;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Polly;
@@ -36,10 +37,7 @@ namespace Luck.EventBus.RabbitMQ
             _serviceProvider = serviceProvider;
             _subsManager.OnEventRemoved += SubsManager_OnEventRemoved;
         }
-        ~IntegrationEventBusRabbitMQ()
-        {
-            Dispose(false);
-        }
+  
         private void SubsManager_OnEventRemoved(object? sender, EventRemovedEventArgs args)
         {
             var eventName = args.EventType.Name;
@@ -82,10 +80,10 @@ namespace Luck.EventBus.RabbitMQ
             .Or<SocketException>()
             .WaitAndRetry(_retryCount, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)), (ex, time) =>
             {
-                _logger.LogWarning(ex, "发布集成事件: {EventId} 超时 {Timeout}s ({ExceptionMessage})", @event.Id, $"{time.TotalSeconds:n1}", ex.Message);
+                _logger.LogWarning(ex, "发布集成事件: {EventId} 超时 {Timeout}s ({ExceptionMessage})", @event.EventId, $"{time.TotalSeconds:n1}", ex.Message);
             });
 
-            _logger.LogTrace("创建RabbitMQ通道来发布事件: {EventId} ({EventName})", @event.Id, type.Name);
+            _logger.LogTrace("创建RabbitMQ通道来发布事件: {EventId} ({EventName})", @event.EventId, type.Name);
 
 
             var rabbitMQAttribute = type.GetCustomAttribute<RabbitMQAttribute>();
@@ -117,7 +115,7 @@ namespace Luck.EventBus.RabbitMQ
                 policy.Execute(() =>
                 {
                     properties.DeliveryMode = 2;
-                    _logger.LogTrace("向RabbitMQ发布事件: {EventId}", @event.Id);
+                    _logger.LogTrace("向RabbitMQ发布事件: {EventId}", @event.EventId);
                     channel.BasicPublish(exchange: rabbitMQAttribute.Exchange, routingKey: rabbitMQAttribute.RoutingKey, mandatory: true, basicProperties: properties, body: body);
                 });
             }
@@ -127,18 +125,61 @@ namespace Luck.EventBus.RabbitMQ
         where T : IntegrationEvent
         where TH : IIntegrationEventHandler<T>
         {
+            Subscribe(typeof(T),typeof(TH));
+            //var eventType = typeof(T);
+            //var rabbitMQAttribute = eventType.GetCustomAttribute<RabbitMQAttribute>();
 
-            var rabbitMQAttribute = typeof(T).GetCustomAttribute<RabbitMQAttribute>();
+            //if (rabbitMQAttribute == null)
+            //{
+            //    throw new ArgumentNullException($"{nameof(eventType)}未设置<RabbitMQAttribute>特性,无法发布事件");
+            //}
+
+            //_consumerChannel = CreateConsumerChannel(rabbitMQAttribute);
+            //var eventName = _subsManager.GetEventKey(eventType);
+            //DoInternalSubscription(eventName, rabbitMQAttribute);
+            //_subsManager.AddSubscription<T, TH>();
+            //StartBasicConsume(eventType, rabbitMQAttribute);
+        }
+
+
+        private void CheckEventType(Type eventType)
+        {
+            Check.NotNull(eventType, nameof(eventType));
+            if (eventType.IsDeriveClassFrom<IIntegrationEvent>() == false)
+            {
+
+                throw new ArgumentNullException($"{eventType}没有继承IIntegrationEvent", nameof(eventType)) ;
+            }
+        }
+
+        private void CheckHandlerType(Type handlerType)
+        {
+            Check.NotNull(handlerType, nameof(handlerType));
+            if (handlerType.IsBaseOn(typeof(IIntegrationEventHandler<>)) == false)
+            {
+
+                throw new ArgumentNullException($"{nameof(handlerType)}IIntegrationEventHandler<>", nameof(handlerType));
+            }
+        }
+
+        public void Subscribe(Type eventType, Type handlerType)
+        {
+           
+            CheckEventType(eventType);
+            CheckHandlerType(handlerType);
+            var rabbitMQAttribute = eventType.GetCustomAttribute<RabbitMQAttribute>();
 
             if (rabbitMQAttribute == null)
             {
-                throw new ArgumentNullException($"{nameof(T)}未设置<RabbitMQAttribute>特性,无法发布事件");
+                throw new ArgumentNullException($"{nameof(eventType)}未设置<RabbitMQAttribute>特性,无法发布事件");
             }
+
             _consumerChannel = CreateConsumerChannel(rabbitMQAttribute);
-            var eventName = _subsManager.GetEventKey<T>();
+            var eventName = _subsManager.GetEventKey(eventType);
             DoInternalSubscription(eventName, rabbitMQAttribute);
-            _subsManager.AddSubscription<T, TH>();
-            StartBasicConsume<T>(rabbitMQAttribute);
+            _subsManager.AddSubscription(eventType, handlerType);
+            StartBasicConsume(eventType, rabbitMQAttribute);
+
         }
 
 
@@ -179,8 +220,8 @@ namespace Luck.EventBus.RabbitMQ
             return channel;
         }
 
-        private void StartBasicConsume<T>(RabbitMQAttribute rabbitMQAttribute)
-                    where T : IntegrationEvent
+        private void StartBasicConsume(Type eventType, RabbitMQAttribute rabbitMQAttribute)
+                    //where T : IntegrationEvent
         {
             _logger.LogTrace("启动RabbitMQ基本消耗");
             if (_consumerChannel != null)
@@ -197,7 +238,7 @@ namespace Luck.EventBus.RabbitMQ
                             throw new InvalidOperationException($"假异常请求: \"{message}\"");
                         }
 
-                        await ProcessEvent<T>(message);
+                        await ProcessEvent(eventType, message);
                     }
                     catch (Exception ex)
                     {
@@ -223,21 +264,21 @@ namespace Luck.EventBus.RabbitMQ
         }
 
 
-        private async Task ProcessEvent<T>(string message)
-                       where T : IntegrationEvent
+        private async Task ProcessEvent(Type eventType, string message)
+                       //where T : IntegrationEvent
         {
-            var eventName = typeof(T).Name;
-            _logger.LogTrace("处理RabbitMQ事件: {EventName}", typeof(T).Name);
+            var eventName = _subsManager.GetEventKey(eventType);
+            _logger.LogTrace("处理RabbitMQ事件: {EventName}", eventName);
 
-            if (_subsManager.HasSubscriptionsForEvent<T>())
+            if (_subsManager.HasSubscriptionsForEvent(eventName))
             {
                 using (var scope = _serviceProvider.GetService<IServiceScopeFactory>()?.CreateScope())
                 {
-                    var subscriptionTypes = _subsManager.GetHandlersForEvent<T>();
+                    var subscriptionTypes = _subsManager.GetHandlersForEvent(eventName);
                     foreach (var subscriptionType in subscriptionTypes)
                     {
 
-                        var eventType = typeof(T);
+                   
                         //var eventType = _subsManager.GetEventTypeByName(eventName);
                         var integrationEvent = JsonSerializer.Deserialize(message, eventType, new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
                         var concreteType = typeof(IIntegrationEventHandler<>).MakeGenericType(eventType);
@@ -307,7 +348,7 @@ namespace Luck.EventBus.RabbitMQ
         }
 
 
-   
+
         protected virtual void Dispose(bool disposing)
         {
 

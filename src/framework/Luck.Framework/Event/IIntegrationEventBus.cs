@@ -10,7 +10,7 @@
 
 
 
-
+       void Subscribe(Type eventType, Type handlerType);
 
         void Subscribe<T, TH>()
         where T : IntegrationEvent

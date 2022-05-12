@@ -50,13 +50,6 @@ if (app.Environment.IsDevelopment())
 app.UseAuthorization();
 
 app.MapControllers();
-
+app.UseEventBusRabbitMQ();
 app.InitializeApplication();
-/// <summary>
-/// ���Ĵ�����
-/// </summary>
-var eventBus = app.Services.GetService<IIntegrationEventBus>();
-eventBus?.Subscribe<CreateOrderIntegrationEvent, CreateOrderIntegrationHandler>();
-
-
 app.Run();
