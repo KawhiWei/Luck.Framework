@@ -58,9 +58,13 @@ namespace Luck.Walnut.Application.Environments
         {
             var appEnvironment = await FindAppEnvironmentByIdAsync(environmentId);
 
-            //只删除环境？ 要不要把配置也删除？级联删除？
-            _appEnvironmentRepository.Remove(appEnvironment);
-            await _unitOfWork.CommitAsync(_cancellationTokenProvider.Token);
+            if (appEnvironment is not null)
+            {
+                //只删除环境？ 要不要把配置也删除？级联删除？
+                _appEnvironmentRepository.Remove(appEnvironment);
+                await _unitOfWork.CommitAsync(_cancellationTokenProvider.Token);
+            }
+
         }
 
 
