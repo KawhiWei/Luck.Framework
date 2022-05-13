@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Luck.Framework.Extensions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Module.Sample.Services;
+using System.ComponentModel;
 
 namespace Module.Sample.Controllers
 {
@@ -17,6 +19,15 @@ namespace Module.Sample.Controllers
         }
 
 
+        [HttpGet]
+        public Task TestEnumToList()
+        {
+
+          var list=  typeof(TestEnum).TypeToEnumList();
+          
+           return Task.FromResult(list);
+        }
+
         [HttpPost]
         public  Task CreateAndEventAsync()
         {
@@ -24,5 +35,15 @@ namespace Module.Sample.Controllers
             return _orderService.CreateAndEventAsync();
         }
 
+    }
+
+
+    public enum TestEnum
+    {
+        [Description("大黄瓜")]
+        A,
+        [Description("大黄瓜1")]
+        B,
+        C
     }
 }

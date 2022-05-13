@@ -1,5 +1,6 @@
 ﻿using JetBrains.Annotations;
 using Luck.Framework.Attributes;
+using Luck.Framework.Core;
 using System.Collections;
 using System.ComponentModel;
 using System.Reflection;
@@ -380,7 +381,7 @@ namespace Luck.Framework.Extensions
             where TAttribute : AttributeBase
         {
             var attributeBase = member.GetCustomAttribute<TAttribute>() as AttributeBase;
-            if (attributeBase != null&&!attributeBase.IsNull())
+            if (attributeBase != null && !attributeBase.IsNull())
             {
                 return attributeBase.Description();
             }
@@ -450,6 +451,34 @@ namespace Luck.Framework.Extensions
                    type == typeof(DateTimeOffset) ||
                    type == typeof(TimeSpan) ||
                    type == typeof(Guid);
+        }
+
+        /// <summary>
+        /// 枚举转成集合
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+
+        public static IEnumerable<SelectOptionList> TypeToEnumList(this Type type)
+        {
+
+
+            if (!type.IsEnum)
+            {
+                throw new ArgumentNullException(nameof(type), "不是枚举类型");
+            }
+
+
+            var values = Enum.GetValues(type);
+
+            foreach (Enum value in values)
+            {
+               
+                yield return new SelectOptionList(value.ToDescription(),value.GetHashCode().ToString());
+            }
+
+
         }
     }
 }

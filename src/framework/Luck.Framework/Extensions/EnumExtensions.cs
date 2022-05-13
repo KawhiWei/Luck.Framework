@@ -20,7 +20,7 @@ namespace Luck.Framework.Extensions
    
             MemberInfo? member = type.GetMember(value.ToString()).FirstOrDefault();
      
-            return member.ToDescription();
+            return member?.ToDescription();
         }
 
 
