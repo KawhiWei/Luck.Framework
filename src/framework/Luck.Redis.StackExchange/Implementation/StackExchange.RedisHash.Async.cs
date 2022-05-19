@@ -11,7 +11,6 @@ namespace Luck.Redis.StackExchange
         {
             return await _database.HashDeleteAsync(key, fields.ToRedisValue());
         }
-
         public async Task<bool> HashExistsAsync(string key, string field)
         {
             return await _database.HashExistsAsync(key, field);

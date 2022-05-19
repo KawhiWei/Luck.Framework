@@ -14,7 +14,7 @@ namespace Luck.Redis.StackExchange
             Database = _connectionMultiplexer.GetDatabase();
         }
 
-        public IDatabase Database { get; }
+        private IDatabase Database { get; }
 
         public T? GetByIndex<T>(string key, long index)
         {
