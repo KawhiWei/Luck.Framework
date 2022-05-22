@@ -36,15 +36,15 @@ namespace Luck.Walnut.Domain.AggregateRoots.Environments
 
 
 
-        public void AddConfiguration(string key, string value, string type, bool isOpen)
+        public void AddConfiguration(string key, string value, string type, bool isOpen, string group)
         {
             if (Configurations.Any(x => x.Key == key))
                 throw new DomainException($"【{key}】已存在");
 
-            Configurations.Add(new AppConfiguration(key, value, type, isOpen));
+            Configurations.Add(new AppConfiguration(key, value, type, isOpen, group));
         }
 
-        public void UpdateConfiguration(string id, string key, string value, string type, bool isOpen)
+        public void UpdateConfiguration(string id, string key, string value, string type, bool isOpen, string group)
         {
 
             var configuration = Configurations.FirstOrDefault(o => o.Id == id);
@@ -54,7 +54,7 @@ namespace Luck.Walnut.Domain.AggregateRoots.Environments
                 throw new DomainException($"【{id}】配置不存在");
             }
 
-            configuration.UpdateConfiguration(key, value, type, isOpen);
+            configuration.UpdateConfiguration(key, value, type, isOpen, group);
         }
     }
 

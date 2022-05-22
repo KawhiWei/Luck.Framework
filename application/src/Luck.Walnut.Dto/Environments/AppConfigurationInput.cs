@@ -22,7 +22,7 @@
         /// </summary>
         public bool IsOpen { get;  set; } = default!;
 
-        public string Group { get; set; }
+        public string Group { get; set; } = default!;
 
     }
 

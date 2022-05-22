@@ -36,7 +36,7 @@ namespace Luck.Walnut.Application.Environments
             var appEnvironment = await _appEnvironmentRepository.FindAsync(environmentId);
             _ = appEnvironment ?? throw new ArgumentNullException(nameof(appEnvironment));
             //appEnvironment = Check.NotNull(appEnvironment, nameof(appEnvironment));
-            appEnvironment.AddConfiguration(input.Key, input.Value, input.Type, input.IsOpen);
+            appEnvironment.AddConfiguration(input.Key, input.Value, input.Type, input.IsOpen, input.Group);
             await _unitOfWork.CommitAsync(_cancellationTokenProvider.Token);
         }
 
@@ -118,7 +118,8 @@ namespace Luck.Walnut.Application.Environments
             {
                 Key = a.Key,
                 Value = a.Value,
-                Type = a.Type
+                Type = a.Type,
+                Group = a.Group,
             }).ToListAsync(_cancellationTokenProvider.Token);
 
         }
@@ -133,7 +134,7 @@ namespace Luck.Walnut.Application.Environments
             {
                 throw new BusinessException(FindEnvironmentNotExistErrorMsg);
             }
-            environment.UpdateConfiguration(id, input.Key, input.Value, input.Type, input.IsOpen);
+            environment.UpdateConfiguration(id, input.Key, input.Value, input.Type, input.IsOpen, input.Group);
             _appEnvironmentRepository.Update(environment);
             await _unitOfWork.CommitAsync(_cancellationTokenProvider.Token);
         }
