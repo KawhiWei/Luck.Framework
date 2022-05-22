@@ -22,6 +22,8 @@
         /// </summary>
         public bool IsOpen { get;  set; } = default!;
 
+        public string Group { get; set; }
+
     }
 
 

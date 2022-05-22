@@ -36,26 +36,30 @@ namespace Luck.Walnut.Domain.AggregateRoots.Environments
         /// </summary>
         public string AppEnvironmentId { get; private set; } = default!;
 
+        public string Group { get; set; } = default!;
+
         private AppConfiguration()
         {
 
         }
 
-        public AppConfiguration(string key, string value, string type,bool isOpen) :this()
+        public AppConfiguration(string key, string value, string type,bool isOpen, string group) :this()
         {
             Key = key;
             Value = value;
             Type = type;
             IsOpen = isOpen;
+            Group = group;
         }
 
-        public AppConfiguration UpdateConfiguration(string key, string value, string type, bool isOpen)
+        public AppConfiguration UpdateConfiguration(string key, string value, string type, bool isOpen, string group)
         {
             Key = key;
             Value = value;
             Type = type;
             IsOpen = isOpen;
             IsPublish = false;
+            Group = group;
             return this;
         }
 
