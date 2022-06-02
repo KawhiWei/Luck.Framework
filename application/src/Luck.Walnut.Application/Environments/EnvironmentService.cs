@@ -107,22 +107,7 @@ namespace Luck.Walnut.Application.Environments
 
 
 
-        public async Task<List<AppConfigurationOutput>> GetAppConfigurationByAppIdAndEnvironmentName(string appId, string environmentName)
-        {
-            var application = await _applicationRepository.FindAll(x => x.AppId == appId).FirstOrDefaultAsync();
-            if (application is null)
-                throw new BusinessException($"{appId}应用不存在");
 
-
-            return await _appEnvironmentRepository.FindAll(x => x.ApplicationId == application.Id && x.EnvironmentName == environmentName).Include(x => x.Configurations).SelectMany(x => x.Configurations).Select(a => new AppConfigurationOutput
-            {
-                Key = a.Key,
-                Value = a.Value,
-                Type = a.Type,
-                Group = a.Group,
-            }).ToListAsync(_cancellationTokenProvider.Token);
-
-        }
 
 
         public async Task UpdateAppConfigurationAsync(string environmentId, string id, AppConfigurationInput input)

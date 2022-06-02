@@ -12,4 +12,7 @@
     <ProjectReference Include="..\Luck.Walnut.Persistence\Luck.Walnut.Persistence.csproj" />
   </ItemGroup>
 
+<ItemGroup>
+  <PackageReference Include="Luck.WebSocket.Server" Version="1.0.0" />
+</ItemGroup>
 </Project>
