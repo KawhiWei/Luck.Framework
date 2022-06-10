@@ -12,6 +12,6 @@
         /// <summary>
         /// 应用Id
         /// </summary>
-        public string ApplicationId { get; set; } = default!;
+        public string AppId { get; set; } = default!;
     }
 }

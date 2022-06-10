@@ -17,7 +17,14 @@ namespace Luck.Walnut.Domain.AggregateRoots.Environments
         /// <summary>
         /// 应用Id
         /// </summary>
-        public string ApplicationId { get; private set; } = default!;
+        public string AppId { get; private set; } = default!;
+
+        
+        /// <summary>
+        /// 版本（每次修改配置时更新版本号）
+        /// </summary>
+        public string Version { get; private set; } = default!;
+
         /// <summary>
         /// 配置项
         /// </summary>
@@ -27,11 +34,12 @@ namespace Luck.Walnut.Domain.AggregateRoots.Environments
         {
         }
 
-        public AppEnvironment(string environmentName, string applicationId) : this()
+        public AppEnvironment(string environmentName, string appId) : this()
         {
 
             EnvironmentName = environmentName;
-            ApplicationId = applicationId;
+            AppId = appId;
+            Version = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString();
         }
 
 
@@ -44,7 +52,7 @@ namespace Luck.Walnut.Domain.AggregateRoots.Environments
             Configurations.Add(new AppConfiguration(key, value, type, isOpen, group));
         }
 
-        public void UpdateConfiguration(string id, string key, string value, string type, bool isOpen, string group)
+        public AppEnvironment UpdateConfiguration(string id, string key, string value, string type, bool isOpen, string group)
         {
 
             var configuration = Configurations.FirstOrDefault(o => o.Id == id);
@@ -55,7 +63,15 @@ namespace Luck.Walnut.Domain.AggregateRoots.Environments
             }
 
             configuration.UpdateConfiguration(key, value, type, isOpen, group);
+            return this;
         }
+        
+        public  AppEnvironment UpdateVersion(string version)
+        {
+            Version = version;
+            return this;
+        }
+        
     }
 
 }

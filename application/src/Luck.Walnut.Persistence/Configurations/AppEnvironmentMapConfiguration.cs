@@ -11,7 +11,7 @@ namespace Luck.Walnut.Persistence
             builder.ToTable("environments");
             builder.HasKey(e => e.Id);
             builder.Property(e => e.EnvironmentName);
-            builder.Property(e => e.ApplicationId).HasMaxLength(95);
+            builder.Property(e => e.AppId).HasMaxLength(95);
             builder.HasIndex(e => e.EnvironmentName);
             builder.HasMany(o => o.Configurations).WithOne().HasForeignKey(x=>x.AppEnvironmentId).OnDelete(DeleteBehavior.Cascade);
             //var navigation = builder.Metadata.FindNavigation(nameof(AppEnvironment.Configurations));

@@ -26,7 +26,7 @@ namespace Luck.Walnut.Application.Environments
 
         public async Task AddAppEnvironmentAsync(AppEnvironmentInputDto input)
         {
-            var appEnvironment = new AppEnvironment(input.EnvironmentName, input.ApplicationId);
+            var appEnvironment = new AppEnvironment(input.EnvironmentName, input.AppId);
             _appEnvironmentRepository.Add(appEnvironment);
             await _unitOfWork.CommitAsync(_cancellationTokenProvider.Token);
         }
@@ -60,7 +60,7 @@ namespace Luck.Walnut.Application.Environments
 
             if (appEnvironment is  null)
             {
-                throw new BusinessException("没有找到对应环境");
+                throw new BusinessException("对应环境不存在");
             }
             //只删除环境？ 要不要把配置也删除？级联删除？
             _appEnvironmentRepository.Remove(appEnvironment);
@@ -119,7 +119,9 @@ namespace Luck.Walnut.Application.Environments
             {
                 throw new BusinessException(FindEnvironmentNotExistErrorMsg);
             }
-            environment.UpdateConfiguration(id, input.Key, input.Value, input.Type, input.IsOpen, input.Group);
+
+            environment.UpdateConfiguration(id, input.Key, input.Value, input.Type, input.IsOpen, input.Group)
+                .UpdateVersion("");
             _appEnvironmentRepository.Update(environment);
             await _unitOfWork.CommitAsync(_cancellationTokenProvider.Token);
         }

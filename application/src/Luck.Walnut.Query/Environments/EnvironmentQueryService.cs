@@ -69,7 +69,7 @@ namespace Luck.Walnut.Query.Environments
             var application = await _applicationRepository.FindAll(x => x.AppId == appId).FirstOrDefaultAsync();
             if (application is null)
                 throw new BusinessException($"{appId}应用不存在");
-            return await _appEnvironmentRepository.FindAll(x => x.ApplicationId == application.Id && x.EnvironmentName == environmentName).Include(x => x.Configurations).SelectMany(x => x.Configurations).Select(a => new AppConfigurationOutput
+            return await _appEnvironmentRepository.FindAll(x => x.AppId == application.Id && x.EnvironmentName == environmentName).Include(x => x.Configurations).SelectMany(x => x.Configurations).Select(a => new AppConfigurationOutput
             {
                 Key = a.Key,
                 Value = a.Value,

@@ -36,7 +36,10 @@ namespace Luck.Walnut.Domain.AggregateRoots.Environments
         /// </summary>
         public string AppEnvironmentId { get; private set; } = default!;
 
-        public string Group { get; set; } = default!;
+        /// <summary>
+        /// 分组名称
+        /// </summary>
+        public string Group { get; private set; } = default!;
 
         private AppConfiguration()
         {

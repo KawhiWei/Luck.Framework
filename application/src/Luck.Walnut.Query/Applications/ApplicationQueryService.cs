@@ -81,28 +81,20 @@ namespace Luck.Walnut.Query.Applications
                 AppId = application.AppId,
             };
         }
-
-
-
-
-
-
-
-
-        private async Task<Domain.AggregateRoots.Applications.Application> GetApplicationByIdAsync(string id)
+        private async Task<Domain.AggregateRoots.Applications.Application> GetApplicationByIdAsync(string appId)
         {
-            var application = await _applicationRepository.FindAsync(id);
+            var application = await _applicationRepository.FindAll(x=>x.AppId==appId).FirstOrDefaultAsync();
             if (application is null)
                 throw new BusinessException($"应用不存在");
             return application;
         }
 
-        private IQueryable<AppEnvironmentOptputListDto> GetEnvironmentListForApplicationId(string applicationId)
+        private IQueryable<AppEnvironmentOptputListDto> GetEnvironmentListForApplicationId(string appId)
         {
-            return _appEnvironmentRepository.FindAll(x => x.ApplicationId == applicationId).Select(o => new AppEnvironmentOptputListDto()
+            return _appEnvironmentRepository.FindAll(x => x.AppId == appId).Select(o => new AppEnvironmentOptputListDto()
             {
                 Id = o.Id,
-                ApplicationId = o.ApplicationId,
+                ApplicationId = o.AppId,
                 EnvironmentName = o.EnvironmentName,
             });
         }

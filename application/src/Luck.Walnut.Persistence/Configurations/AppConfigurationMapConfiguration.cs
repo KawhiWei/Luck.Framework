@@ -17,7 +17,7 @@ namespace Luck.Walnut.Persistence
             builder.Property(x => x.Group);
             //////todo 不这样，当Remove时候，会把AppEnvironmentId清空
             //builder.Property<string>("AppEnvironmentId").IsRequired().HasMaxLength(95);
-            builder.HasIndex(x => new { x.Key, x.Value });
+           // builder.HasIndex(x => new { x.Key, x.Value });
 
             builder.ToTable("configurations");
         }
