@@ -1,12 +1,6 @@
 using Luck.Framework.Infrastructure;
 using MediatR;
 using Module.Sample;
-using System.Reflection;
-
-using Luck.EventBus.RabbitMQ;
-using Luck.Framework.Event;
-using Module.Sample.EventHandlers;
-using Luck.Framework.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
