@@ -1,4 +1,5 @@
-﻿using Luck.Framework.Event;
+﻿using System.Collections.Concurrent;
+using Luck.Framework.Event;
 
 
 namespace Luck.EventBus.RabbitMQ
@@ -8,7 +9,7 @@ namespace Luck.EventBus.RabbitMQ
     public class RabbitMqEventBusSubscriptionsManager : IIntegrationEventBusSubscriptionsManager
     {
 
-        private readonly Dictionary<string, List<Type>> _handlers = new Dictionary<string, List<Type>>();
+        private readonly ConcurrentDictionary<string, List<Type>> _handlers = new ConcurrentDictionary<string, List<Type>>();
 
         public void AddSubscription<T, TH>()
             where T : IntegrationEvent
@@ -29,7 +30,7 @@ namespace Luck.EventBus.RabbitMQ
 
             if (!HasSubscriptionsForEvent(eventName))
             {
-                _handlers.Add(eventName, new List<Type>());
+                _handlers.TryAdd(eventName, new List<Type>());
             }
 
             if (_handlers[eventName].Any(o => o == handlerType))
@@ -87,7 +88,7 @@ namespace Luck.EventBus.RabbitMQ
             _handlers[eventName].Remove(typeof(TH));
             if (!_handlers[eventName].Any())
             {
-                _handlers.Remove(eventName);
+                //_handlers.Remove(eventName);
                 EventRemovedEventArgs args = new EventRemovedEventArgs();
                 args.EventType = typeof(T);
                 OnEventRemoved?.Invoke(this, args);
@@ -113,7 +114,5 @@ namespace Luck.EventBus.RabbitMQ
 
             return type.Name;
         }
-
-   
     }
 }

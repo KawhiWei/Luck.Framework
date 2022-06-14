@@ -12,6 +12,7 @@
 
        void Subscribe(Type eventType, Type handlerType);
 
+       void Subscribe();
         void Subscribe<T, TH>()
         where T : IntegrationEvent
         where TH : IIntegrationEventHandler<T>;

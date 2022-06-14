@@ -22,28 +22,18 @@ namespace Luck.EventBus.RabbitMQ
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            using var scope = _rootServiceProvider.CreateScope();
-            var eventBus= scope.ServiceProvider.GetService<IIntegrationEventBus>();
-            if (eventBus is null)
+            using (var scope = _rootServiceProvider.CreateScope())
             {
-                throw new Exception("RabbitMQ集成事件总线没有注册");
-            }
-                
-            var handlerTypes = AssemblyHelper.FindTypes(o => o.IsClass && !o.IsAbstract && o.IsBaseOn(typeof(IIntegrationEventHandler<>)));
-            foreach (var handlerType in handlerTypes)
-            {
-
-                var implementedType = handlerType.GetTypeInfo().ImplementedInterfaces.Where(o => o.IsBaseOn(typeof(IIntegrationEventHandler<>))).FirstOrDefault();
-                var eventType = implementedType?.GetTypeInfo().GenericTypeArguments.FirstOrDefault();
-                if (eventType == null)
+                var eventBus= scope.ServiceProvider.GetService<IIntegrationEventBus>();
+                if (eventBus is null)
                 {
-                    continue;
+                    throw new Exception("RabbitMQ集成事件总线没有注册");
                 }
-                eventBus.Subscribe(eventType,handlerType);
-            }
-            while (true && !stoppingToken.IsCancellationRequested)
-            {
-                await  Task.Delay(5000, stoppingToken);
+                eventBus.Subscribe();
+                while (true && !stoppingToken.IsCancellationRequested)
+                {
+                    await  Task.Delay(5000, stoppingToken);
+                }
             }
         }
     }

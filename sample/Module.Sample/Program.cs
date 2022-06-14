@@ -49,6 +49,6 @@ if (app.Environment.IsDevelopment())
 app.UseAuthorization();
 
 app.MapControllers();
-app.UseEventBusRabbitMQ();
+//app.UseEventBusRabbitMQ();
 app.InitializeApplication();
 app.Run();

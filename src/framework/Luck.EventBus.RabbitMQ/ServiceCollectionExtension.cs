@@ -21,24 +21,24 @@ namespace Microsoft.Extensions.DependencyInjection
             {
 
                 var rabbitMqPersistentConnection = serviceProvider.GetRequiredService<IRabbitMQPersistentConnection>();
+                var logger = serviceProvider.GetRequiredService<ILogger<IntegrationEventBusRabbitMq>>();
                 var subsManager=    serviceProvider.GetRequiredService<IIntegrationEventBusSubscriptionsManager>();
+
                 if (rabbitMqPersistentConnection is null)
                 {
                     throw new ArgumentNullException(nameof(rabbitMqPersistentConnection));
                 }
                     
-                var logger = serviceProvider.GetRequiredService<ILogger<IntegrationEventBusRabbitMq>>();
+
                 if (logger is null)
                 {
                     throw new ArgumentNullException(nameof(rabbitMqPersistentConnection));
                 }
-                    
-
                 return new IntegrationEventBusRabbitMq(rabbitMqPersistentConnection, logger, config.RetryCount, subsManager, serviceProvider);
 
             });
             service.AddSingleton<IIntegrationEventBusSubscriptionsManager, RabbitMqEventBusSubscriptionsManager>();
-            //service.AddHostedService<RabbitMqIntegrationEventBusBackgroundServiceSubscribe>();
+            service.AddHostedService<RabbitMqIntegrationEventBusBackgroundServiceSubscribe>();
             return service;
         }
 
@@ -56,7 +56,6 @@ namespace Microsoft.Extensions.DependencyInjection
                     Password = config.PassWord,
                     Port = config.Port,
                 };
-
                 return new DefaultRabbitMQPersistentConnection(factory, logger, config.RetryCount);
             });
             return service;
