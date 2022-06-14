@@ -25,7 +25,9 @@ namespace Luck.Walnut.Api.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("{applicationId}/list")]
-        public Task<ApplicationOutput> GetApplicationDetailAndEnvironmentAsync(string applicationId,[FromServices] IApplicationQueryService applicationQueryService) => applicationQueryService.GetApplicationDetailAndEnvironmentAsync(applicationId);
+        public Task<ApplicationOutput> GetApplicationDetailAndEnvironmentAsync(string applicationId,
+            [FromServices] IApplicationQueryService applicationQueryService) =>
+            applicationQueryService.GetApplicationDetailAndEnvironmentAsync(applicationId);
 
 
         /// <summary>
@@ -103,7 +105,7 @@ namespace Luck.Walnut.Api.Controllers
         /// <param name="environmentName"></param>
         /// <returns></returns>
         [HttpGet("{appid}/{environmentName}/config")]
-        public Task<List<AppConfigurationOutput>> GetAppConfigurationByAppIdAndEnvironmentName(
+        public Task<AppEnvironmentOutputDto> GetAppConfigurationByAppIdAndEnvironmentName(
             [FromServices] IEnvironmentQueryService environmentQueryService, string appId, string environmentName) =>
             environmentQueryService.GetAppConfigurationByAppIdAndEnvironmentNameAsync(appId, environmentName);
 

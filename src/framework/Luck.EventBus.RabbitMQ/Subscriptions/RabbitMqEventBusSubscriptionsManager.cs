@@ -5,7 +5,7 @@ namespace Luck.EventBus.RabbitMQ
 {
 
 
-    public class RabbitMQEventBusSubscriptionsManager : IIntegrationEventBusSubscriptionsManager
+    public class RabbitMqEventBusSubscriptionsManager : IIntegrationEventBusSubscriptionsManager
     {
 
         private readonly Dictionary<string, List<Type>> _handlers = new Dictionary<string, List<Type>>();

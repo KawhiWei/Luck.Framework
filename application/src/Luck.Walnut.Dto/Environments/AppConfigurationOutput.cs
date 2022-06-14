@@ -52,6 +52,8 @@
         /// 版本（每次修改配置时更新版本号）
         /// </summary>
         public string Version { get;  set; } = default!;
+        
+        public  List<AppConfigurationOutput> Configs { get; set; } = default!;
     }
 
 }

@@ -3,8 +3,10 @@ using Luck.Framework.Exceptions;
 using Luck.Framework.Extensions;
 using Luck.Framework.Threading;
 using Luck.Framework.UnitOfWorks;
+using Luck.Walnut.Application.Environments.Events;
 using Luck.Walnut.Domain.AggregateRoots.Environments;
 using Luck.Walnut.Dto.Environments;
+using MediatR;
 
 namespace Luck.Walnut.Application.Environments
 {
@@ -14,13 +16,18 @@ namespace Luck.Walnut.Application.Environments
         private readonly IAggregateRootRepository<Domain.AggregateRoots.Applications.Application, string> _applicationRepository;
         private readonly IUnitOfWork _unitOfWork;
 
+        private readonly IMediator _mediator;
         private readonly ICancellationTokenProvider _cancellationTokenProvider;  //当中断请求时，所以有操作同时也中断
-        public EnvironmentService(IAggregateRootRepository<AppEnvironment, string> appEnvironmentRepository, IUnitOfWork unitOfWork, ICancellationTokenProvider cancellationTokenProvider, IAggregateRootRepository<Domain.AggregateRoots.Applications.Application, string> applicationRepository)
+        public EnvironmentService(IAggregateRootRepository<AppEnvironment, string> appEnvironmentRepository, 
+            IUnitOfWork unitOfWork, ICancellationTokenProvider cancellationTokenProvider, 
+            IAggregateRootRepository<Domain.AggregateRoots.Applications.Application, string> applicationRepository
+            , IMediator mediator)
         {
             _appEnvironmentRepository = appEnvironmentRepository;
             _unitOfWork = unitOfWork;
             _cancellationTokenProvider = cancellationTokenProvider;
             _applicationRepository = applicationRepository;
+            _mediator = mediator;
         }
 
 
@@ -36,8 +43,14 @@ namespace Luck.Walnut.Application.Environments
             var appEnvironment = await _appEnvironmentRepository.FindAsync(environmentId);
             _ = appEnvironment ?? throw new ArgumentNullException(nameof(appEnvironment));
             //appEnvironment = Check.NotNull(appEnvironment, nameof(appEnvironment));
-            appEnvironment.AddConfiguration(input.Key, input.Value, input.Type, input.IsOpen, input.Group);
+            var addConfiguration= appEnvironment.AddConfiguration(input.Key, input.Value, input.Type, input.IsOpen, input.Group);
             await _unitOfWork.CommitAsync(_cancellationTokenProvider.Token);
+
+            var appConfigurationEvent = new AppConfigurationEvent()
+            {
+                Id = addConfiguration.Id
+            };
+            await _mediator.Publish(appConfigurationEvent, _cancellationTokenProvider.Token);
         }
 
 
@@ -77,11 +90,7 @@ namespace Luck.Walnut.Application.Environments
                 throw new BusinessException(FindEnvironmentNotExistErrorMsg);
             }
 
-        }
-
-
-        
-
+        } 
         public async Task DeleteAppConfigurationAsync(string environmentId, string configurationId)
         {
             environmentId.NotNullOrEmpty(nameof(environmentId));
@@ -104,12 +113,6 @@ namespace Luck.Walnut.Application.Environments
            
             await _unitOfWork.CommitAsync(_cancellationTokenProvider.Token);
         }
-
-
-
-
-
-
         public async Task UpdateAppConfigurationAsync(string environmentId, string id, AppConfigurationInput input)
         {
             id.NotNullOrEmpty(nameof(id));

@@ -24,7 +24,7 @@ builder.Services.AddMediatR(AssemblyHelper.AllAssemblies);
 
 //});
 
-builder.Services.AddEventBusRabbitMQ(x =>
+builder.Services.AddEventBusRabbitMq(x =>
 {
     x.UserName = "admin";
     x.Host = "101.34.26.221";
@@ -34,7 +34,6 @@ builder.Services.AddEventBusRabbitMQ(x =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddHostedService<MyBackgroundService>();
 //ע�봦����  ����ʹ��DependencyInjection �Զ�ע��
 //builder.Services.AddTransient(typeof(CreateOrderIntegrationHandler));
 

@@ -10,7 +10,7 @@ namespace Luck.Walnut.Query.Environments
         /// <param name="appId"></param>
         /// <param name="environmentName"></param>
         /// <returns></returns>
-        Task<List<AppConfigurationOutput>> GetAppConfigurationByAppIdAndEnvironmentNameAsync(string appId, string environmentName);
+        Task<AppEnvironmentOutputDto> GetAppConfigurationByAppIdAndEnvironmentNameAsync(string appId, string environmentName);
         /// <summary>
         /// 分页
         /// </summary>

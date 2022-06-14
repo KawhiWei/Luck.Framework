@@ -17,10 +17,11 @@ builder.WebHost.ConfigureKestrel(x =>
 {
     // x.ListenAnyIP(5094, opt => opt.Protocols = HttpProtocols.Http2);
     x.ListenAnyIP(5099, opt => opt.Protocols = HttpProtocols.Http1);
+    x.ListenAnyIP(5264, opt => opt.Protocols = HttpProtocols.Http2);
 });
 
 
-var test= Environment.GetEnvironmentVariable("AppId");
+var test = Environment.GetEnvironmentVariable("AppId");
 // Add services to the container.
 builder.Services.AddApplication<AppWebModule>();
 
@@ -30,10 +31,9 @@ builder.Services.AddGrpc();
 
 builder.Services.AddWebSocketConfigRouterEndpoint(x =>
 {
-
     x.WebSocketChannels = new Dictionary<string, WebSocketRouteOption.WebSocketChannelHandler>()
     {
-        { "/im",new MvcChannelHandler(4*1024).ConnectionEntry}
+        { "/im", new MvcChannelHandler(4 * 1024).ConnectionEntry }
     };
     x.ApplicationServiceCollection = builder.Services;
 });
@@ -46,18 +46,19 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 
-
 var app = builder.Build();
 app.UsePathBase("/walnut");
 
 #region WebSocket
+
 var webSocketOptions = new WebSocketOptions()
 {
-    KeepAliveInterval = TimeSpan.FromSeconds(15),//服务的主动向客户端发起心跳检测时间
-    ReceiveBufferSize = 4 * 1024//数据缓冲区
+    KeepAliveInterval = TimeSpan.FromSeconds(15), //服务的主动向客户端发起心跳检测时间
+    ReceiveBufferSize = 4 * 1024 //数据缓冲区
 };
 app.UseWebSockets(webSocketOptions);
 app.UseWebSocketServer(app.Services);
+
 #endregion
 
 // Configure the HTTP request pipeline.
@@ -68,22 +69,15 @@ if (app.Environment.IsDevelopment())
 }
 
 
-
 //app.UseAuthorization();
 app.UseRouting();
 
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapGrpcService<GetConfigService>();
-
-    var grpcSevviceTypes = AssemblyHelper.FindTypesByAttribute<AutoMapGrpcServiceAttribute>(); 
-    foreach (var item in grpcSevviceTypes)
-    {
-        endpoints.MapGrpcService(item);
-    }
-
+    endpoints.MapGrpcService<LuCatGrpcService>();
+    
 });
-
 
 
 app.MapControllers();

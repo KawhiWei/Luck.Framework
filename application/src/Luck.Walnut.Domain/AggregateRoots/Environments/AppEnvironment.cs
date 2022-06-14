@@ -44,12 +44,13 @@ namespace Luck.Walnut.Domain.AggregateRoots.Environments
 
 
 
-        public void AddConfiguration(string key, string value, string type, bool isOpen, string group)
+        public AppConfiguration AddConfiguration(string key, string value, string type, bool isOpen, string group)
         {
             if (Configurations.Any(x => x.Key == key))
                 throw new DomainException($"【{key}】已存在");
-
-            Configurations.Add(new AppConfiguration(key, value, type, isOpen, group));
+            var appConfiguration = new AppConfiguration(key, value, type, isOpen, group);
+            Configurations.Add(appConfiguration);
+            return appConfiguration;
         }
 
         public AppEnvironment UpdateConfiguration(string id, string key, string value, string type, bool isOpen, string group)
