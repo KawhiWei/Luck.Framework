@@ -1,9 +1,13 @@
-﻿using Luck.EntityFrameworkCore.DbContexts;
+﻿using Luck.EntityFrameworkCore.DbContextDrivenProvides;
+using Luck.EntityFrameworkCore.DbContexts;
 using Luck.Framework.Extensions;
 using Microsoft.EntityFrameworkCore;
 
-namespace Luck.EntityFrameworkCore.DbContextDrivenProvides
+namespace Luck.EntityFrameworkCore.MySQL
 {
+    /// <summary>
+    /// Mysql驱动
+    /// </summary>
     public class MySqlDbContextDrivenProvider : IDbContextDrivenProvider
     {
         public DataBaseType Type => DataBaseType.MySql;

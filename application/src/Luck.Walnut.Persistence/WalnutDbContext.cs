@@ -8,7 +8,6 @@ namespace Luck.Walnut.Persistence
 {
     public class WalnutDbContext : LuckDbContextBase
     {
-
         public WalnutDbContext(DbContextOptions options, IServiceProvider serviceProvider) : base(options, serviceProvider)
         {
         }
@@ -24,6 +23,8 @@ namespace Luck.Walnut.Persistence
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.HasDefaultSchema("luck.walnut");
 
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         }

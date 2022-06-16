@@ -14,5 +14,10 @@ namespace Module.Sample
                 x.Type = DataBaseType.MySql;
             });
         }
+
+        public override void AddDbDriven(IServiceCollection service)
+        {
+  
+        }
     }
 }

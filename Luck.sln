@@ -60,6 +60,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Luck.EventBus.RabbitMQ", "s
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Luck.Walnut.Query", "application\src\Luck.Walnut.Query\Luck.Walnut.Query.csproj", "{C7294923-3D84-45B5-A67C-AE7F60146451}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Luck.EntityFrameworkCore.MySQL", "src\framework\Luck.EntityFrameworkCore.MySQL\Luck.EntityFrameworkCore.MySQL.csproj", "{3338F84E-3C6E-4E57-A510-099A299A3ADE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Luck.EntityFrameworkCore.PostgreSQL", "src\framework\Luck.EntityFrameworkCore.PostgreSQL\Luck.EntityFrameworkCore.PostgreSQL.csproj", "{DCFD80D6-5BD9-4CE4-AF25-BC41496AE21D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -134,6 +138,14 @@ Global
 		{C7294923-3D84-45B5-A67C-AE7F60146451}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C7294923-3D84-45B5-A67C-AE7F60146451}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C7294923-3D84-45B5-A67C-AE7F60146451}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3338F84E-3C6E-4E57-A510-099A299A3ADE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3338F84E-3C6E-4E57-A510-099A299A3ADE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3338F84E-3C6E-4E57-A510-099A299A3ADE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3338F84E-3C6E-4E57-A510-099A299A3ADE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DCFD80D6-5BD9-4CE4-AF25-BC41496AE21D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DCFD80D6-5BD9-4CE4-AF25-BC41496AE21D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DCFD80D6-5BD9-4CE4-AF25-BC41496AE21D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DCFD80D6-5BD9-4CE4-AF25-BC41496AE21D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -161,6 +173,8 @@ Global
 		{79FEBCDD-AED6-4FEA-AD14-EF34DDE22905} = {91CD3C81-AA29-47C7-B654-901872880B63}
 		{C7294923-3D84-45B5-A67C-AE7F60146451} = {6746C4E5-9E1C-4E9A-9AE0-7ECA3F5258B3}
 		{59803D76-90B4-4290-9F61-0CDF8123ECC2} = {91CD3C81-AA29-47C7-B654-901872880B63}
+		{3338F84E-3C6E-4E57-A510-099A299A3ADE} = {91CD3C81-AA29-47C7-B654-901872880B63}
+		{DCFD80D6-5BD9-4CE4-AF25-BC41496AE21D} = {91CD3C81-AA29-47C7-B654-901872880B63}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4719568B-E10A-4815-AAAA-8C6D6CEE798F}

@@ -10,7 +10,7 @@ namespace Luck.Walnut.Persistence
         {
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Key);
-            builder.Property(x => x.Value).HasColumnType("longtext");
+            builder.Property(x => x.Value);
             builder.Property(x => x.Type);
             builder.Property(x => x.IsOpen);
             builder.Property(x => x.IsPublish);
