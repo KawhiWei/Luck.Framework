@@ -39,14 +39,14 @@ namespace Luck.Walnut.Domain.AggregateRoots.Environments
         /// <summary>
         /// 分组名称
         /// </summary>
-        public string Group { get; private set; } = default!;
+        public string? Group { get; private set; } = default!;
 
         private AppConfiguration()
         {
 
         }
 
-        public AppConfiguration(string key, string value, string type,bool isOpen, string group) :this()
+        public AppConfiguration(string key, string value, string type,bool isOpen, string? group) :this()
         {
             Key = key;
             Value = value;
@@ -55,7 +55,7 @@ namespace Luck.Walnut.Domain.AggregateRoots.Environments
             Group = group;
         }
 
-        public AppConfiguration UpdateConfiguration(string key, string value, string type, bool isOpen, string group)
+        public AppConfiguration UpdateConfiguration(string key, string value, string type, bool isOpen, string? group)
         {
             Key = key;
             Value = value;

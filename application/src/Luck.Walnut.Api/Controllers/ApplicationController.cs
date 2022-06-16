@@ -25,7 +25,7 @@ namespace Luck.Walnut.Api.Controllers
         public Task<IEnumerable<ApplicationOutputDto>> GetApplicationList([FromServices] IApplicationQueryService applicationQueryService) => applicationQueryService.GetApplicationListAsync();
 
         [HttpGet("{id}")]
-        public Task<ApplicationDetailOutputDto> GetApplicationDetail(string id,[FromServices] IApplicationQueryService applicationQueryService) => applicationQueryService.GetApplicationDetailForIdAsync(id);
+        public Task<ApplicationDetailOutputDto> GetApplicationDetailForId(string id,[FromServices] IApplicationQueryService applicationQueryService) => applicationQueryService.GetApplicationDetailForIdAsync(id);
 
         [HttpPut("{id}")]
         public Task UpdateApplication(string id, [FromBody] ApplicationInputDto input) => _applicationService.UpdateApplicationAsync(id, input);
