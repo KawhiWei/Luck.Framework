@@ -48,7 +48,7 @@ namespace Luck.Walnut.Application.Environments
 
             var appConfigurationEvent = new AppConfigurationEvent()
             {
-                Id = addConfiguration.Id
+                Id = appEnvironment.AppId
             };
             await _mediator.Publish(appConfigurationEvent, _cancellationTokenProvider.Token);
         }
