@@ -110,6 +110,7 @@ namespace Luck.Walnut.Application.Environments
         {
             var appEnvironment= await FindAppEnvironmentByIdAsync(environmentId);
             appEnvironment.Publish(configurationId);
+            appEnvironment.UpdateVersion(DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString());
             await _unitOfWork.CommitAsync();
         }
 

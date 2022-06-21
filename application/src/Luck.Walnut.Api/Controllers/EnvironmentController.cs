@@ -81,6 +81,14 @@ namespace Luck.Walnut.Api.Controllers
         [HttpPut("{environmentId}/{id}/config")]
         public Task UpdageAppConfiguration(string environmentId, string id, [FromBody] AppConfigurationInput input) => _environmentService.UpdateAppConfigurationAsync(environmentId, id, input);
 
+        /// <summary>
+        /// 发布配置
+        /// </summary>
+        /// <param name="environmentId"></param>
+        /// <param name="configrurationIds"></param>
+        /// <returns></returns>
+        [HttpPut("{environmentId}/publish")]
+        public  Task Publish(string environmentId,[FromBody] List<string> configrurationIds) => _environmentService.PublishAsync(environmentId,configrurationIds);
 
         /// <summary>
         /// 删除配置
