@@ -9,7 +9,7 @@ using MediatR;
 namespace Luck.Walnut.Api.GrpcServices;
 
 [AutoMapGrpcService]
-public class LuCatGrpcService : LuCat.LuCatBase
+public class LuCatGrpcService : LuCat.LuCatBase, INotificationHandler<AppConfigurationEvent>
 {
     private  readonly  ILogger<LuCatGrpcService> _logger;
     private  readonly  IClientMananger _clientManager;
@@ -19,7 +19,12 @@ public class LuCatGrpcService : LuCat.LuCatBase
         _clientManager = clientManager;
         _logger = logger;
     }
-
+    /// <summary>
+    /// 发起链接
+    /// </summary>
+    /// <param name="requestStream"></param>
+    /// <param name="responseStream"></param>
+    /// <param name="context"></param>
     public override async Task BathTheCat(IAsyncStreamReader<BathTheCatReq> requestStream,
         IServerStreamWriter<BathTheCatResp> responseStream, ServerCallContext context)
     {
@@ -50,12 +55,11 @@ public class LuCatGrpcService : LuCat.LuCatBase
 
     }
 
-    public override Task<CountCatResult> Count(Empty request, ServerCallContext context)
+
+    public async Task Handle(AppConfigurationEvent notification, CancellationToken cancellationToken)
     {
-        return Task.FromResult(new CountCatResult()
-        {
-            Count = 80
-        });
+        var list = _clientManager.GetConnectionIds(notification.Id);
+        var conn = list.FirstOrDefault(); 
     }
     private async Task SendBathTheCatAsync(IServerStreamWriter<BathTheCatResp> responseStream,string id)
     {
@@ -68,4 +72,12 @@ public class LuCatGrpcService : LuCat.LuCatBase
             _logger.LogError(e, "BathTheCatAsync");       
         }
     }
+    public override Task<CountCatResult> Count(Empty request, ServerCallContext context)
+    {
+        return Task.FromResult(new CountCatResult()
+        {
+            Count = 80
+        });
+    }
+
 }
