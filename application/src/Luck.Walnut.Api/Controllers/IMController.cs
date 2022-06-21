@@ -14,17 +14,12 @@ namespace Luck.Walnut.Api.Controllers
     /// 
     /// </summary>
     [Route("api/[controller]")]
-    public class IMController : ControllerBase, IWebSocketSession, INotificationHandler<AppConfigurationEvent>
+    public class ImController : ControllerBase, IWebSocketSession, INotificationHandler<AppConfigurationEvent>
     {
         public HttpContext WebSocketHttpContext { get; set; }
         public System.Net.WebSockets.WebSocket WebSocketClient { get; set; }
-
-        public readonly ConcurrentDictionary<string, List<string>> clientConnectionDictionary =
-            new ConcurrentDictionary<string, List<string>>();
-
         private readonly IClientMananger _clientManager;
-
-        public IMController(IClientMananger clientManager)
+        public ImController(IClientMananger clientManager)
         {
             _clientManager = clientManager;
         }
@@ -34,26 +29,6 @@ namespace Luck.Walnut.Api.Controllers
         public Task<string> ClientLogin(string appId)
         {
             _clientManager.Add(appId, WebSocketHttpContext.Connection.Id);
-            // if (clientConnectionDictionary.TryGetValue(appId, out var connectionIds))
-            // {
-            //     var newConnectionIds = connectionIds.Select(x => x).ToList();
-            //     newConnectionIds.Add(WebSocketHttpContext.Connection.Id);
-            //     clientConnectionDictionary.TryUpdate(appId, newConnectionIds, connectionIds);
-            // }
-            // else
-            // {
-            //     connectionIds = new List<string>()
-            //     {
-            //         WebSocketHttpContext.Connection.Id
-            //     };
-            //     clientConnectionDictionary.TryAdd(appId, connectionIds);
-            //     MvcChannelHandler.Clients.TryGetValue(WebSocketHttpContext.Connection.Id, out var requestFriendSocket);
-            //     // if (requestFriendSocket != null)
-            //     // {
-            //     //     await requestFriendSocket.SendAsync(new ArraySegment<byte>(Encoding.UTF8.GetBytes("{\"type\":\"login\",\"data\":\"" + WebSocketHttpContext.Connection.Id + "\"}")), WebSocketMessageType.Text, true, CancellationToken.None);
-            //     // }
-            // }
-            // // Console.WriteLine($"12132as1d32sa1d3as1d32{appId}---------->{WebSocketHttpContext.Connection.Id}");
             return Task.FromResult("ok"); //此处返回的数据会自动发送给WebSocket客户端，无需手动发送
         }
 
@@ -76,7 +51,6 @@ namespace Luck.Walnut.Api.Controllers
                 {
                     await requestFriendSocket.SendAsync(bytes,WebSocketMessageType.Text, true, CancellationToken.None);
                 }
-                
             }
         }
     }

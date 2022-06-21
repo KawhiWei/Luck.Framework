@@ -78,7 +78,7 @@ namespace Luck.Walnut.Query.Environments
                 throw new BusinessException($"{appId}不存在此环境");
             }
 
-            var configs = appEnvironment.Configurations.Select(x => new AppConfigurationOutput()
+            var configs = appEnvironment.Configurations.Where(x=>x.IsPublish).Select(x => new AppConfigurationOutput()
             {
                 Key = x.Key, Value = x.Value, Type = x.Type,
             }).ToList();
