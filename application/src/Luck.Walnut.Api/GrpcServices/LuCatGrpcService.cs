@@ -2,16 +2,33 @@ using System.Collections.Concurrent;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 using Luck.Walnut.Api.Protos;
+using Luck.Walnut.Application;
+using Luck.Walnut.Application.Environments;
 using Luck.Walnut.Application.Environments.Events;
 using MediatR;
 
 namespace Luck.Walnut.Api.GrpcServices;
 
 [AutoMapGrpcService]
-public class LuCatGrpcService : LuCat.LuCatBase, INotificationHandler<AppConfigurationEvent>
+public class LuCatGrpcService : LuCat.LuCatBase
 {
-    private readonly ConcurrentDictionary<string, IServerStreamWriter<BathTheCatResp>> _concurrentQueue =
-        new ConcurrentDictionary<string, IServerStreamWriter<BathTheCatResp>>();
+    private readonly ILogger<LuCatGrpcService> _logger;
+    private readonly IClientMananger _clientManager;
+    private readonly IApplactionClientConcurrentQueue _applactionClientConcurrentQueue;
+
+    public LuCatGrpcService(IClientMananger clientManager,IApplactionClientConcurrentQueue applactionClientConcurrentQueue, ILogger<LuCatGrpcService> logger)
+    {
+        _clientManager = clientManager;
+        _applactionClientConcurrentQueue = applactionClientConcurrentQueue;
+        _logger = logger;
+    }
+
+    /// <summary>
+    /// 发起链接
+    /// </summary>
+    /// <param name="requestStream"></param>
+    /// <param name="responseStream"></param>
+    /// <param name="context"></param>
     public override async Task BathTheCat(IAsyncStreamReader<BathTheCatReq> requestStream,
         IServerStreamWriter<BathTheCatResp> responseStream, ServerCallContext context)
     {
@@ -20,18 +37,16 @@ public class LuCatGrpcService : LuCat.LuCatBase, INotificationHandler<AppConfigu
             //将要洗澡的猫加入队列
             Console.WriteLine($"Cat {requestStream.Current.Id} Enqueue.");
         }
-        _concurrentQueue.TryAdd("aaaa",responseStream);
+        while (true)
+        {
+            if (_applactionClientConcurrentQueue.ConcurrentQueue.TryDequeue(out var str))
+            {
+                await responseStream.WriteAsync(new BathTheCatResp() { Message = $"铲屎的成功给一只{str}洗了澡！" });
+            }
+            await Task.Delay(1000);
+        }
     }
-    public async Task Handle(AppConfigurationEvent notification, CancellationToken cancellationToken)
-    {
-        await Task.CompletedTask;
-        Console.WriteLine(notification.Id);
-        //if (_concurrentQueue.TryGetValue(out var responseStream))
-        //{
-          //  await responseStream.WriteAsync(new BathTheCatResp() { Message = $"铲屎的成功给一只{notification.Id}洗了澡！" });
-        //}
-    }
-
+    
     public override Task<CountCatResult> Count(Empty request, ServerCallContext context)
     {
         return Task.FromResult(new CountCatResult()

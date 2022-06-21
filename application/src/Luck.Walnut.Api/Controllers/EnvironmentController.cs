@@ -46,7 +46,7 @@ namespace Luck.Walnut.Api.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpDelete("{id}")]
-        public Task DeleteEnvironment(string id) => _environmentService.DeleteAppEnvironmentAsnyc(id);
+        public Task DeleteEnvironment(string id) => _environmentService.DeleteAppEnvironmentAsync(id);
 
 
 
@@ -95,6 +95,7 @@ namespace Luck.Walnut.Api.Controllers
         /// <summary>
         /// 根据配置项id获取详情
         /// </summary>
+        /// <param name="environmentQueryService"></param>
         /// <param name="configurationId"></param>
         /// <returns></returns>
         [HttpGet("{configurationId}/config")]
@@ -106,10 +107,8 @@ namespace Luck.Walnut.Api.Controllers
         /// <param name="appId"></param>
         /// <param name="environmentName"></param>
         /// <returns></returns>
-        [HttpGet("{appid}/{environmentName}/config")]
-        public Task<AppEnvironmentOutputDto> GetAppConfigurationByAppIdAndEnvironmentName(
-            [FromServices] IEnvironmentQueryService environmentQueryService, string appId, string environmentName) =>
-            environmentQueryService.GetAppConfigurationByAppIdAndEnvironmentNameAsync(appId, environmentName);
+        [HttpGet("{appId}/{environmentName}/config")]
+        public Task<AppEnvironmentOutputDto> GetAppConfigurationByAppIdAndEnvironmentName([FromServices] IEnvironmentQueryService environmentQueryService, string appId, string environmentName) => environmentQueryService.GetAppConfigurationByAppIdAndEnvironmentNameAsync(appId, environmentName);
 
     }
 }

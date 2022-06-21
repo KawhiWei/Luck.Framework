@@ -48,26 +48,12 @@ namespace Luck.Walnut.Application.Environments
 
             var appConfigurationEvent = new AppConfigurationEvent()
             {
-                Id = addConfiguration.Id
+                Id = appEnvironment.AppId
             };
             await _mediator.Publish(appConfigurationEvent, _cancellationTokenProvider.Token);
         }
-
-
-        private const string FindEnvironmentNotExistErrorMsg = "环境数据不存在!!!!";
-        private async Task<AppEnvironment?> FindAppEnvironmentByIdAsync(string environmentId)
-        {
-            environmentId.NotNullOrEmpty(nameof(environmentId));
-            var appEnvironment = await _appEnvironmentRepository.FindAsync(environmentId);
-            IsBusinessException(appEnvironment is null, FindEnvironmentNotExistErrorMsg);
-            //if (appEnvironment is null)
-            //{
-            //    throw new BusinessException(FindEnvironmentNotExistErrorMsg);
-            //}
-
-            return appEnvironment;
-        }
-        public async Task DeleteAppEnvironmentAsnyc(string environmentId)
+        
+        public async Task DeleteAppEnvironmentAsync(string environmentId)
         {
             var appEnvironment = await FindAppEnvironmentByIdAsync(environmentId);
 
@@ -80,17 +66,7 @@ namespace Luck.Walnut.Application.Environments
             await _unitOfWork.CommitAsync(_cancellationTokenProvider.Token);
 
         }
-
-
-
-        private void IsBusinessException(bool isExp, string msg)
-        {
-            if (isExp)
-            {
-                throw new BusinessException(FindEnvironmentNotExistErrorMsg);
-            }
-
-        } 
+        
         public async Task DeleteAppConfigurationAsync(string environmentId, string configurationId)
         {
             environmentId.NotNullOrEmpty(nameof(environmentId));
@@ -113,6 +89,7 @@ namespace Luck.Walnut.Application.Environments
            
             await _unitOfWork.CommitAsync(_cancellationTokenProvider.Token);
         }
+        
         public async Task UpdateAppConfigurationAsync(string environmentId, string id, AppConfigurationInput input)
         {
             id.NotNullOrEmpty(nameof(id));
@@ -127,6 +104,35 @@ namespace Luck.Walnut.Application.Environments
                 .UpdateVersion("");
             _appEnvironmentRepository.Update(environment);
             await _unitOfWork.CommitAsync(_cancellationTokenProvider.Token);
+        }
+
+        public async Task PublishAsync(string environmentId, List<string> configurationId)
+        {
+            var appEnvironment= await FindAppEnvironmentByIdAsync(environmentId);
+            appEnvironment.Publish(configurationId);
+            await _unitOfWork.CommitAsync();
+        }
+
+        private void IsBusinessException(bool isExp, string msg)
+        {
+            if (isExp)
+            {
+                throw new BusinessException(FindEnvironmentNotExistErrorMsg);
+            }
+
+        } 
+        
+        private const string FindEnvironmentNotExistErrorMsg = "环境数据不存在!!!!";
+        
+        private async Task<AppEnvironment> FindAppEnvironmentByIdAsync(string environmentId)
+        {
+            environmentId.NotNullOrEmpty(nameof(environmentId));
+            var appEnvironment = await _appEnvironmentRepository.FindAll(x=>x.Id==environmentId).Include(x=>x.Configurations).FirstOrDefaultAsync();
+            if (appEnvironment is null)
+            {
+                throw new BusinessException(FindEnvironmentNotExistErrorMsg);
+            }
+            return appEnvironment;
         }
     }
 }
