@@ -43,7 +43,7 @@ namespace Luck.Walnut.Query.Environments
                         Key = a.Key,
                         Type = a.Type,
                         Value = a.Value,
-                    }).Skip((input.PageCount - 1) * input.PageSize).Take(input.PageSize).ToListAsync();
+                    }).Skip((input.PageSize - 1) * input.PageCount).Take(input.PageSize).ToListAsync();
             var total = await _appEnvironmentRepository.FindAll().Where(o => o.Id == environmentId)
                 .Include(o => o.Configurations).SelectMany(o => o.Configurations).CountAsync();
             return new PageBaseResult<AppEnvironmentPageListOutputDto>(total, list.ToArray());
