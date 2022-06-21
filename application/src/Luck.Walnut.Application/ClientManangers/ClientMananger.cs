@@ -1,18 +1,25 @@
 using System.Collections.Concurrent;
+using Luck.Walnut.Application.Environments;
 using Luck.Walnut.Application.Environments.Events;
 using MediatR;
+using Microsoft.Extensions.Configuration;
 
 namespace Luck.Walnut.Application;
 
-public class ClientMananger : IClientMananger
+public class ClientMananger : IClientMananger, INotificationHandler<AppConfigurationEvent>
 {
-    public ClientMananger()
+    private readonly IApplactionClientConcurrentQueue _applactionClientConcurrentQueue;
+
+    public ClientMananger(IApplactionClientConcurrentQueue applactionClientConcurrentQueue)
     {
+        _applactionClientConcurrentQueue = applactionClientConcurrentQueue;
         Watching();
     }
 
     private readonly ConcurrentDictionary<string, List<string>> _clients =
         new ConcurrentDictionary<string, List<string>>();
+
+    private IClientMananger _clientManangerImplementation;
     public event EventHandler<AppConfigurationEvent>? Update;
 
     public void Add(string appId,string connectionId)
@@ -59,5 +66,15 @@ public class ClientMananger : IClientMananger
         });
     }
 
+    
+    public  void Queue(string appId,string connectionId)
+    {
+        
+    }
+    public async Task Handle(AppConfigurationEvent notification, CancellationToken cancellationToken)
+    {
+        await  Task.CompletedTask;
+        _applactionClientConcurrentQueue.ConcurrentQueue.Enqueue(notification.Id);
+    }
     
 }

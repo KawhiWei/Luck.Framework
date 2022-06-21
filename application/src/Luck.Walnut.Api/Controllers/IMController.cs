@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Luck.Walnut.Api.Controllers
 {
     /// <summary>
-    /// 
+    /// WS实现
     /// </summary>
     [Route("api/[controller]")]
     public class ImController : ControllerBase, IWebSocketSession, INotificationHandler<AppConfigurationEvent>
