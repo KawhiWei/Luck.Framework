@@ -2,8 +2,8 @@
 {
     public class PageInput
     {
-        public int PageSize { get; set; }
+        public int PageSize { get; set; } = 10;
 
-        public int PageCount { get; set; }  
+        public int PageCount { get; set; } = 1;
     }
 }
