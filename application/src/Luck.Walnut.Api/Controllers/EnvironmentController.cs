@@ -46,7 +46,7 @@ namespace Luck.Walnut.Api.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpDelete("{id}")]
-        public Task DeleteEnvironment(string id) => _environmentService.DeleteAppEnvironmentAsnyc(id);
+        public Task DeleteEnvironment(string id) => _environmentService.DeleteAppEnvironmentAsync(id);
 
 
 

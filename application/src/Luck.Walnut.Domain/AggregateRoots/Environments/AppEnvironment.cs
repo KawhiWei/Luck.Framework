@@ -72,7 +72,18 @@ namespace Luck.Walnut.Domain.AggregateRoots.Environments
             Version = version;
             return this;
         }
-        
+
+        public AppEnvironment Publish(List<string> configruationIds)
+        {
+            var configurations = Configurations.Where(x => configruationIds.Contains(x.Id)).ToList();
+            configurations.ForEach(x =>
+            {
+                x.ChangePublish(true);
+            });
+            return this;
+        }
+
+
     }
 
 }
