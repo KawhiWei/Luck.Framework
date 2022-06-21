@@ -3,6 +3,7 @@ using Luck.Framework.Exceptions;
 using Luck.Framework.Threading;
 using Luck.Walnut.Domain.AggregateRoots.Applications;
 using Luck.Walnut.Domain.AggregateRoots.Environments;
+using Luck.Walnut.Dto;
 using Luck.Walnut.Dto.Environments;
 
 namespace Luck.Walnut.Query.Environments
@@ -29,8 +30,8 @@ namespace Luck.Walnut.Query.Environments
             _cancellationTokenProvider = cancellationTokenProvider;
         }
 
-        public async Task<List<AppEnvironmentPageListOutputDto>> GetAppEnvironmentConfigurationPageAsync(
-            string environmentId)
+        public async Task<PageBaseResult<AppEnvironmentPageListOutputDto>> GetAppEnvironmentConfigurationPageAsync(
+            string environmentId, PageInput input)
         {
             var list = await _appEnvironmentRepository.FindAll().Where(o => o.Id == environmentId)
                 .Include(o => o.Configurations).SelectMany(o => o.Configurations).Select(a =>
@@ -42,8 +43,10 @@ namespace Luck.Walnut.Query.Environments
                         Key = a.Key,
                         Type = a.Type,
                         Value = a.Value,
-                    }).ToListAsync();
-            return list;
+                    }).Skip((input.PageSize - 1) * input.PageCount).Take(input.PageSize).ToListAsync();
+            var total = await _appEnvironmentRepository.FindAll().Where(o => o.Id == environmentId)
+                .Include(o => o.Configurations).SelectMany(o => o.Configurations).CountAsync();
+            return new PageBaseResult<AppEnvironmentPageListOutputDto>(total, list.ToArray());
         }
 
         public async Task<AppConfigurationOutput> GetConfigurationDetailForConfigurationIdAsync(string configurationId)

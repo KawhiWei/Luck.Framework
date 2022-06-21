@@ -1,4 +1,5 @@
-﻿using Luck.Walnut.Dto.Applications;
+﻿using Luck.Walnut.Dto;
+using Luck.Walnut.Dto.Applications;
 
 namespace Luck.Walnut.Query.Applications
 {
@@ -8,7 +9,7 @@ namespace Luck.Walnut.Query.Applications
         /// 获取应用列表
         /// </summary>
         /// <returns></returns>
-        Task<IEnumerable<ApplicationOutputDto>> GetApplicationListAsync();
+        Task<PageBaseResult<ApplicationOutputDto>> GetApplicationListAsync(PageInput input);
 
         /// <summary>
         /// 获取应用和环境列表

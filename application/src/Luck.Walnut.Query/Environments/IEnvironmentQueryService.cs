@@ -1,4 +1,5 @@
-﻿using Luck.Walnut.Dto.Environments;
+﻿using Luck.Walnut.Dto;
+using Luck.Walnut.Dto.Environments;
 
 namespace Luck.Walnut.Query.Environments
 {
@@ -15,7 +16,7 @@ namespace Luck.Walnut.Query.Environments
         /// 分页
         /// </summary>
         /// <returns></returns>
-        Task<List<AppEnvironmentPageListOutputDto>> GetAppEnvironmentConfigurationPageAsync(string environmentId);
+        Task<PageBaseResult<AppEnvironmentPageListOutputDto>> GetAppEnvironmentConfigurationPageAsync(string environmentId, PageInput input);
         /// <summary>
         /// 根据配置项id获取详情
         /// </summary>

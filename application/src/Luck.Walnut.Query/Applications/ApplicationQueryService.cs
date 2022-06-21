@@ -2,6 +2,7 @@
 using Luck.Framework.Exceptions;
 using Luck.Walnut.Domain.AggregateRoots.Applications;
 using Luck.Walnut.Domain.AggregateRoots.Environments;
+using Luck.Walnut.Dto;
 using Luck.Walnut.Dto.Applications;
 using Luck.Walnut.Dto.Environments;
 
@@ -20,9 +21,10 @@ namespace Luck.Walnut.Query.Applications
 
 
 
-        public async Task<IEnumerable<ApplicationOutputDto>> GetApplicationListAsync()
+        public async Task<PageBaseResult<ApplicationOutputDto>> GetApplicationListAsync(PageInput input)
         {
-            return await _applicationRepository.FindAll()
+            var totalCount= await _applicationRepository.FindAll().CountAsync();
+            var data = await _applicationRepository.FindAll()
                  .Select(c => new ApplicationOutputDto
                  {
                      Id = c.Id,
@@ -32,7 +34,9 @@ namespace Luck.Walnut.Query.Applications
                      ChinessName = c.ChinessName,
                      DepartmentName = c.DepartmentName,
                      LinkMan = c.LinkMan,
-                 }).ToListAsync();
+                 }).Skip((input.PageSize - 1) * input.PageCount).Take(input.PageSize).ToListAsync();
+
+            return new PageBaseResult<ApplicationOutputDto>(totalCount, data.ToArray());
         }
 
 
