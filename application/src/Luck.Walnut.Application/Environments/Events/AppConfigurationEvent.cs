@@ -7,5 +7,14 @@ namespace Luck.Walnut.Application.Environments.Events;
 /// </summary>
 public class AppConfigurationEvent : INotification
 {
-    public string Id { get; set; } = default!;
+    
+    /// <summary>
+    /// 环境名称
+    /// </summary>
+    public string EnvironmentName { get; set; } = default!;
+    
+    /// <summary>
+    /// 应用Id
+    /// </summary>
+    public string AppId { get; set; } = default!;
 }

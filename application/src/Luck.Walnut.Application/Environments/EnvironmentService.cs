@@ -45,12 +45,6 @@ namespace Luck.Walnut.Application.Environments
             //appEnvironment = Check.NotNull(appEnvironment, nameof(appEnvironment));
             var addConfiguration= appEnvironment.AddConfiguration(input.Key, input.Value, input.Type, input.IsOpen, input.Group);
             await _unitOfWork.CommitAsync(_cancellationTokenProvider.Token);
-
-            var appConfigurationEvent = new AppConfigurationEvent()
-            {
-                Id = appEnvironment.AppId
-            };
-            await _mediator.Publish(appConfigurationEvent, _cancellationTokenProvider.Token);
         }
         
         public async Task DeleteAppEnvironmentAsync(string environmentId)
@@ -112,6 +106,12 @@ namespace Luck.Walnut.Application.Environments
             appEnvironment.Publish(configurationId);
             appEnvironment.UpdateVersion(DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString());
             await _unitOfWork.CommitAsync();
+            var appConfigurationEvent = new AppConfigurationEvent()
+            {
+                
+                AppId = appEnvironment.AppId
+            };
+            await _mediator.Publish(appConfigurationEvent, _cancellationTokenProvider.Token);
         }
 
         private void IsBusinessException(bool isExp, string msg)

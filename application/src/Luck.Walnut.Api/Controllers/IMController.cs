@@ -35,7 +35,7 @@ namespace Luck.Walnut.Api.Controllers
         [NonAction]
         public async Task Handle(AppConfigurationEvent notification, CancellationToken cancellationToken)
         {
-            var list = _clientManager.GetConnectionIds(notification.Id);
+            var list = _clientManager.GetConnectionIds(notification.AppId);
             var conn = list.FirstOrDefault();
             if (conn is not null)
             {
