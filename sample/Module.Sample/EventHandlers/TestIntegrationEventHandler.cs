@@ -10,7 +10,7 @@ namespace Module.Sample.EventHandlers
     public class TestIntegrationEvent : IntegrationEvent
     {
 
-       public string Name { get; set; }
+        public string Name { get; set; } = default!;
     }
 
     [DependencyInjection(ServiceLifetime.Transient, AddSelf = true)]

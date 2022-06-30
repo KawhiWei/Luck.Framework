@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Luck.Walnut.Persistence
+namespace Luck.Walnut.Persistence.Configurations
 {
     public class AppConfigurationMapConfiguration : IEntityTypeConfiguration<AppConfiguration>
     {

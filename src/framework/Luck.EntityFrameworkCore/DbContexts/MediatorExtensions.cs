@@ -2,7 +2,7 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace Luck.EntityFrameworkCore
+namespace Luck.EntityFrameworkCore.DbContexts
 {
     public static class MediatorExtensions
     {
