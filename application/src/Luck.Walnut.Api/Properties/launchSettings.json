@@ -3,7 +3,7 @@
     "Luck.Walnut.Api": {
       "commandName": "Project",
       "dotnetRunMessages": true,
-      "launchBrowser": true,
+      "launchBrowser": false,
       "launchUrl": "walnut/swagger",
       "applicationUrl": "http://localhost:5099",
       "environmentVariables": {
