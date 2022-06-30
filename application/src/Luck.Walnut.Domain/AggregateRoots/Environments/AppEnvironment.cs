@@ -53,7 +53,7 @@ namespace Luck.Walnut.Domain.AggregateRoots.Environments
             return appConfiguration;
         }
 
-        public AppEnvironment UpdateConfiguration(string id, string key, string value, string type, bool isOpen, string group)
+        public AppEnvironment UpdateConfiguration(string id, string key, string value, string type, bool isOpen, string? group)
         {
 
             var configuration = Configurations.FirstOrDefault(o => o.Id == id);
