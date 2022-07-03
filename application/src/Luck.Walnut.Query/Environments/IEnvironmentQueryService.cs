@@ -24,5 +24,13 @@ namespace Luck.Walnut.Query.Environments
         /// <returns></returns>
         Task<AppConfigurationOutput> GetConfigurationDetailForConfigurationIdAsync(string configurationId);
 
+        /// <summary>
+        /// 获取待发布的配置项
+        /// </summary>
+        /// <param name="environmentId"></param>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        Task<PageBaseResult<AppEnvironmentPageListOutputDto>> GetToBeReleasAppConfiguration(string environmentId, PageInput input);
+
     }
 }

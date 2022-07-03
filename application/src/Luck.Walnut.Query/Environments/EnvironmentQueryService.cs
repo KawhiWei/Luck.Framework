@@ -93,5 +93,23 @@ namespace Luck.Walnut.Query.Environments
                 Configs = configs,
             };
         }
+
+        public async Task<PageBaseResult<AppEnvironmentPageListOutputDto>> GetToBeReleasAppConfiguration(string environmentId, PageInput input)
+        {
+            var list = await _appEnvironmentRepository.FindAll().Where(o => o.Id == environmentId)
+                .Include(o => o.Configurations).SelectMany(o => o.Configurations).Select(a =>
+                    new AppEnvironmentPageListOutputDto
+                    {
+                        Id = a.Id,
+                        IsOpen = a.IsOpen,
+                        IsPublish = a.IsPublish,
+                        Key = a.Key,
+                        Type = a.Type,
+                        Value = a.Value,
+                    }).Where(o => o.IsPublish == false).Skip((input.PageCount - 1) * input.PageSize).Take(input.PageSize).ToListAsync();
+            var total = await _appEnvironmentRepository.FindAll().Where(o => o.Id == environmentId)
+                .Include(o => o.Configurations).SelectMany(o => o.Configurations).Where(o => o.IsPublish == false).CountAsync();
+            return new PageBaseResult<AppEnvironmentPageListOutputDto>(total, list.ToArray());
+        }
     }
 }

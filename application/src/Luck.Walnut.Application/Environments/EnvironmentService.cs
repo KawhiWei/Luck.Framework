@@ -7,6 +7,8 @@ using Luck.Walnut.Application.Environments.Events;
 using Luck.Walnut.Domain.AggregateRoots.Environments;
 using Luck.Walnut.Dto.Environments;
 using MediatR;
+using Luck.Walnut.Dto;
+using Luck.Walnut.Query;
 
 namespace Luck.Walnut.Application.Environments
 {
@@ -113,6 +115,8 @@ namespace Luck.Walnut.Application.Environments
             };
             await _mediator.Publish(appConfigurationEvent, _cancellationTokenProvider.Token);
         }
+
+       
 
         private void IsBusinessException(bool isExp, string msg)
         {
