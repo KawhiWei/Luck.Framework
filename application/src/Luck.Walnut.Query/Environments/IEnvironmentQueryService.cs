@@ -30,7 +30,7 @@ namespace Luck.Walnut.Query.Environments
         /// <param name="environmentId"></param>
         /// <param name="input"></param>
         /// <returns></returns>
-        Task<PageBaseResult<AppEnvironmentPageListOutputDto>> GetToBeReleasAppConfiguration(string environmentId, PageInput input);
+        Task<PageBaseResult<AppEnvironmentPageListOutputDto>> GetToDontPublishAppConfiguration(string environmentId, PageInput input);
 
     }
 }

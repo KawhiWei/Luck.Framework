@@ -23,8 +23,8 @@ namespace Luck.Walnut.Api.Controllers
         [HttpPost]
         public Task AddApplication([FromBody] ApplicationInputDto input) => _applicationService.AddApplicationAsync(input);
 
-        [HttpPost("Page")]
-        public Task<PageBaseResult<ApplicationOutputDto>> GetApplicationList([FromBody] PageInput input, [FromServices] IApplicationQueryService applicationQueryService) => applicationQueryService.GetApplicationListAsync(input);
+        [HttpGet("page")]
+        public Task<PageBaseResult<ApplicationOutputDto>> GetApplicationList([FromQuery] PageInput input, [FromServices] IApplicationQueryService applicationQueryService) => applicationQueryService.GetApplicationListAsync(input);
 
         [HttpGet("{id}")]
         public Task<ApplicationDetailOutputDto> GetApplicationDetailForId(string id,[FromServices] IApplicationQueryService applicationQueryService) => applicationQueryService.GetApplicationDetailForIdAsync(id);

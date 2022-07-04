@@ -34,7 +34,7 @@ namespace Luck.Walnut.Query.Applications
                      ChinessName = c.ChinessName,
                      DepartmentName = c.DepartmentName,
                      LinkMan = c.LinkMan,
-                 }).Skip((input.PageCount - 1) * input.PageSize).Take(input.PageSize).ToListAsync();
+                 }).ToPage(input.PageIndex, input.PageSize).ToListAsync();
 
             return new PageBaseResult<ApplicationOutputDto>(totalCount, data.ToArray());
         }

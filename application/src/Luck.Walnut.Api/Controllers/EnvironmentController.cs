@@ -125,7 +125,7 @@ namespace Luck.Walnut.Api.Controllers
         /// <param name="environmentId"></param>
         /// <param name="input"></param>
         /// <returns></returns>
-        [HttpPost("{environmentId}/ToBeReleasConfiguration")]
-        public Task<PageBaseResult<AppEnvironmentPageListOutputDto>> GetToBeReleasAppConfiguration([FromServices] IEnvironmentQueryService environmentQueryService, string environmentId, [FromBody] PageInput input) => environmentQueryService.GetToBeReleasAppConfiguration(environmentId, input);
+        [HttpPost("{environmentId}/getdontpublishconfiglist")]
+        public Task<PageBaseResult<AppEnvironmentPageListOutputDto>> GetToDontPublishAppConfiguration([FromServices] IEnvironmentQueryService environmentQueryService, string environmentId, [FromQuery] PageInput input) => environmentQueryService.GetToDontPublishAppConfiguration(environmentId, input);
     }
 }

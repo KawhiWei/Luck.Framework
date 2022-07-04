@@ -43,7 +43,7 @@ namespace Luck.Walnut.Query.Environments
                         Key = a.Key,
                         Type = a.Type,
                         Value = a.Value,
-                    }).Skip((input.PageCount - 1) * input.PageSize).Take(input.PageSize).ToListAsync();
+                    }).ToPage(input.PageIndex, input.PageSize).ToListAsync();
             var total = await _appEnvironmentRepository.FindAll().Where(o => o.Id == environmentId)
                 .Include(o => o.Configurations).SelectMany(o => o.Configurations).CountAsync();
             return new PageBaseResult<AppEnvironmentPageListOutputDto>(total, list.ToArray());
@@ -94,7 +94,7 @@ namespace Luck.Walnut.Query.Environments
             };
         }
 
-        public async Task<PageBaseResult<AppEnvironmentPageListOutputDto>> GetToBeReleasAppConfiguration(string environmentId, PageInput input)
+        public async Task<PageBaseResult<AppEnvironmentPageListOutputDto>> GetToDontPublishAppConfiguration(string environmentId, PageInput input)
         {
             var list = await _appEnvironmentRepository.FindAll().Where(o => o.Id == environmentId)
                 .Include(o => o.Configurations).SelectMany(o => o.Configurations).Select(a =>
@@ -106,7 +106,8 @@ namespace Luck.Walnut.Query.Environments
                         Key = a.Key,
                         Type = a.Type,
                         Value = a.Value,
-                    }).Where(o => o.IsPublish == false).Skip((input.PageCount - 1) * input.PageSize).Take(input.PageSize).ToListAsync();
+                        
+                    }).Where(o => o.IsPublish == false).ToPage(input.PageIndex, input.PageSize).ToListAsync();
             var total = await _appEnvironmentRepository.FindAll().Where(o => o.Id == environmentId)
                 .Include(o => o.Configurations).SelectMany(o => o.Configurations).Where(o => o.IsPublish == false).CountAsync();
             return new PageBaseResult<AppEnvironmentPageListOutputDto>(total, list.ToArray());
