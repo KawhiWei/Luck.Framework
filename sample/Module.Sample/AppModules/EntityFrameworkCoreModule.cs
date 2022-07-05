@@ -10,14 +10,14 @@ namespace Module.Sample
         {
             services.AddLuckDbContext<ModuleDbContext>(x =>
             {
-                x.ConnnectionString = "server=101.34.26.221;userid=root;pwd=&duyu789D;database=luck.sample;connectiontimeout=3000;port=40002;Pooling=true;Max Pool Size=300; Min Pool Size=5;";
-                x.Type = DataBaseType.MySql;
+                x.ConnnectionString = "User ID=postgres;Password=&duyu789;Host=101.34.26.221;Port=40011;Database=module.test";
+                x.Type = DataBaseType.PostgreSQL;
             });
         }
 
         public override void AddDbDriven(IServiceCollection service)
         {
-  
+            service.AddPostgreSQLDriven();
         }
     }
 }
