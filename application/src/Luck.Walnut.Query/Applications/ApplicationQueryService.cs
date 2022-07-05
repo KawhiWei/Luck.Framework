@@ -2,6 +2,7 @@
 using Luck.Framework.Exceptions;
 using Luck.Walnut.Domain.AggregateRoots.Applications;
 using Luck.Walnut.Domain.AggregateRoots.Environments;
+using Luck.Walnut.Domain.Repositories;
 using Luck.Walnut.Dto;
 using Luck.Walnut.Dto.Applications;
 using Luck.Walnut.Dto.Environments;
@@ -11,9 +12,9 @@ namespace Luck.Walnut.Query.Applications
     public class ApplicationQueryService : IApplicationQueryService
     {
         private readonly IAggregateRootRepository<AppEnvironment, string> _appEnvironmentRepository;
-        private readonly IAggregateRootRepository<Domain.AggregateRoots.Applications.Application, string> _applicationRepository;
+        private  readonly  IApplicationRepository _applicationRepository;
 
-        public ApplicationQueryService(IAggregateRootRepository<AppEnvironment, string> appEnvironmentRepository, IAggregateRootRepository<Application, string> applicationRepository)
+        public ApplicationQueryService(IAggregateRootRepository<AppEnvironment, string> appEnvironmentRepository,IApplicationRepository applicationRepository)
         {
             _appEnvironmentRepository = appEnvironmentRepository;
             _applicationRepository = applicationRepository;
@@ -24,17 +25,17 @@ namespace Luck.Walnut.Query.Applications
         public async Task<PageBaseResult<ApplicationOutputDto>> GetApplicationListAsync(PageInput input)
         {
             var totalCount= await _applicationRepository.FindAll().CountAsync();
-            var data = await _applicationRepository.FindAll()
-                 .Select(c => new ApplicationOutputDto
-                 {
-                     Id = c.Id,
-                     AppId = c.AppId,
-                     Status = c.Status,
-                     EnglishName = c.EnglishName,
-                     ChinessName = c.ChinessName,
-                     DepartmentName = c.DepartmentName,
-                     LinkMan = c.LinkMan,
-                 }).ToPage(input.PageIndex, input.PageSize).ToListAsync();
+            var data = (await _applicationRepository.FindListAsync(input))
+                .Select(c => new ApplicationOutputDto
+                {
+                    Id = c.Id,
+                    AppId = c.AppId,
+                    Status = c.Status,
+                    EnglishName = c.EnglishName,
+                    ChinessName = c.ChinessName,
+                    DepartmentName = c.DepartmentName,
+                    LinkMan = c.LinkMan,
+                });
 
             return new PageBaseResult<ApplicationOutputDto>(totalCount, data.ToArray());
         }

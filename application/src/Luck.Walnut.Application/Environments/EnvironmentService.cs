@@ -42,9 +42,12 @@ namespace Luck.Walnut.Application.Environments
 
         public async Task AddAppConfigurationAsync(string environmentId, AppConfigurationInput input)
         {
-            var appEnvironment = await _appEnvironmentRepository.FindAsync(environmentId);
+            var appEnvironment = await _appEnvironmentRepository.FindAll(x=>x.Id==environmentId).Include(x=>x.Configurations).FirstOrDefaultAsync();
             _ = appEnvironment ?? throw new ArgumentNullException(nameof(appEnvironment));
             //appEnvironment = Check.NotNull(appEnvironment, nameof(appEnvironment));
+            if(appEnvironment.Configurations.Where(x=>x.Key==input.Key).Any())
+                throw  new BusinessException($"{input.Key}已存在");
+            
             var addConfiguration= appEnvironment.AddConfiguration(input.Key, input.Value, input.Type, input.IsOpen, input.Group);
             await _unitOfWork.CommitAsync(_cancellationTokenProvider.Token);
         }

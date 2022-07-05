@@ -1,4 +1,4 @@
-﻿namespace Luck.Walnut.Query
+﻿namespace Luck.Walnut.Dto
 {
     public class PageInput
     {
