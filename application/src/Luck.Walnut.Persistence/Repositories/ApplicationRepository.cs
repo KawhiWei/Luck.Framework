@@ -5,6 +5,7 @@ using Luck.Framework.Exceptions;
 using Luck.Walnut.Domain.AggregateRoots.Applications;
 using Luck.Walnut.Domain.Repositories;
 using Luck.Walnut.Dto;
+using Luck.Walnut.Dto.Applications;
 using Microsoft.EntityFrameworkCore;
 
 namespace Luck.Walnut.Persistence.Repositories;
@@ -15,19 +16,29 @@ public class ApplicationRepository : EFCoreAggregateRootRepository<Application, 
     {
     }
 
-    public async Task<Application> FindFirstOrDefaultByIdAsync(string id)
+    public async Task<Application?> FindFirstOrDefaultByIdAsync(string id)
     {
-        return await FindAll(x => x.Id == id).FirstOrDefaultAsync() ?? throw new BusinessException("应用不存在");
+        return await FindAll(x => x.Id == id).FirstOrDefaultAsync();
     }
 
-    public async Task<Application> FindFirstOrDefaultByAppIdAsync(string appId)
+    public async Task<Application?> FindFirstOrDefaultByAppIdAsync(string appId)
     {
-        return await FindAll(x => x.AppId == appId).FirstOrDefaultAsync() ?? throw new BusinessException("应用不存在");
+        return await FindAll(x => x.AppId == appId).FirstOrDefaultAsync();
     }
 
     
-    public Task<List<Application>> FindListAsync(PageInput input)
+    public async Task<IEnumerable<ApplicationOutputDto>> FindListAsync(PageInput input)
     {
-        return  FindAll().ToPage(input.PageIndex,input.PageSize).ToListAsync();
+        return await  FindAll()
+            .Select(c => new ApplicationOutputDto
+            {
+                Id = c.Id,
+                AppId = c.AppId,
+                Status = c.Status,
+                EnglishName = c.EnglishName,
+                ChinessName = c.ChinessName,
+                DepartmentName = c.DepartmentName,
+                LinkMan = c.LinkMan,
+            }).ToPage(input.PageIndex,input.PageSize).ToArrayAsync();
     }
 }

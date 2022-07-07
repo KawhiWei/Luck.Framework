@@ -6,6 +6,6 @@ namespace Luck.Walnut.Dto.Applications
     {
         public ApplicationOutputDto Application { get; set; }=default!;
 
-        public List<AppEnvironmentOptputListDto> EnvironmentLists { get; set; } = default!;
+        public List<AppEnvironmentListOutputDto> EnvironmentLists { get; set; } = default!;
     }
 }

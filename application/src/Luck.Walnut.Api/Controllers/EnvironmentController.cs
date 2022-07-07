@@ -57,7 +57,7 @@ namespace Luck.Walnut.Api.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("{environmentId}/configlist")]
-        public Task<PageBaseResult<AppEnvironmentPageListOutputDto>> GetAppEnvironmentAndConfigurationPage(string environmentId, [FromQuery] PageInput input,[FromServices] IEnvironmentQueryService environmentQueryService) => environmentQueryService.GetAppEnvironmentConfigurationPageAsync(environmentId, input);
+        public Task<PageBaseResult<AppConfigurationOutputDto>> GetAppEnvironmentAndConfigurationPage(string environmentId, [FromQuery] PageInput input,[FromServices] IEnvironmentQueryService environmentQueryService) => environmentQueryService.GetAppEnvironmentConfigurationPageAsync(environmentId, input);
 
 
         /// <summary>
@@ -107,7 +107,7 @@ namespace Luck.Walnut.Api.Controllers
         /// <param name="configurationId"></param>
         /// <returns></returns>
         [HttpGet("{configurationId}/config")]
-        public Task<AppConfigurationOutput> GetAppEnvironmentConfigurationDetail([FromServices] IEnvironmentQueryService environmentQueryService, string configurationId) => environmentQueryService.GetConfigurationDetailForConfigurationIdAsync(configurationId);
+        public Task<AppConfigurationOutputDto> GetAppEnvironmentConfigurationDetail([FromServices] IEnvironmentQueryService environmentQueryService, string configurationId) => environmentQueryService.GetConfigurationDetailForConfigurationIdAsync(configurationId);
         /// <summary>
         /// 根据appId和EnvironmentName获取配置
         /// </summary>

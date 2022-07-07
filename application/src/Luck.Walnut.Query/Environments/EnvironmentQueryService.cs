@@ -3,6 +3,7 @@ using Luck.Framework.Exceptions;
 using Luck.Framework.Threading;
 using Luck.Walnut.Domain.AggregateRoots.Applications;
 using Luck.Walnut.Domain.AggregateRoots.Environments;
+using Luck.Walnut.Domain.Repositories;
 using Luck.Walnut.Dto;
 using Luck.Walnut.Dto.Environments;
 
@@ -10,7 +11,7 @@ namespace Luck.Walnut.Query.Environments
 {
     public class EnvironmentQueryService : IEnvironmentQueryService
     {
-        private readonly IAggregateRootRepository<AppEnvironment, string> _appEnvironmentRepository;
+        private readonly IEnvironmentRepository _appEnvironmentRepository;
 
         private readonly IAggregateRootRepository<Application, string>
             _applicationRepository;
@@ -19,7 +20,7 @@ namespace Luck.Walnut.Query.Environments
         private readonly ICancellationTokenProvider _cancellationTokenProvider; //当中断请求时，所以有操作同时也中断
         private const string FindAppConfigurationNotExistErrorMsg = "配置数据不存在!!!!";
 
-        public EnvironmentQueryService(IAggregateRootRepository<AppEnvironment, string> appEnvironmentRepository,
+        public EnvironmentQueryService(IEnvironmentRepository appEnvironmentRepository,
             ICancellationTokenProvider cancellationTokenProvider,
             IAggregateRootRepository<Application, string> applicationRepository,
             IEntityRepository<AppConfiguration, string> appConfigurationRepository)
@@ -30,29 +31,17 @@ namespace Luck.Walnut.Query.Environments
             _cancellationTokenProvider = cancellationTokenProvider;
         }
 
-        public async Task<PageBaseResult<AppEnvironmentPageListOutputDto>> GetAppEnvironmentConfigurationPageAsync(
+        public Task<PageBaseResult<AppConfigurationOutputDto>> GetAppEnvironmentConfigurationPageAsync(
             string environmentId, PageInput input)
         {
-            var list = await _appEnvironmentRepository.FindAll().Where(o => o.Id == environmentId)
-                .Include(o => o.Configurations).SelectMany(o => o.Configurations).Select(a =>
-                    new AppEnvironmentPageListOutputDto
-                    {
-                        Id = a.Id,
-                        IsOpen = a.IsOpen,
-                        IsPublish = a.IsPublish,
-                        Key = a.Key,
-                        Type = a.Type,
-                        Value = a.Value,
-                    }).ToPage(input.PageIndex, input.PageSize).ToListAsync();
-            var total = await _appEnvironmentRepository.FindAll().Where(o => o.Id == environmentId)
-                .Include(o => o.Configurations).SelectMany(o => o.Configurations).CountAsync();
-            return new PageBaseResult<AppEnvironmentPageListOutputDto>(total, list.ToArray());
+          return  _appEnvironmentRepository.GetAppConfigurationPageAsync(environmentId, input);
         }
 
-        public async Task<AppConfigurationOutput> GetConfigurationDetailForConfigurationIdAsync(string configurationId)
+        public async Task<AppConfigurationOutputDto> GetConfigurationDetailForConfigurationIdAsync(
+            string configurationId)
         {
             var appconfigutation = await GetConfigurationDetailByIdAsync(configurationId);
-            return new AppConfigurationOutput()
+            return new AppConfigurationOutputDto()
             {
                 Id = appconfigutation.Id,
                 Key = appconfigutation.Key,
@@ -81,10 +70,11 @@ namespace Luck.Walnut.Query.Environments
                 throw new BusinessException($"{appId}不存在此环境");
             }
 
-            var configs = appEnvironment.Configurations.Where(x=>x.IsPublish).Select(x => new AppConfigurationOutput()
-            {
-                Key = x.Key, Value = x.Value, Type = x.Type,
-            }).ToList();
+            var configs = appEnvironment.Configurations.Where(x => x.IsPublish).Select(x =>
+                new AppConfigurationOutputDto()
+                {
+                    Key = x.Key, Value = x.Value, Type = x.Type,
+                }).ToList();
             return new AppEnvironmentOutputDto()
             {
                 EnvironmentName = appEnvironment.EnvironmentName,
@@ -94,7 +84,8 @@ namespace Luck.Walnut.Query.Environments
             };
         }
 
-        public async Task<PageBaseResult<AppEnvironmentPageListOutputDto>> GetToDontPublishAppConfiguration(string environmentId, PageInput input)
+        public async Task<PageBaseResult<AppEnvironmentPageListOutputDto>> GetToDontPublishAppConfiguration(
+            string environmentId, PageInput input)
         {
             var list = await _appEnvironmentRepository.FindAll().Where(o => o.Id == environmentId)
                 .Include(o => o.Configurations).SelectMany(o => o.Configurations).Select(a =>
@@ -106,10 +97,10 @@ namespace Luck.Walnut.Query.Environments
                         Key = a.Key,
                         Type = a.Type,
                         Value = a.Value,
-                        
                     }).Where(o => o.IsPublish == false).ToPage(input.PageIndex, input.PageSize).ToListAsync();
             var total = await _appEnvironmentRepository.FindAll().Where(o => o.Id == environmentId)
-                .Include(o => o.Configurations).SelectMany(o => o.Configurations).Where(o => o.IsPublish == false).CountAsync();
+                .Include(o => o.Configurations).SelectMany(o => o.Configurations).Where(o => o.IsPublish == false)
+                .CountAsync();
             return new PageBaseResult<AppEnvironmentPageListOutputDto>(total, list.ToArray());
         }
     }

@@ -16,13 +16,13 @@ namespace Luck.Walnut.Query.Environments
         /// 分页
         /// </summary>
         /// <returns></returns>
-        Task<PageBaseResult<AppEnvironmentPageListOutputDto>> GetAppEnvironmentConfigurationPageAsync(string environmentId, PageInput input);
+        Task<PageBaseResult<AppConfigurationOutputDto>> GetAppEnvironmentConfigurationPageAsync(string environmentId, PageInput input);
         /// <summary>
         /// 根据配置项id获取详情
         /// </summary>
         /// <param name="configurationId"></param>
         /// <returns></returns>
-        Task<AppConfigurationOutput> GetConfigurationDetailForConfigurationIdAsync(string configurationId);
+        Task<AppConfigurationOutputDto> GetConfigurationDetailForConfigurationIdAsync(string configurationId);
 
         /// <summary>
         /// 获取待发布的配置项
