@@ -1,39 +1,39 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+    <Import Project="..\..\common.props"/>
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
 
-	<PropertyGroup>
-		<TargetFramework>net6.0</TargetFramework>
-		<ImplicitUsings>enable</ImplicitUsings>
-		<Nullable>enable</Nullable>
+    </PropertyGroup>
 
-	</PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+        <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+        <NoWarn>1701;1702;8618;8603</NoWarn>
+    </PropertyGroup>
 
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-		<TreatWarningsAsErrors>False</TreatWarningsAsErrors>
-		<NoWarn>1701;1702;8618;8603</NoWarn>
-	</PropertyGroup>
 
-	
-	<ItemGroup>
-		<Folder Include="Infrastructure\Excel\" />
-	</ItemGroup>
+    <ItemGroup>
+        <Folder Include="Infrastructure\Excel\"/>
+    </ItemGroup>
 
-	<ItemGroup>
-		<PackageReference Include="JetBrains.Annotations" Version="2022.1.0" />
-		<PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
-		<PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="6.0.0" />
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
-		<PackageReference Include="Microsoft.Extensions.DependencyModel" Version="6.0.0" />
-		<PackageReference Include="Microsoft.Extensions.FileProviders.Abstractions" Version="6.0.0" />
-		<PackageReference Include="Microsoft.Extensions.FileProviders.Physical" Version="6.0.0" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.1" />
-		<PackageReference Include="Microsoft.Extensions.Options" Version="6.0.0" />
-		<PackageReference Include="Microsoft.DotNet.PlatformAbstractions" Version="3.1.6" />
-	    <PackageReference Include="MediatR" Version="10.0.1" />
-	    <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
-	</ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="JetBrains.Annotations" Version="2022.1.0"/>
+        <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0"/>
+        <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="6.0.0"/>
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0"/>
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0"/>
+        <PackageReference Include="Microsoft.Extensions.DependencyModel" Version="6.0.0"/>
+        <PackageReference Include="Microsoft.Extensions.FileProviders.Abstractions" Version="6.0.0"/>
+        <PackageReference Include="Microsoft.Extensions.FileProviders.Physical" Version="6.0.0"/>
+        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.1"/>
+        <PackageReference Include="Microsoft.Extensions.Options" Version="6.0.0"/>
+        <PackageReference Include="Microsoft.DotNet.PlatformAbstractions" Version="3.1.6"/>
+        <PackageReference Include="MediatR" Version="10.0.1"/>
+        <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1"/>
+    </ItemGroup>
 
-	<ItemGroup>
-	  <None Remove="Microsoft.Extensions.Hosting" />
-	</ItemGroup>
+    <ItemGroup>
+        <None Remove="Microsoft.Extensions.Hosting"/>
+    </ItemGroup>
 </Project>

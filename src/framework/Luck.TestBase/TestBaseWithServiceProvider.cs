@@ -16,7 +16,7 @@ namespace Luck.TestBase
             return ServiceProvider.GetService<T>();
         }
 
-        protected virtual T GetRequiredService<T>()
+        protected virtual T GetRequiredService<T>() where T : notnull
         {
             return ServiceProvider.GetRequiredService<T>();
         }
