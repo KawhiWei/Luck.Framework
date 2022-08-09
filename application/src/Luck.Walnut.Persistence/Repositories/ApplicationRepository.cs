@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Luck.Walnut.Persistence.Repositories;
 
-public class ApplicationRepository : EFCoreAggregateRootRepository<Application, string>, IApplicationRepository
+public class ApplicationRepository : EfCoreAggregateRootRepository<Application, string>, IApplicationRepository
 {
     public ApplicationRepository(ILuckDbContext dbContext) : base(dbContext)
     {

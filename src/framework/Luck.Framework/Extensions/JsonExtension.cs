@@ -12,7 +12,8 @@ namespace Luck.Framework.Extensions
             //https://github.com/dotnet/runtime/issues/28567
             var jsonOption = new JsonSerializerOptions
             {
-                Encoder = JavaScriptEncoder.Create(UnicodeRanges.All)
+                Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+                WriteIndented = true
             };
 
             if (obj == null)

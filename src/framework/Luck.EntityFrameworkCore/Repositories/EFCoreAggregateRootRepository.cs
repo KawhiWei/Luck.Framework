@@ -7,14 +7,14 @@ using System.Linq.Expressions;
 
 namespace Luck.EntityFrameworkCore.Repositories
 {
-    public class EFCoreAggregateRootRepository<TEntity, TKey> : AggregateRootRepositoryBase<TEntity, TKey> where TEntity : class, IAggregateRootBase
+    public class EfCoreAggregateRootRepository<TEntity, TKey> : AggregateRootRepositoryBase<TEntity, TKey> where TEntity : class, IAggregateRootBase
         where TKey : IEquatable<TKey>
     {
         private readonly LuckDbContextBase _dbContext;
 
         public LuckDbContextBase DbContext => _dbContext;
 
-        public EFCoreAggregateRootRepository(ILuckDbContext dbContext)
+        public EfCoreAggregateRootRepository(ILuckDbContext dbContext)
         {
             _dbContext = dbContext as LuckDbContextBase ?? throw new NotSupportedException();
         }
