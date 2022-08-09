@@ -1,5 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
-    <Import Project="..\..\common.props"/>
+    <Import Project="..\..\common.props" />
     <PropertyGroup>
         <TargetFramework>net6.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
@@ -7,11 +7,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="StackExchange.Redis" Version="2.5.61"/>
+        <PackageReference Include="StackExchange.Redis" Version="2.6.48" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Luck.Framework\Luck.Framework.csproj"/>
+        <ProjectReference Include="..\Luck.Framework\Luck.Framework.csproj" />
     </ItemGroup>
 
 </Project>

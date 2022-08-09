@@ -1,15 +1,15 @@
 <Project Sdk="Microsoft.NET.Sdk">
-    <Import Project="..\..\common.props"/>
+    <Import Project="..\..\common.props" />
     <PropertyGroup>
         <TargetFramework>net6.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="6.0.4"/>
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="6.0.6" />
     </ItemGroup>
     <ItemGroup>
-        <ProjectReference Include="..\Luck.EntityFrameworkCore\Luck.EntityFrameworkCore.csproj"/>
+        <ProjectReference Include="..\Luck.EntityFrameworkCore\Luck.EntityFrameworkCore.csproj" />
     </ItemGroup>
 
 </Project>
