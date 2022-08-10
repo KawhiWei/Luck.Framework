@@ -4,9 +4,9 @@ public interface ISqlRepository<TEntity, in TKey> where TEntity : IEntity
 {
     IEnumerable<TEntity> FindAll(string sql,object? param);
     
-    TEntity? Find(TKey primaryKey);
+    TEntity? Find(string sql,  object? param);
 
-    ValueTask<TEntity?> FindAsync(TKey primaryKey);
+    ValueTask<TEntity?> FindAsync(string sql,  object? param);
     
     
     Task<IEnumerable<TEntity>> FindAllAsync(string sql,object? param);

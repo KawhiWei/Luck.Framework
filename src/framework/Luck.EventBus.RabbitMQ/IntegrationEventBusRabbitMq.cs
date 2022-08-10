@@ -17,7 +17,7 @@ using Luck.Framework.Infrastructure;
 
 namespace Luck.EventBus.RabbitMQ;
 
-public  class IntegrationEventBusRabbitMq : IIntegrationEventBus, IDisposable
+public class IntegrationEventBusRabbitMq : IIntegrationEventBus, IDisposable
 {
     private readonly IRabbitMQPersistentConnection _persistentConnection;
     private readonly ILogger<IntegrationEventBusRabbitMq> _logger;
@@ -26,14 +26,13 @@ public  class IntegrationEventBusRabbitMq : IIntegrationEventBus, IDisposable
     private readonly IServiceProvider _serviceProvider;
     private string _handleName = nameof(IIntegrationEventHandler<IIntegrationEvent>.HandleAsync);
     private bool _isDisposed = false;
-    public IntegrationEventBusRabbitMq(IRabbitMQPersistentConnection persistentConnection,
-        ILogger<IntegrationEventBusRabbitMq> logger, int retryCount,
-        IIntegrationEventBusSubscriptionsManager subsManager, IServiceProvider serviceProvider)
+
+    public IntegrationEventBusRabbitMq(int retryCount, IServiceProvider serviceProvider)
     {
-        _persistentConnection = persistentConnection;
-        _logger = logger;
+        _persistentConnection = serviceProvider.GetService<IRabbitMQPersistentConnection>() ?? throw new ArgumentNullException(nameof(_persistentConnection)); // persistentConnection;
+        _logger = serviceProvider.GetService<ILogger<IntegrationEventBusRabbitMq>>() ?? throw new ArgumentNullException(nameof(_logger)); //(logger);
         _retryCount = retryCount;
-        _subsManager = subsManager ?? new RabbitMqEventBusSubscriptionsManager();
+        _subsManager = serviceProvider.GetService<IIntegrationEventBusSubscriptionsManager>() ?? throw new ArgumentNullException(nameof(_subsManager)); //subsManager ?? new RabbitMqEventBusSubscriptionsManager();
         _serviceProvider = serviceProvider;
         _subsManager.OnEventRemoved += SubsManager_OnEventRemoved;
     }
@@ -80,7 +79,7 @@ public  class IntegrationEventBusRabbitMq : IIntegrationEventBus, IDisposable
         var properties = channel.CreateBasicProperties();
 
         //创建交换机
-        channel.ExchangeDeclare(rabbitMqAttribute.Exchange, rabbitMqAttribute.Type,durable:true);
+        channel.ExchangeDeclare(rabbitMqAttribute.Exchange, rabbitMqAttribute.Type, durable: true);
         //创建队列
         //channel.QueueDeclare(queue: rabbitMQAttribute.Queue, durable: false);
         if (!string.IsNullOrEmpty(rabbitMqAttribute.RoutingKey) && !string.IsNullOrEmpty(rabbitMqAttribute.Queue))
@@ -90,21 +89,16 @@ public  class IntegrationEventBusRabbitMq : IIntegrationEventBus, IDisposable
         {
             properties.DeliveryMode = 2;
             _logger.LogTrace("向RabbitMQ发布事件: {EventId}", @event.EventId);
+            if (channel is null)
+            {
+                throw new ArgumentNullException(nameof(channel));
+            }
+
             channel.BasicPublish(rabbitMqAttribute.Exchange, rabbitMqAttribute.RoutingKey, true, properties, body);
         });
     }
     
-    
-    /// <summary>
-    /// 对外暴露的订阅者方法
-    /// </summary>
-    /// <typeparam name="T">传入参数</typeparam>
-    /// <typeparam name="TH">处理器</typeparam>
-    public void Subscribe<T, TH>() where T : IntegrationEvent where TH : IIntegrationEventHandler<T>
-    {
-        Subscribe(typeof(T), typeof(TH));
-    }
-    
+
     /// <summary>
     /// 检查订阅事件是否存在
     /// </summary>
@@ -128,19 +122,8 @@ public  class IntegrationEventBusRabbitMq : IIntegrationEventBus, IDisposable
         if (handlerType.IsBaseOn(typeof(IIntegrationEventHandler<>)) == false)
             throw new ArgumentNullException($"{nameof(handlerType)}IIntegrationEventHandler<>", nameof(handlerType));
     }
-
-    /// <summary>
-    /// 集成事件订阅者处理
-    /// </summary>
-    /// <param name="eventType"></param>
-    /// <param name="handlerType"></param>
-    /// <exception cref="ArgumentNullException"></exception>
-    public void Subscribe(Type eventType, Type handlerType)
-    {
-
-    }
-
     
+
     /// <summary>
     /// 集成事件订阅者处理
     /// </summary>
@@ -156,10 +139,11 @@ public  class IntegrationEventBusRabbitMq : IIntegrationEventBus, IDisposable
             {
                 continue;
             }
+
             CheckEventType(eventType);
             CheckHandlerType(handlerType);
             var rabbitMqAttribute = eventType.GetCustomAttribute<RabbitMQAttribute>();
-        
+
             if (rabbitMqAttribute == null)
                 throw new ArgumentNullException($"{nameof(eventType)}未设置<RabbitMQAttribute>特性,无法发布事件");
 
@@ -173,8 +157,6 @@ public  class IntegrationEventBusRabbitMq : IIntegrationEventBus, IDisposable
                     StartBasicConsume(eventType, rabbitMqAttribute, consumerChannel);
                 }
             });
-
-
         }
     }
 
@@ -194,7 +176,7 @@ public  class IntegrationEventBusRabbitMq : IIntegrationEventBus, IDisposable
 
         var channel = _persistentConnection.CreateModel();
         //创建交换机
-        channel.ExchangeDeclare(rabbitMqAttribute.Exchange, rabbitMqAttribute.Type,durable:true);
+        channel.ExchangeDeclare(rabbitMqAttribute.Exchange, rabbitMqAttribute.Type, durable: true);
         //创建队列
         channel.QueueDeclare(rabbitMqAttribute.Queue, true, false, false, null);
 
@@ -208,7 +190,7 @@ public  class IntegrationEventBusRabbitMq : IIntegrationEventBus, IDisposable
         return channel;
     }
 
-    private void StartBasicConsume(Type eventType, RabbitMQAttribute rabbitMqAttribute,IModel? consumerChannel)
+    private void StartBasicConsume(Type eventType, RabbitMQAttribute rabbitMqAttribute, IModel? consumerChannel)
         //where T : IntegrationEvent
     {
         _logger.LogTrace("启动RabbitMQ基本消耗");
@@ -226,7 +208,7 @@ public  class IntegrationEventBusRabbitMq : IIntegrationEventBus, IDisposable
 
                     await ProcessEvent(eventType, message);
                 }
-                catch (Exception ex)
+                catch (Exception? ex)
                 {
                     _logger.LogWarning(ex, "----- 错误处理消息 \"{Message}\"", message);
                 }
@@ -289,7 +271,7 @@ public  class IntegrationEventBusRabbitMq : IIntegrationEventBus, IDisposable
             _logger.LogWarning("没有订阅RabbitMQ事件: {EventName}", eventName);
     }
 
-    private void DoInternalSubscription(string eventName, RabbitMQAttribute rabbitMqAttribute,IModel consumerChannel)
+    private void DoInternalSubscription(string eventName, RabbitMQAttribute rabbitMqAttribute, IModel consumerChannel)
     {
         var containsKey = _subsManager.HasSubscriptionsForEvent(eventName);
         if (!containsKey)
@@ -302,16 +284,6 @@ public  class IntegrationEventBusRabbitMq : IIntegrationEventBus, IDisposable
         }
     }
 
-    public void Unsubscribe<T, TH>() where T : IntegrationEvent where TH : IIntegrationEventHandler<T>
-    {
-        var eventName = _subsManager.GetEventKey<T>();
-
-        _logger.LogInformation("移除事件 {EventName}", eventName);
-
-        _subsManager.RemoveSubscription<T, TH>();
-    }
-
-    
     private void SubsManager_OnEventRemoved(object? sender, EventRemovedEventArgs args)
     {
         var eventName = args.EventType.Name;

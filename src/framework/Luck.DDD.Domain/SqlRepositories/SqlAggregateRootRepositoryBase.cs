@@ -24,9 +24,9 @@ public abstract class SqlAggregateRootRepositoryBase<TEntity, TKey> :
 
     public abstract Task<IEnumerable<TEntity>> FindAllAsync(string sql,object? param);
     
-    public abstract TEntity? Find(TKey primaryKey);
+    public abstract TEntity? Find(string sql,  object? param);
 
-    public abstract ValueTask<TEntity?> FindAsync(TKey primaryKey);
+    public abstract ValueTask<TEntity?> FindAsync(string sql,  object? param);
     
     
 }

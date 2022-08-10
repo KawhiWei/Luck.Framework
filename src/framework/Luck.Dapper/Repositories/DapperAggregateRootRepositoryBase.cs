@@ -121,19 +121,19 @@ public class DapperAggregateRootRepositoryBase<TEntity, TKey> : SqlAggregateRoot
         }
     }
 
-    public override TEntity? Find(TKey primaryKey)
+    public override TEntity? Find(string sql,  object? param)
     {
         using (var conn = _dbConnectionFactory.GetDbConnection())
         {
-            return conn.QueryFirstOrDefault<TEntity>("");
+            return conn.QueryFirstOrDefault<TEntity>(sql,param);
         }
     }
 
-    public override async ValueTask<TEntity?> FindAsync(TKey primaryKey)
+    public override async ValueTask<TEntity?> FindAsync(string sql,  object? param)
     {
         using (var conn = await _dbConnectionFactory.GetDbConnectionAsync())
         {
-            return await conn.QueryFirstOrDefaultAsync<TEntity>("");
+            return await conn.QueryFirstOrDefaultAsync<TEntity>(sql,param);
         }
     }
 }

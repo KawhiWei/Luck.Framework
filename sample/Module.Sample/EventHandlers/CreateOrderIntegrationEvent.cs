@@ -26,7 +26,7 @@ namespace Module.Sample.EventHandlers
         public Task HandleAsync(CreateOrderIntegrationEvent @event)
         {
           
-          _logger.LogInformation($"CreateOrderIntegrationEvent_{@event.Serialize()}-----{DateTime.Now}");
+          _logger.LogInformation($"CreateOrderIntegrationEvent_Subscribe【{@event.Serialize()}】-----{DateTime.Now}");
           return  Task.CompletedTask;
         }
 

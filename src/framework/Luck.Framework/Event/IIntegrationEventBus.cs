@@ -5,19 +5,17 @@
     /// </summary>
     public interface IIntegrationEventBus
     {
+        /// <summary>
+        /// 发布事件
+        /// </summary>
+        /// <param name="event"></param>
+        /// <typeparam name="TEvent"></typeparam>
         void Publish<TEvent>(IIntegrationEvent @event) where TEvent : IIntegrationEvent;
-
-
-
-
-       void Subscribe(Type eventType, Type handlerType);
-
-       void Subscribe();
-        void Subscribe<T, TH>()
-        where T : IntegrationEvent
-        where TH : IIntegrationEventHandler<T>;
-        void Unsubscribe<T, TH>()
-            where T : IntegrationEvent
-        where TH : IIntegrationEventHandler<T>;
+        
+        
+        /// <summary>
+        /// 订阅者开启
+        /// </summary>
+        void Subscribe();
     }
 }
