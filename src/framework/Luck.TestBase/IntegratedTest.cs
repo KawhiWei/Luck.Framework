@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Luck.TestBase
 {
@@ -21,7 +22,9 @@ namespace Luck.TestBase
 
         protected IntegratedTest()
         {
+            Environment.SetEnvironmentVariable("appid","apppidaasdasd");
             var services = CreateServiceCollection();
+
             BeforeAddApplication(services);
             var application = services.AddApplication<TStartup>();
             Application = services.GetBuildService<IModuleApplication>();

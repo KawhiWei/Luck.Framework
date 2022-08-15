@@ -62,6 +62,10 @@ public class DapperAggregateRootRepositoryBase<TEntity, TKey> : SqlAggregateRoot
 
     public override async Task<int> AddAsync(string sql, TEntity entity, IDbTransaction? transaction = null)
     {
+        if (entity == null)
+        {
+            throw new ArgumentNullException(nameof(entity));
+        }
         IDbConnection conn;
         if (transaction is not null && transaction.Connection is not null)
         {
@@ -107,33 +111,25 @@ public class DapperAggregateRootRepositoryBase<TEntity, TKey> : SqlAggregateRoot
 
     public override IEnumerable<TEntity> FindAll(string sql, object? param)
     {
-        using (var conn = _dbConnectionFactory.GetDbConnection())
-        {
-            return conn.Query<TEntity>(sql, param);
-        }
+        using var conn = _dbConnectionFactory.GetDbConnection();
+        return conn.Query<TEntity>(sql, param);
     }
 
     public override async Task<IEnumerable<TEntity>> FindAllAsync(string sql, object? param)
     {
-        using (var conn = await _dbConnectionFactory.GetDbConnectionAsync())
-        {
-            return await conn.QueryAsync<TEntity>(sql, param);
-        }
+        using var conn = await _dbConnectionFactory.GetDbConnectionAsync();
+        return await conn.QueryAsync<TEntity>(sql, param);
     }
 
     public override TEntity? Find(string sql,  object? param)
     {
-        using (var conn = _dbConnectionFactory.GetDbConnection())
-        {
-            return conn.QueryFirstOrDefault<TEntity>(sql,param);
-        }
+        using var conn = _dbConnectionFactory.GetDbConnection();
+        return conn.QueryFirstOrDefault<TEntity>(sql,param);
     }
 
     public override async ValueTask<TEntity?> FindAsync(string sql,  object? param)
     {
-        using (var conn = await _dbConnectionFactory.GetDbConnectionAsync())
-        {
-            return await conn.QueryFirstOrDefaultAsync<TEntity>(sql,param);
-        }
+        using var conn = await _dbConnectionFactory.GetDbConnectionAsync();
+        return await conn.QueryFirstOrDefaultAsync<TEntity>(sql,param);
     }
 }

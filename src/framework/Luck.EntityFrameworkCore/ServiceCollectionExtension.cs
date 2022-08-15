@@ -20,7 +20,7 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IServiceCollection AddDefaultRepository(this IServiceCollection services, ServiceLifetime lifetime = ServiceLifetime.Scoped)
         {
             services.Add(new ServiceDescriptor(typeof(IAggregateRootRepository<,>), typeof(EfCoreAggregateRootRepository<,>), lifetime));
-            services.Add(new ServiceDescriptor(typeof(IEntityRepository<,>), typeof(EFCoreEntityRepository<,>), lifetime));
+            services.Add(new ServiceDescriptor(typeof(IEntityRepository<,>), typeof(EfCoreEntityRepository<,>), lifetime));
             return services;
         }
 
