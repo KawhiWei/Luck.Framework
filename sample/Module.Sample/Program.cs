@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Luck.Framework.Infrastructure;
 using MediatR;
 using Module.Sample;
@@ -39,6 +40,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+var diagnosticSourceSubscriber = new DiagnosticSourceSubscriber(new LuckDiagnosticSourceListener());
+
+DiagnosticListener.AllListeners.Subscribe(diagnosticSourceSubscriber);
+
 
 app.UseAuthorization();
 

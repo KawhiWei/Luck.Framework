@@ -49,6 +49,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{CF0AE449-4
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Luck.Dapper.ClickHouse", "src\framework\Luck.Dapper.ClickHouse\Luck.Dapper.ClickHouse.csproj", "{ABD3DD2E-8638-4702-8DC5-0C46317B54FC}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "opentelemetry", "opentelemetry", "{AF2355A8-C9E7-412F-B7CB-B650653AA925}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Luck.Opentelemetry", "src\Luck.Opentelemetry\Luck.Opentelemetry.csproj", "{0C3030BD-BC2B-4222-B331-0AF344930634}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -107,6 +111,10 @@ Global
 		{ABD3DD2E-8638-4702-8DC5-0C46317B54FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ABD3DD2E-8638-4702-8DC5-0C46317B54FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ABD3DD2E-8638-4702-8DC5-0C46317B54FC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0C3030BD-BC2B-4222-B331-0AF344930634}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C3030BD-BC2B-4222-B331-0AF344930634}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0C3030BD-BC2B-4222-B331-0AF344930634}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C3030BD-BC2B-4222-B331-0AF344930634}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -129,6 +137,8 @@ Global
 		{CF0AE449-47C5-4C1A-9B58-8292CC33C930} = {DE49CCE6-B41E-493A-ADCC-EA6075DD0038}
 		{FDA911F3-B201-4C7F-BD82-FBB7691EE5C9} = {CF0AE449-47C5-4C1A-9B58-8292CC33C930}
 		{ABD3DD2E-8638-4702-8DC5-0C46317B54FC} = {4D43CDDA-1370-4BD8-ACBC-711CFB207F9F}
+		{AF2355A8-C9E7-412F-B7CB-B650653AA925} = {DE49CCE6-B41E-493A-ADCC-EA6075DD0038}
+		{0C3030BD-BC2B-4222-B331-0AF344930634} = {AF2355A8-C9E7-412F-B7CB-B650653AA925}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4719568B-E10A-4815-AAAA-8C6D6CEE798F}

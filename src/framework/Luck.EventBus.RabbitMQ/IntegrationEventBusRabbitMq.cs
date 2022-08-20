@@ -1,4 +1,5 @@
-﻿using Luck.EventBus.RabbitMQ.Attributes;
+﻿using System.Diagnostics;
+using Luck.EventBus.RabbitMQ.Attributes;
 using Luck.Framework.Event;
 using Luck.Framework.Exceptions;
 using Luck.Framework.Extensions;
@@ -26,7 +27,7 @@ public class IntegrationEventBusRabbitMq : IIntegrationEventBus, IDisposable
     private readonly IServiceProvider _serviceProvider;
     private string _handleName = nameof(IIntegrationEventHandler<IIntegrationEvent>.HandleAsync);
     private bool _isDisposed = false;
-
+    private DiagnosticListener _listener = new DiagnosticListener("Luck.EventBus.RabbitMQ.DiagnosticListener");
     public IntegrationEventBusRabbitMq(int retryCount, IServiceProvider serviceProvider)
     {
         _persistentConnection = serviceProvider.GetService<IRabbitMQPersistentConnection>() ?? throw new ArgumentNullException(nameof(_persistentConnection)); // persistentConnection;
@@ -46,8 +47,13 @@ public class IntegrationEventBusRabbitMq : IIntegrationEventBus, IDisposable
     public void Publish<TEvent>(IIntegrationEvent @event) where TEvent : IIntegrationEvent
     {
         if (!_persistentConnection.IsConnected) _persistentConnection.TryConnect();
-
-
+        if (_listener.IsEnabled("Luck.EventBus.RabbitMQ.WritePublishBefore"))
+        {
+            _listener.Write("Luck.EventBus.RabbitMQ.WritePublishBefore", new { @event });
+        }
+        
+        
+        
         var type = @event.GetType();
 
         var policy = Policy.Handle<BrokerUnreachableException>()
