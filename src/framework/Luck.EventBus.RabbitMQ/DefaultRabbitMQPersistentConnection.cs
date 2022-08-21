@@ -9,7 +9,7 @@ using System.Net.Sockets;
 namespace Luck.EventBus.RabbitMQ
 {
     public class DefaultRabbitMQPersistentConnection
-    : IRabbitMQPersistentConnection
+        : IRabbitMQPersistentConnection
     {
         private readonly IConnectionFactory _connectionFactory;
         private readonly ILogger<DefaultRabbitMQPersistentConnection> _logger;
@@ -20,7 +20,6 @@ namespace Luck.EventBus.RabbitMQ
         object sync_root = new object();
 
 
-
         public DefaultRabbitMQPersistentConnection(IConnectionFactory connectionFactory, ILogger<DefaultRabbitMQPersistentConnection> logger, int retryCount = 5)
         {
             _connectionFactory = connectionFactory ?? throw new ArgumentNullException(nameof(connectionFactory));
@@ -29,13 +28,9 @@ namespace Luck.EventBus.RabbitMQ
         }
 
 
-
         public bool IsConnected
         {
-            get
-            {
-                return _connection != null && _connection.IsOpen && !_disposed;
-            }
+            get { return _connection != null && _connection.IsOpen && !_disposed; }
         }
 
         public IModel CreateModel()
@@ -44,6 +39,7 @@ namespace Luck.EventBus.RabbitMQ
             {
                 throw new InvalidOperationException("RabbitMQ连接失败");
             }
+
             if (_connection is null)
                 throw new InvalidOperationException("RabbitMQ连接未创建");
             return _connection.CreateModel();
@@ -78,16 +74,13 @@ namespace Luck.EventBus.RabbitMQ
             {
                 var policy = RetryPolicy.Handle<SocketException>()
                     .Or<BrokerUnreachableException>()
-                    .WaitAndRetry(_retryCount, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)), (ex, time) =>
-                    {
-                        _logger.LogWarning(ex, "RabbitMQ客户端无法连接 {TimeOut}s ({ExceptionMessage})", $"{time.TotalSeconds:n1}", ex.Message);
-                    }
-                );
+                    .WaitAndRetry(_retryCount, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)), (ex, time) => { _logger.LogWarning(ex, "RabbitMQ客户端无法连接 {TimeOut}s ({ExceptionMessage})", $"{time.TotalSeconds:n1}", ex.Message); }
+                    );
 
                 policy.Execute(() =>
                 {
                     _connection = _connectionFactory
-                            .CreateConnection();
+                        .CreateConnection();
                 });
 
                 if (IsConnected && _connection is not null)
@@ -103,7 +96,6 @@ namespace Luck.EventBus.RabbitMQ
                 else
                 {
                     _logger.LogCritical("RabbitMQ连接不能被创建和打开");
-
                     return false;
                 }
             }
@@ -113,18 +105,14 @@ namespace Luck.EventBus.RabbitMQ
         private void OnConnectionBlocked(object? sender, ConnectionBlockedEventArgs e)
         {
             if (_disposed) return;
-
             _logger.LogWarning("RabbitMQ连接关闭。正在尝试重新连接...");
-
             TryConnect();
         }
 
         void OnCallbackException(object? sender, CallbackExceptionEventArgs e)
         {
             if (_disposed) return;
-
             _logger.LogWarning("RabbitMQ连接抛出异常。在重试...");
-
             TryConnect();
         }
 
@@ -137,7 +125,4 @@ namespace Luck.EventBus.RabbitMQ
             TryConnect();
         }
     }
-
-
-
 }

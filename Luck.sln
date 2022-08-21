@@ -53,6 +53,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "opentelemetry", "openteleme
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Luck.Opentelemetry", "src\Luck.Opentelemetry\Luck.Opentelemetry.csproj", "{0C3030BD-BC2B-4222-B331-0AF344930634}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "logger", "logger", "{A27A7138-ED48-48AD-8F34-E5A19D4FBBA3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Luck.Dove.Logging", "src\Luck.Dove.Logging\Luck.Dove.Logging.csproj", "{1783B816-AC33-42AC-AD9D-4F8A1B44E6AE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -115,6 +119,10 @@ Global
 		{0C3030BD-BC2B-4222-B331-0AF344930634}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0C3030BD-BC2B-4222-B331-0AF344930634}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0C3030BD-BC2B-4222-B331-0AF344930634}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1783B816-AC33-42AC-AD9D-4F8A1B44E6AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1783B816-AC33-42AC-AD9D-4F8A1B44E6AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1783B816-AC33-42AC-AD9D-4F8A1B44E6AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1783B816-AC33-42AC-AD9D-4F8A1B44E6AE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -139,6 +147,8 @@ Global
 		{ABD3DD2E-8638-4702-8DC5-0C46317B54FC} = {4D43CDDA-1370-4BD8-ACBC-711CFB207F9F}
 		{AF2355A8-C9E7-412F-B7CB-B650653AA925} = {DE49CCE6-B41E-493A-ADCC-EA6075DD0038}
 		{0C3030BD-BC2B-4222-B331-0AF344930634} = {AF2355A8-C9E7-412F-B7CB-B650653AA925}
+		{A27A7138-ED48-48AD-8F34-E5A19D4FBBA3} = {DE49CCE6-B41E-493A-ADCC-EA6075DD0038}
+		{1783B816-AC33-42AC-AD9D-4F8A1B44E6AE} = {A27A7138-ED48-48AD-8F34-E5A19D4FBBA3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4719568B-E10A-4815-AAAA-8C6D6CEE798F}

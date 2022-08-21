@@ -18,7 +18,7 @@ namespace Module.Sample.Controllers
         [HttpPost]
         public void CreateOrder()
         {
-            var orderEvent = new CreateOrderIntegrationEvent() { OrderNo = "test0000000001" };
+            var orderEvent = new CreateOrderIntegrationEvent() { OrderNo = "亮白风格-图解网络-小林coding-v2.0.pdf" };
             _integrationEventBus.Publish<CreateOrderIntegrationEvent>(orderEvent);
 
         }
@@ -27,7 +27,7 @@ namespace Module.Sample.Controllers
         [HttpGet]
         public void CreateTestIntegrationEvent()
         {
-            var test = new TestIntegrationEvent() { Name="大黄瓜18CM，真的猛" };
+            var test = new TestIntegrationEvent() { Name="亮白风格-图解网络-小林coding-v2.0.pdf" };
             _integrationEventBus.Publish<TestIntegrationEvent>(test);
 
         }

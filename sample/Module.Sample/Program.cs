@@ -5,6 +5,7 @@ using Module.Sample;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddDoveLogger();
 // Add services to the container.
 builder.Services.AddApplication<AppWebModule>();
 

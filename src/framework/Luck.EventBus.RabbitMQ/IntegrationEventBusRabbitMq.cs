@@ -14,6 +14,7 @@ using System.Net.Sockets;
 using System.Reflection;
 using System.Text;
 using System.Text.Json;
+using Luck.EventBus.RabbitMQ.Diagnostics;
 using Luck.Framework.Infrastructure;
 
 namespace Luck.EventBus.RabbitMQ;
@@ -25,9 +26,9 @@ public class IntegrationEventBusRabbitMq : IIntegrationEventBus, IDisposable
     private readonly int _retryCount;
     private readonly IIntegrationEventBusSubscriptionsManager _subsManager;
     private readonly IServiceProvider _serviceProvider;
-    private string _handleName = nameof(IIntegrationEventHandler<IIntegrationEvent>.HandleAsync);
+    private readonly string _handleName = nameof(IIntegrationEventHandler<IIntegrationEvent>.HandleAsync);
     private bool _isDisposed = false;
-    private DiagnosticListener _listener = new DiagnosticListener("Luck.EventBus.RabbitMQ.DiagnosticListener");
+    private readonly DiagnosticListener _listener = new DiagnosticListener(RabbitMqDiagnosticListenerNames.DiagnosticListenerName);
     public IntegrationEventBusRabbitMq(int retryCount, IServiceProvider serviceProvider)
     {
         _persistentConnection = serviceProvider.GetService<IRabbitMQPersistentConnection>() ?? throw new ArgumentNullException(nameof(_persistentConnection)); // persistentConnection;
@@ -46,28 +47,30 @@ public class IntegrationEventBusRabbitMq : IIntegrationEventBus, IDisposable
     /// <exception cref="ArgumentNullException"></exception>
     public void Publish<TEvent>(IIntegrationEvent @event) where TEvent : IIntegrationEvent
     {
-        if (!_persistentConnection.IsConnected) _persistentConnection.TryConnect();
-        if (_listener.IsEnabled("Luck.EventBus.RabbitMQ.WritePublishBefore"))
+        if (_listener.IsEnabled(RabbitMqDiagnosticListenerNames.CreateRabbitMqConnectionBefore))
         {
-            _listener.Write("Luck.EventBus.RabbitMQ.WritePublishBefore", new { @event });
+            _listener.Write(RabbitMqDiagnosticListenerNames.CreateRabbitMqConnectionBefore, "准备创建RabbitMQ链接");
         }
-        
-        
+        if (!_persistentConnection.IsConnected)
+        {
+            _persistentConnection.TryConnect();
+        }
+        if (_listener.IsEnabled(RabbitMqDiagnosticListenerNames.CreateRabbitMqConnectionAfter))
+        {
+            _listener.Write(RabbitMqDiagnosticListenerNames.CreateRabbitMqConnectionAfter, "创建RabbitMQ链接成功");
+        }
         
         var type = @event.GetType();
 
-        var policy = Policy.Handle<BrokerUnreachableException>()
-            .Or<SocketException>()
-            .WaitAndRetry(_retryCount, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
-                (ex, time) =>
-                {
-                    _logger.LogWarning(ex, "发布集成事件: {EventId} 超时 {Timeout}s ({ExceptionMessage})", @event.EventId,
-                        $"{time.TotalSeconds:n1}", ex.Message);
-                });
+        
 
+        if (_listener.IsEnabled(RabbitMqDiagnosticListenerNames.PublishIntegrationEventBusForRabbitMqBefore))
+        {
+            _listener.Write(RabbitMqDiagnosticListenerNames.PublishIntegrationEventBusForRabbitMqBefore, $"发布集成事件前诊断器：EventId：{@event.EventId}；EventName：{type.Name}；Data：{@event.Serialize()}" );
+        }
+        
         _logger.LogTrace("创建RabbitMQ通道来发布事件: {EventId} ({EventName})", @event.EventId, type.Name);
-
-
+        
         var rabbitMqAttribute = type.GetCustomAttribute<RabbitMQAttribute>();
 
         if (rabbitMqAttribute is null)
@@ -80,10 +83,29 @@ public class IntegrationEventBusRabbitMq : IIntegrationEventBus, IDisposable
         {
             WriteIndented = true
         });
-
+        var policy = Policy.Handle<BrokerUnreachableException>()
+            .Or<SocketException>()
+            .WaitAndRetry(_retryCount, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
+                (ex, time) =>
+                {
+                    if (_listener.IsEnabled(RabbitMqDiagnosticListenerNames.PublishIntegrationEventBusForRabbitMqError))
+                    {
+                        _listener.Write(RabbitMqDiagnosticListenerNames.PublishIntegrationEventBusForRabbitMqError, $"发布集成事件异常：EventId：{@event.EventId}；EventName：{type.Name}，异常：{ex.Message}" );
+                    }
+                    _logger.LogError(ex, "发布集成事件: {EventId} 超时 {Timeout}s ({ExceptionMessage})", @event.EventId,
+                        $"{time.TotalSeconds:n1}", ex.Message);
+                });
+        
+        if (_listener.IsEnabled(RabbitMqDiagnosticListenerNames.RabbitMqCreateModelBefore))
+        {
+            _listener.Write(RabbitMqDiagnosticListenerNames.RabbitMqCreateModelBefore, $"准备创建Rabbit虚拟通道" );
+        }
         using var channel = _persistentConnection.CreateModel();
         var properties = channel.CreateBasicProperties();
-
+        if (_listener.IsEnabled(RabbitMqDiagnosticListenerNames.RabbitMqCreateModelAfter))
+        {
+            _listener.Write(RabbitMqDiagnosticListenerNames.RabbitMqCreateModelAfter, $"创建RabbitMQ虚拟通道成功" );
+        }
         //创建交换机
         channel.ExchangeDeclare(rabbitMqAttribute.Exchange, rabbitMqAttribute.Type, durable: true);
         //创建队列
@@ -94,13 +116,16 @@ public class IntegrationEventBusRabbitMq : IIntegrationEventBus, IDisposable
         policy.Execute(() =>
         {
             properties.DeliveryMode = 2;
-            _logger.LogTrace("向RabbitMQ发布事件: {EventId}", @event.EventId);
             if (channel is null)
             {
                 throw new ArgumentNullException(nameof(channel));
             }
-
             channel.BasicPublish(rabbitMqAttribute.Exchange, rabbitMqAttribute.RoutingKey, true, properties, body);
+            if (_listener.IsEnabled(RabbitMqDiagnosticListenerNames.PublishIntegrationEventBusForRabbitMqAfter))
+            {
+                _listener.Write(RabbitMqDiagnosticListenerNames.PublishIntegrationEventBusForRabbitMqAfter, $"发布集成事件成功：EventId：{@event.EventId}；EventName：{type.Name}" );
+            }
+            _logger.LogTrace("向RabbitMQ发布事件成功: {EventId}", @event.EventId);
         });
     }
     
@@ -136,6 +161,10 @@ public class IntegrationEventBusRabbitMq : IIntegrationEventBus, IDisposable
     /// <exception cref="ArgumentNullException"></exception>
     public void Subscribe()
     {
+        if (!_persistentConnection.IsConnected)
+        {
+            _persistentConnection.TryConnect();
+        }
         var handlerTypes = AssemblyHelper.FindTypes(o => o.IsClass && !o.IsAbstract && o.IsBaseOn(typeof(IIntegrationEventHandler<>)));
         foreach (var handlerType in handlerTypes)
         {
@@ -155,13 +184,11 @@ public class IntegrationEventBusRabbitMq : IIntegrationEventBus, IDisposable
 
             Task.Factory.StartNew(() =>
             {
-                using (var consumerChannel = CreateConsumerChannel(rabbitMqAttribute))
-                {
-                    var eventName = _subsManager.GetEventKey(eventType);
-                    DoInternalSubscription(eventName, rabbitMqAttribute, consumerChannel);
-                    _subsManager.AddSubscription(eventType, handlerType);
-                    StartBasicConsume(eventType, rabbitMqAttribute, consumerChannel);
-                }
+                using var consumerChannel = CreateConsumerChannel(rabbitMqAttribute);
+                var eventName = _subsManager.GetEventKey(eventType);
+                DoInternalSubscription(eventName, rabbitMqAttribute, consumerChannel);
+                _subsManager.AddSubscription(eventType, handlerType);
+                StartBasicConsume(eventType, rabbitMqAttribute, consumerChannel);
             });
         }
     }
@@ -173,13 +200,11 @@ public class IntegrationEventBusRabbitMq : IIntegrationEventBus, IDisposable
     /// <returns></returns>
     private IModel CreateConsumerChannel(RabbitMQAttribute rabbitMqAttribute)
     {
-        if (!_persistentConnection.IsConnected)
-        {
-            _persistentConnection.TryConnect();
-        }
-
+        // if (!_persistentConnection.IsConnected)
+        // {
+        //     _persistentConnection.TryConnect();
+        // }
         _logger.LogTrace("创建RabbitMQ消费者通道");
-
         var channel = _persistentConnection.CreateModel();
         //创建交换机
         channel.ExchangeDeclare(rabbitMqAttribute.Exchange, rabbitMqAttribute.Type, durable: true);

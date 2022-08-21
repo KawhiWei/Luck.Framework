@@ -1,3 +1,5 @@
+using System.Diagnostics;
+using Luck.EventBus.RabbitMQ.Diagnostics;
 using Luck.Framework.Extensions;
 
 namespace Module.Sample;
@@ -20,14 +22,10 @@ internal class LuckDiagnosticSourceListener : IObserver<KeyValuePair<string, obj
     public void OnNext(KeyValuePair<string, object> value)
     {
         // _handlerFactory(value.Key);
-        if (value.Key.Equals("Luck.EventBus.RabbitMQ.WritePublishBefore"))
+        if (value.Key.StartsWith("Luck"))
         {
-            Console.WriteLine($"当前事件Key:「{value.Key}」------Value{value.Value.Serialize()}");
+            Console.WriteLine($"当前事件Key:「{value.Key}」Value：{value.Value.Serialize()}");
         }
-        
-        if (value.Key.Equals("Microsoft.EntityFrameworkCore"))
-        {
-            Console.WriteLine($"当前事件Key:「{value.Key}」------Value{value.Value.Serialize()}");
-        }
+        Activity.Current?.AddEvent(new ActivityEvent(value.Key, DateTimeOffset.Now, new ActivityTagsCollection { new(value.Key, value.Value) }));
     }
 }

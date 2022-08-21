@@ -12,20 +12,15 @@ internal class  DiagnosticSourceSubscriber: IObserver<DiagnosticListener>
     private readonly Func<string, LuckDiagnosticSourceListener> _handlerFactory;
     private IDisposable _allSourcesSubscription;
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="handlerFactory"></param>
     public DiagnosticSourceSubscriber(LuckDiagnosticSourceListener handlerFactory)
     {
         _handlerFactory = _=>handlerFactory;
         this._listenerSubscriptions = new List<IDisposable>();
     }
-    public void Subscribe()
-    {
-        if (this._allSourcesSubscription == null)
-        {
-            this._allSourcesSubscription = DiagnosticListener.AllListeners.Subscribe(this);
-        }
-    }
-    
-    
     public void OnCompleted()
     {
         throw new NotImplementedException();
@@ -40,6 +35,5 @@ internal class  DiagnosticSourceSubscriber: IObserver<DiagnosticListener>
     {
         var listener=new LuckDiagnosticSourceListener();
         value.Subscribe(listener);
-
     }
 }
