@@ -17,4 +17,8 @@
       </Reference>
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\framework\Luck.Framework\Luck.Framework.csproj" />
+    </ItemGroup>
+
 </Project>

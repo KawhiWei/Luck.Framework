@@ -15,9 +15,7 @@ namespace Module.Sample.EventHandlers
     [DependencyInjection(ServiceLifetime.Transient, AddSelf=true)]
     public class CreateOrderIntegrationHandler : IIntegrationEventHandler<CreateOrderIntegrationEvent>
     {
-
         private readonly ILogger<CreateOrderIntegrationHandler> _logger;
-
         public CreateOrderIntegrationHandler(ILogger<CreateOrderIntegrationHandler> logger)
         {
             _logger = logger;
@@ -25,8 +23,8 @@ namespace Module.Sample.EventHandlers
 
         public Task HandleAsync(CreateOrderIntegrationEvent @event)
         {
-          
-          _logger.LogInformation($"CreateOrderIntegrationEvent_Subscribe【{@event.Serialize()}】-----{DateTime.Now}");
+            // _logger.LogInformation($"{@event.Serialize()}");
+          _logger.DoveLogInformation($"{@event.Serialize()}");
           return  Task.CompletedTask;
         }
 
