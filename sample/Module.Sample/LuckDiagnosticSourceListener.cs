@@ -11,12 +11,12 @@ internal class LuckDiagnosticSourceListener : IObserver<KeyValuePair<string, obj
 {
     public void OnCompleted()
     {
-        throw new NotImplementedException();
+        
     }
 
     public void OnError(Exception error)
     {
-        throw new NotImplementedException();
+        
     }
 
     public void OnNext(KeyValuePair<string, object> value)
@@ -24,8 +24,8 @@ internal class LuckDiagnosticSourceListener : IObserver<KeyValuePair<string, obj
         // _handlerFactory(value.Key);
         if (value.Key.StartsWith("Luck"))
         {
-            Console.WriteLine($"当前事件Key:「{value.Key}」Value：{value.Value.Serialize()}");
+            // Console.WriteLine($"当前事件Key:「{value.Key}」Value：{value.Value.Serialize()}");
         }
-        Activity.Current?.AddEvent(new ActivityEvent(value.Key, DateTimeOffset.Now, new ActivityTagsCollection { new(value.Key, value.Value) }));
+        // Activity.Current?.AddEvent(new ActivityEvent(value.Key, DateTimeOffset.Now, new ActivityTagsCollection { new(value.Key, value.Value) }));
     }
 }

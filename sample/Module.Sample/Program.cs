@@ -5,7 +5,7 @@ using Module.Sample;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDoveLogger();
+
 // Add services to the container.
 builder.Services.AddApplication<AppWebModule>();
 
@@ -30,8 +30,7 @@ builder.Services.AddEventBusRabbitMq(x =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHttpContextAccessor();
-//ע�봦����  ����ʹ��DependencyInjection �Զ�ע��
-//builder.Services.AddTransient(typeof(CreateOrderIntegrationHandler));
+builder.Services.AddDoveLogger();
 
 var app = builder.Build();
 

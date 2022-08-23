@@ -6,14 +6,16 @@ namespace Luck.Dove.Logging;
 public class DoveLogger: ILogger
 {
     private readonly string _categoryName;
-
-    public DoveLogger(string categoryName)
+    private readonly IDoveLoggerManager _loggerManager;
+    
+    public DoveLogger(string categoryName, IDoveLoggerManager loggerManager)
     {
         this._categoryName = categoryName;
+        _loggerManager = loggerManager;
     }
     public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
     {
-        Console.WriteLine($"[{_categoryName}][{logLevel}]{state?.ToString()}");
+        _loggerManager.Enqueue($"[{_categoryName}][{logLevel}]{state?.ToString()}");
     }
 
     public bool IsEnabled(LogLevel logLevel)

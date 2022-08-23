@@ -1,11 +1,21 @@
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace Luck.Dove.Logging;
 
-public class DoveLoggerBackgroundServiceSubscribe:BackgroundService
+public class DoveLoggerBackgroundServiceSubscribe : BackgroundService
 {
-    protected override Task ExecuteAsync(CancellationToken stoppingToken)
+    private readonly IDoveLoggerManager _loggerManager;
+    public DoveLoggerBackgroundServiceSubscribe(IDoveLoggerManager loggerManager)
     {
-        throw new NotImplementedException();
+        _loggerManager = loggerManager;
+    }
+
+    protected override  Task ExecuteAsync(CancellationToken stoppingToken)
+    {
+        // _logger.LogInformation("自定义日志后台处理服务准备启动");
+        _loggerManager.Start();
+        // _logger.LogInformation("自定义日志后台处理服务启动完成");
+        return Task.CompletedTask;
     }
 }
