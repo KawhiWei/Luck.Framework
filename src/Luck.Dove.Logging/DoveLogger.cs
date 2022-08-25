@@ -3,19 +3,25 @@ using Microsoft.Extensions.Logging;
 
 namespace Luck.Dove.Logging;
 
-public class DoveLogger: ILogger
+public class DoveLogger : ILogger
 {
     private readonly string _categoryName;
-    private readonly IDoveLoggerManager _loggerManager;
-    
-    public DoveLogger(string categoryName, IDoveLoggerManager loggerManager)
+    private readonly IDoveLoggerProcessor _doveLoggerProcessor;
+
+    public DoveLogger(string categoryName, IDoveLoggerProcessor doveLoggerProcessor)
     {
         this._categoryName = categoryName;
-        _loggerManager = loggerManager;
+        _doveLoggerProcessor = doveLoggerProcessor;
     }
+
     public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
     {
-        _loggerManager.Enqueue($"[{_categoryName}][{logLevel}]{state?.ToString()}");
+        _doveLoggerProcessor.Enqueue(_categoryName,$"{state?.ToString()}");
+    }
+
+    private bool IsMicrosoftWirte()
+    {
+        return new List<string>() { "Microsoft.Hosting.Lifetime" }.Any(x => x == _categoryName);
     }
 
     public bool IsEnabled(LogLevel logLevel)
@@ -24,5 +30,4 @@ public class DoveLogger: ILogger
     }
 
     public IDisposable BeginScope<TState>(TState state) => default!;
-   
 }

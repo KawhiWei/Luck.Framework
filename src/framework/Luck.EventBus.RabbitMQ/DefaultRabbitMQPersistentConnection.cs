@@ -88,7 +88,6 @@ namespace Luck.EventBus.RabbitMQ
                     _connection.ConnectionShutdown += OnConnectionShutdown;
                     _connection.CallbackException += OnCallbackException;
                     _connection.ConnectionBlocked += OnConnectionBlocked;
-
                     _logger.LogInformation("RabbitMQ Client获得了一个持久连接 '{HostName}' 并且订阅失败了事件", _connection.Endpoint.HostName);
                     _disposed = false;
                     return true;

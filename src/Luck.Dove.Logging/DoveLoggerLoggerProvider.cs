@@ -1,23 +1,24 @@
-
+using System.Collections.Concurrent;
 using Microsoft.Extensions.Logging;
 
 namespace Luck.Dove.Logging;
 
 public class DoveLoggerLoggerProvider : ILoggerProvider
 {
-    private readonly IDoveLoggerManager _doveLoggerManager;
+    private ConcurrentDictionary<string, DoveLogger> _doveLoggers = new ConcurrentDictionary<string, DoveLogger>();
+    private readonly IDoveLoggerProcessor _doveLoggerProcessor;
 
-    public DoveLoggerLoggerProvider(IDoveLoggerManager doveLoggerManager)
+    public DoveLoggerLoggerProvider()
     {
-        _doveLoggerManager = doveLoggerManager;
+        _doveLoggerProcessor = new DoveLoggerProcessor();
     }
 
     public void Dispose()
     {
-        
     }
+
     public ILogger CreateLogger(string categoryName)
     {
-        return new DoveLogger(categoryName,_doveLoggerManager);
+        return _doveLoggers.GetOrAdd(categoryName, _ => new DoveLogger(categoryName, _doveLoggerProcessor));
     }
 }
