@@ -368,7 +368,7 @@ public static class LoggerExtensions
     {
         return new DoveLoggerModule()
         {
-            Message = message,
+            Body = message,
             BusinessFilter = businessFilter,
             Exception = exception,
             Method = method,

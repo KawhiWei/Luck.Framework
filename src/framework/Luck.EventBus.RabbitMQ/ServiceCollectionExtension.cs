@@ -13,8 +13,8 @@ namespace Microsoft.Extensions.DependencyInjection
             action.Invoke(config);
 
 
-            service.AddRabbitMqPersistentConnection(config);
-            service.AddSingleton<IIntegrationEventBus, IntegrationEventBusRabbitMq>(serviceProvider
+            service.AddRabbitMqPersistentConnection(config)
+                .AddSingleton<IIntegrationEventBus, IntegrationEventBusRabbitMq>(serviceProvider
                 => new IntegrationEventBusRabbitMq(config.RetryCount, serviceProvider)
             );
             service.AddSingleton<IIntegrationEventBusSubscriptionsManager, RabbitMqEventBusSubscriptionsManager>();

@@ -16,18 +16,11 @@ public class DoveLogger : ILogger
 
     public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
     {
-        _doveLoggerProcessor.Enqueue(_categoryName,$"{state?.ToString()}");
+        _doveLoggerProcessor.Enqueue(_categoryName, $"{state?.ToString()}");
     }
 
-    private bool IsMicrosoftWirte()
-    {
-        return new List<string>() { "Microsoft.Hosting.Lifetime" }.Any(x => x == _categoryName);
-    }
+    public bool IsEnabled(LogLevel logLevel) => true;
 
-    public bool IsEnabled(LogLevel logLevel)
-    {
-        return true;
-    }
 
     public IDisposable BeginScope<TState>(TState state) => default!;
 }

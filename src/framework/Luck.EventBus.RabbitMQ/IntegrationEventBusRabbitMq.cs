@@ -16,6 +16,7 @@ using System.Text;
 using System.Text.Json;
 using Luck.EventBus.RabbitMQ.Diagnostics;
 using Luck.Framework.Infrastructure;
+using ExchangeType = RabbitMQ.Client.ExchangeType;
 
 namespace Luck.EventBus.RabbitMQ;
 
@@ -29,6 +30,7 @@ public class IntegrationEventBusRabbitMq : IIntegrationEventBus, IDisposable
     private readonly string _handleName = nameof(IIntegrationEventHandler<IIntegrationEvent>.HandleAsync);
     private bool _isDisposed = false;
     private readonly DiagnosticListener _listener = new DiagnosticListener(RabbitMqDiagnosticListenerNames.DiagnosticListenerName);
+
     public IntegrationEventBusRabbitMq(int retryCount, IServiceProvider serviceProvider)
     {
         _persistentConnection = serviceProvider.GetService<IRabbitMQPersistentConnection>() ?? throw new ArgumentNullException(nameof(_persistentConnection)); // persistentConnection;
@@ -51,26 +53,27 @@ public class IntegrationEventBusRabbitMq : IIntegrationEventBus, IDisposable
         {
             _listener.Write(RabbitMqDiagnosticListenerNames.CreateRabbitMqConnectionBefore, "准备创建RabbitMQ链接");
         }
+
         if (!_persistentConnection.IsConnected)
         {
             _persistentConnection.TryConnect();
         }
+
         if (_listener.IsEnabled(RabbitMqDiagnosticListenerNames.CreateRabbitMqConnectionAfter))
         {
             _listener.Write(RabbitMqDiagnosticListenerNames.CreateRabbitMqConnectionAfter, "创建RabbitMQ链接成功");
         }
-        
+
         var type = @event.GetType();
 
-        
 
         if (_listener.IsEnabled(RabbitMqDiagnosticListenerNames.PublishIntegrationEventBusForRabbitMqBefore))
         {
-            _listener.Write(RabbitMqDiagnosticListenerNames.PublishIntegrationEventBusForRabbitMqBefore, $"发布集成事件前诊断器：EventId：{@event.EventId}；EventName：{type.Name}；Data：{@event.Serialize()}" );
+            _listener.Write(RabbitMqDiagnosticListenerNames.PublishIntegrationEventBusForRabbitMqBefore, $"发布集成事件前诊断器：EventId：{@event.EventId}；EventName：{type.Name}；Data：{@event.Serialize()}");
         }
-        
+
         _logger.LogTrace("创建RabbitMQ通道来发布事件: {EventId} ({EventName})", @event.EventId, type.Name);
-        
+
         var rabbitMqAttribute = type.GetCustomAttribute<RabbitMQAttribute>();
 
         if (rabbitMqAttribute is null)
@@ -90,29 +93,32 @@ public class IntegrationEventBusRabbitMq : IIntegrationEventBus, IDisposable
                 {
                     if (_listener.IsEnabled(RabbitMqDiagnosticListenerNames.PublishIntegrationEventBusForRabbitMqError))
                     {
-                        _listener.Write(RabbitMqDiagnosticListenerNames.PublishIntegrationEventBusForRabbitMqError, $"发布集成事件异常：EventId：{@event.EventId}；EventName：{type.Name}，异常：{ex.Message}" );
+                        _listener.Write(RabbitMqDiagnosticListenerNames.PublishIntegrationEventBusForRabbitMqError, $"发布集成事件异常：EventId：{@event.EventId}；EventName：{type.Name}，异常：{ex.Message}");
                     }
+
                     _logger.LogError(ex, "发布集成事件: {EventId} 超时 {Timeout}s ({ExceptionMessage})", @event.EventId,
                         $"{time.TotalSeconds:n1}", ex.Message);
                 });
-        
+
         if (_listener.IsEnabled(RabbitMqDiagnosticListenerNames.RabbitMqCreateModelBefore))
         {
-            _listener.Write(RabbitMqDiagnosticListenerNames.RabbitMqCreateModelBefore, $"准备创建Rabbit虚拟通道" );
+            _listener.Write(RabbitMqDiagnosticListenerNames.RabbitMqCreateModelBefore, $"准备创建Rabbit虚拟通道");
         }
+
         using var channel = _persistentConnection.CreateModel();
         var properties = channel.CreateBasicProperties();
         if (_listener.IsEnabled(RabbitMqDiagnosticListenerNames.RabbitMqCreateModelAfter))
         {
-            _listener.Write(RabbitMqDiagnosticListenerNames.RabbitMqCreateModelAfter, $"创建RabbitMQ虚拟通道成功" );
+            _listener.Write(RabbitMqDiagnosticListenerNames.RabbitMqCreateModelAfter, $"创建RabbitMQ虚拟通道成功");
         }
+
         //创建交换机
         channel.ExchangeDeclare(rabbitMqAttribute.Exchange, rabbitMqAttribute.Type, durable: true);
         //创建队列
         //channel.QueueDeclare(queue: rabbitMQAttribute.Queue, durable: false);
-        if (!string.IsNullOrEmpty(rabbitMqAttribute.RoutingKey) && !string.IsNullOrEmpty(rabbitMqAttribute.Queue))
-            //通过RoutingKey将队列绑定交换机
-            channel.QueueBind(rabbitMqAttribute.Queue, rabbitMqAttribute.Exchange, rabbitMqAttribute.RoutingKey);
+        // if (!string.IsNullOrEmpty(rabbitMqAttribute.RoutingKey) && !string.IsNullOrEmpty(rabbitMqAttribute.Queue))
+        //     //通过RoutingKey将队列绑定交换机
+        //     channel.QueueBind(rabbitMqAttribute.Queue, rabbitMqAttribute.Exchange, rabbitMqAttribute.RoutingKey);
         policy.Execute(() =>
         {
             properties.DeliveryMode = 2;
@@ -120,15 +126,18 @@ public class IntegrationEventBusRabbitMq : IIntegrationEventBus, IDisposable
             {
                 throw new ArgumentNullException(nameof(channel));
             }
+
             channel.BasicPublish(rabbitMqAttribute.Exchange, rabbitMqAttribute.RoutingKey, true, properties, body);
+            
             if (_listener.IsEnabled(RabbitMqDiagnosticListenerNames.PublishIntegrationEventBusForRabbitMqAfter))
             {
-                _listener.Write(RabbitMqDiagnosticListenerNames.PublishIntegrationEventBusForRabbitMqAfter, $"发布集成事件成功：EventId：{@event.EventId}；EventName：{type.Name}" );
+                _listener.Write(RabbitMqDiagnosticListenerNames.PublishIntegrationEventBusForRabbitMqAfter, $"发布集成事件成功：EventId：{@event.EventId}；EventName：{type.Name}");
             }
+
             _logger.LogTrace("向RabbitMQ发布事件成功: {EventId}", @event.EventId);
         });
     }
-    
+
 
     /// <summary>
     /// 检查订阅事件是否存在
@@ -153,7 +162,7 @@ public class IntegrationEventBusRabbitMq : IIntegrationEventBus, IDisposable
         if (handlerType.IsBaseOn(typeof(IIntegrationEventHandler<>)) == false)
             throw new ArgumentNullException($"{nameof(handlerType)}IIntegrationEventHandler<>", nameof(handlerType));
     }
-    
+
 
     /// <summary>
     /// 集成事件订阅者处理
@@ -165,10 +174,11 @@ public class IntegrationEventBusRabbitMq : IIntegrationEventBus, IDisposable
         {
             _persistentConnection.TryConnect();
         }
+
         var handlerTypes = AssemblyHelper.FindTypes(o => o.IsClass && !o.IsAbstract && o.IsBaseOn(typeof(IIntegrationEventHandler<>)));
         foreach (var handlerType in handlerTypes)
         {
-            var implementedType = handlerType.GetTypeInfo().ImplementedInterfaces.Where(o => o.IsBaseOn(typeof(IIntegrationEventHandler<>))).FirstOrDefault();
+            var implementedType = handlerType.GetTypeInfo().ImplementedInterfaces.FirstOrDefault(o => o.IsBaseOn(typeof(IIntegrationEventHandler<>)));
             var eventType = implementedType?.GetTypeInfo().GenericTypeArguments.FirstOrDefault();
             if (eventType == null)
             {
@@ -194,7 +204,7 @@ public class IntegrationEventBusRabbitMq : IIntegrationEventBus, IDisposable
     }
 
     /// <summary>
-    /// 创建通道
+    /// 创建消费者通道
     /// </summary>
     /// <param name="rabbitMqAttribute"></param>
     /// <returns></returns>

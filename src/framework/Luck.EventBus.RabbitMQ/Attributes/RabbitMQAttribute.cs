@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using Luck.Framework.Extensions;
+
 namespace Luck.EventBus.RabbitMQ.Attributes
 {
     [AttributeUsage(AttributeTargets.Class)]
@@ -49,11 +50,11 @@ namespace Luck.EventBus.RabbitMQ.Attributes
         ///// </summary>
         //[Description("topic")]
         //Topic = 2,
-        ///// <summary>
-        ///// 订阅模式
-        ///// </summary>
-        //[Description("fanout")]
-        //Subscribe = 3,
-   
+        /// <summary>
+        /// 订阅模式
+        /// </summary>
+        [Description("fanout")]
+        FanOut = 3,
+    
     }
 }
