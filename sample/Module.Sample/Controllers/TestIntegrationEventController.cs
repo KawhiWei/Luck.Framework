@@ -18,8 +18,8 @@ namespace Module.Sample.Controllers
         [HttpPost("add")]
         public void CreateOrder()
         {
-            var orderEvent = new CreateOrderIntegrationEvent() { OrderNo = "亮白风格-图解网络-小林coding-v2.0.pdf" };
-            _integrationEventBus.Publish<CreateOrderIntegrationEvent>(orderEvent);
+            var orderEvent = new CreateOrderIntegrationEvent { OrderNo = "亮白风格-图解网络-小林coding-v2.0.pdf" };
+            _integrationEventBus.Publish(orderEvent);
 
         }
 
@@ -28,7 +28,7 @@ namespace Module.Sample.Controllers
         public void CreateTestIntegrationEvent()
         {
             var test = new TestIntegrationEvent() { Name="亮白风格-图解网络-小林coding-v2.0.pdf" };
-            _integrationEventBus.Publish<TestIntegrationEvent>(test);
+            _integrationEventBus.Publish(test);
 
         }
         
@@ -36,8 +36,8 @@ namespace Module.Sample.Controllers
         [HttpGet("testfanout")]
         public void CreateFanoutTestIntegrationEvent()
         {
-            var test = new TestIntegrationFanOutOrderEvent() { Name="亮白风格-图解网络-小林coding-00012-v2.0.pdf" };
-            _integrationEventBus.Publish<TestIntegrationFanOutOrderEvent>(test);
+            var test = new TestIntegrationFanOutOrderEvent { Name="亮白风格-图解网络-小林coding-00012-v2.0.pdf" };
+            _integrationEventBus.Publish(test);
 
         }
     }

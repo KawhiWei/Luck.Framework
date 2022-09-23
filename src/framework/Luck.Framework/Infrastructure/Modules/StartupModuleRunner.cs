@@ -42,6 +42,10 @@ namespace Luck.Framework.Infrastructure
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="service"></param>
         public void Initialize(IServiceProvider service)
         {
             IocManage.Instance.SetApplicationServiceProvider(service);

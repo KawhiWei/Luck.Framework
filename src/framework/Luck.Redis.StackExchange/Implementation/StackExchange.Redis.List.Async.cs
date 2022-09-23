@@ -1,6 +1,7 @@
 ﻿using Luck.Framework.Extensions;
 using Luck.Framework.Infrastructure.Caching;
 using StackExchange.Redis;
+using IRedisList = Luck.Framework.Infrastructure.Caching.Interface.IRedisList;
 
 namespace Luck.Redis.StackExchange
 {

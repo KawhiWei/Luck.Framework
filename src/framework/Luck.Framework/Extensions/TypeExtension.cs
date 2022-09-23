@@ -7,6 +7,9 @@ using System.Reflection;
 
 namespace Luck.Framework.Extensions
 {
+    /// <summary>
+    /// 源对象扩展
+    /// </summary>
     public static class TypeExtension
     {
         /// <summary>
@@ -193,6 +196,11 @@ namespace Luck.Framework.Extensions
             return "";
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="member"></param>
+        /// <returns></returns>
         public static string ToDescription(this MemberInfo member)
         {
             DescriptionAttribute? desc = member.GetCustomAttribute<DescriptionAttribute>();
@@ -210,6 +218,12 @@ namespace Luck.Framework.Extensions
             return member.Name;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="keyName"></param>
+        /// <returns></returns>
         public static string? GetKeySelector(this Type type, string keyName)
         {
             string[] propertyNames = keyName.Split(".");
@@ -279,12 +293,33 @@ namespace Luck.Framework.Extensions
         public static bool IsPrimitiveType([NotNull] this Type type)
             => (Nullable.GetUnderlyingType(type) ?? type).IsPrimitive;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
         public static bool IsPrimitiveType<T>() => typeof(T).IsPrimitiveType();
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
         public static bool IsBasicType([NotNull] this Type type) => BasicTypes.Contains(type) || type.IsEnum;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
         public static bool IsBasicType<T>() => typeof(T).IsBasicType();
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="value"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
         public static bool IsBasicType<T>(this T value) => typeof(T).IsBasicType();
 
         /// <summary>
@@ -318,6 +353,11 @@ namespace Luck.Framework.Extensions
             return null;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
         [CanBeNull]
         public static ConstructorInfo GetEmptyConstructor(this Type type)
         {
@@ -388,6 +428,12 @@ namespace Luck.Framework.Extensions
             return member.Name;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="interfaceType"></param>
+        /// <param name="typeInfo"></param>
+        /// <returns></returns>
         public static bool HasMatchingGenericArity(this Type interfaceType, TypeInfo typeInfo)
         {
             if (typeInfo.IsGenericType)
@@ -408,6 +454,12 @@ namespace Luck.Framework.Extensions
             return true;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="interfaceType"></param>
+        /// <param name="typeInfo"></param>
+        /// <returns></returns>
         public static Type GetRegistrationType(this Type interfaceType, TypeInfo typeInfo)
         {
             if (typeInfo.IsGenericTypeDefinition)

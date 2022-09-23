@@ -3,11 +3,19 @@
     public interface IIntegrationEventBusSubscriptionsManager
     {
 
+        /// <summary>
+        /// 
+        /// </summary>
         event EventHandler<EventRemovedEventArgs> OnEventRemoved;
 
-
+        /// <summary>
+        /// 
+        /// </summary>
         bool IsEmpty { get; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         void Clear();
 
         /// <summary>
@@ -19,6 +27,11 @@
              where T : IntegrationEvent
              where TH : IIntegrationEventHandler<T>;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="eventType"></param>
+        /// <param name="handlerType"></param>
         void AddSubscription(Type eventType, Type handlerType);
 
         /// <summary>
@@ -67,19 +80,12 @@
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         string GetEventKey<T>();
-
-
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
         string GetEventKey(Type type);
-    }
-
-
-    public class EventRemovedEventArgs : EventArgs
-    { 
-    
-    
-        public Type EventType { get; set; }
-
-
-
     }
 }

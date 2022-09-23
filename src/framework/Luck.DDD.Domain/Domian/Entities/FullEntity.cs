@@ -1,4 +1,5 @@
 ﻿using Luck.Framework;
+using Luck.Framework.Infrastructure;
 
 namespace Luck.DDD.Domain
 {

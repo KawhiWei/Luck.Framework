@@ -110,7 +110,7 @@ namespace Luck.Framework.Extensions
         /// <param name="value">要搜索匹配项的字符串</param>
         /// <param name="pattern">要匹配的正则表达式模式</param>
         /// <returns>一个对象，包含有关匹配项的信息</returns>
-        public static string Match(this string value, string pattern)
+        public static string Match(this string? value, string pattern)
         {
             if (value == null)
             {
@@ -119,6 +119,12 @@ namespace Luck.Framework.Extensions
             return Regex.Match(value, pattern).Value;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="format"></param>
+        /// <param name="args"></param>
+        /// <returns></returns>
         public static string FormatWith(this string format, params object[] args)
         {
             format.NotNull("format");

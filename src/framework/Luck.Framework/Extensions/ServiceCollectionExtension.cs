@@ -10,6 +10,9 @@ using System.Text;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public static class ServiceCollectionExtension
     {
         /// <summary>
@@ -20,10 +23,10 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static TType? GetService<TType>(this IServiceCollection services)
         {
-
             var provider = services.BuildServiceProvider();
             return provider.GetService<TType>();
         }
+
         /// <summary>
         /// RegisterAssemblyTypes
         /// </summary>
@@ -167,6 +170,7 @@ namespace Microsoft.Extensions.DependencyInjection
                     services.Add(new ServiceDescriptor(interfaceType, type, serviceLifetime));
                 }
             }
+
             return services;
         }
 
@@ -191,7 +195,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static TServiceType GetOrAddSingletonService<TServiceType, TImplementation>(this IServiceCollection services)
             where TServiceType : class
-        where TImplementation : class, TServiceType
+            where TImplementation : class, TServiceType
         {
             var type = services.GetSingletonInstanceOrNull<TServiceType>();
             if (type is null)
@@ -208,7 +212,6 @@ namespace Microsoft.Extensions.DependencyInjection
         /// 得到或添加Singleton服务
         /// </summary>
         /// <typeparam name="TServiceType"></typeparam>
-
         public static TServiceType GetOrAddSingletonService<TServiceType>(this IServiceCollection services, Func<TServiceType> factory) where TServiceType : class
         {
             var servciceType = services.GetSingletonInstanceOrNull<TServiceType>();
@@ -221,6 +224,11 @@ namespace Microsoft.Extensions.DependencyInjection
             return servciceType;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="services"></param>
+        /// <returns></returns>
         public static IConfiguration GetConfiguration(this IServiceCollection services)
         {
             return services.GetBuildService<IConfiguration>();
@@ -246,6 +254,13 @@ namespace Microsoft.Extensions.DependencyInjection
             return default;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="services"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException"></exception>
         public static T GetSingletonInstance<T>(this IServiceCollection services)
         {
             var service = services.GetSingletonInstanceOrNull<T>();
@@ -259,6 +274,12 @@ namespace Microsoft.Extensions.DependencyInjection
 
         #region New Module
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="services"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
         public static ObjectAccessor<T> TryAddObjectAccessor<T>(this IServiceCollection services)
         {
             if (services.Any(s => s.ServiceType == typeof(ObjectAccessor<T>)))
@@ -269,16 +290,37 @@ namespace Microsoft.Extensions.DependencyInjection
             return services.AddObjectAccessor<T>();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="services"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
         public static ObjectAccessor<T> AddObjectAccessor<T>(this IServiceCollection services)
         {
             return services.AddObjectAccessor(new ObjectAccessor<T>());
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="services"></param>
+        /// <param name="obj"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
         public static ObjectAccessor<T> AddObjectAccessor<T>(this IServiceCollection services, T obj)
         {
             return services.AddObjectAccessor(new ObjectAccessor<T>(obj));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="services"></param>
+        /// <param name="accessor"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
         public static ObjectAccessor<T> AddObjectAccessor<T>(this IServiceCollection services, ObjectAccessor<T> accessor)
         {
             if (services.Any(s => s.ServiceType == typeof(ObjectAccessor<T>)))
@@ -293,18 +335,36 @@ namespace Microsoft.Extensions.DependencyInjection
             return accessor;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="services"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
         public static T? GetObjectOrNull<T>(this IServiceCollection services)
             where T : class
         {
             return services.GetSingletonInstanceOrNull<IObjectAccessor<T>>()?.Value;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="services"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
         public static T GetObject<T>(this IServiceCollection services)
             where T : class
         {
             return services.GetObjectOrNull<T>() ?? throw new Exception($"找不到的对象 {typeof(T).AssemblyQualifiedName} 服务。请确保您以前使用过AddObjectAccessor！");
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="services"></param>
+        /// <returns></returns>
         public static IServiceProvider BuildServiceProviderFromFactory([NotNull] this IServiceCollection services)
         {
             foreach (var service in services)
@@ -333,6 +393,7 @@ namespace Microsoft.Extensions.DependencyInjection
         }
 
         #endregion New Module
+
         /// <summary>
         /// 得到文件容器
         /// </summary>
@@ -347,7 +408,6 @@ namespace Microsoft.Extensions.DependencyInjection
 
             if (fileProvider == null)
             {
-
                 throw new LuckException("IFileProvider接口不存在");
             }
 
@@ -359,13 +419,14 @@ namespace Microsoft.Extensions.DependencyInjection
                 {
                     throw new LuckException(fileNotExistsMsg);
                 }
-
             }
+
             var text = ReadAllText(fileInfo);
             if (text.IsNullOrEmpty())
             {
                 throw new LuckException("文件内容不存在");
             }
+
             return text;
         }
 
@@ -378,8 +439,6 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns>返回文件中的文件</returns>
         public static string GetFileByConfiguration(this IServiceCollection services, string sectionKey, string fileNotExistsMsg)
         {
-
-
             sectionKey.NotNullOrEmpty(nameof(sectionKey));
             var configuration = services.GetService<IConfiguration>();
             var value = configuration?.GetSection(sectionKey)?.Value;
@@ -387,7 +446,6 @@ namespace Microsoft.Extensions.DependencyInjection
             if (value == null)
                 return null;
             return services.GetFileText(value, fileNotExistsMsg);
-
         }
 
         /// <summary>
@@ -411,11 +469,10 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static IServiceCollection AddFileProvider(this IServiceCollection services)
         {
-
             var basePath = Microsoft.DotNet.PlatformAbstractions.ApplicationEnvironment.ApplicationBasePath; //获取项目路径
             return services.AddSingleton<IFileProvider>(new PhysicalFileProvider(basePath));
-
         }
+
         /// <summary>
         /// 获取指定key的值,如没有则设置并获取默认值
         /// </summary>

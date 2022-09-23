@@ -8,6 +8,9 @@ using System.Text;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public static class ServiceProviderExtension
     {
         /// <summary>
@@ -33,6 +36,12 @@ namespace Microsoft.Extensions.DependencyInjection
             return factory?.CreateLogger(type);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="provider"></param>
+        /// <param name="descriptor"></param>
+        /// <returns></returns>
         public static object? GetInstance(this IServiceProvider provider, ServiceDescriptor descriptor)
         {
             if (descriptor.ImplementationInstance != null)
@@ -61,16 +70,37 @@ namespace Microsoft.Extensions.DependencyInjection
             ILoggerFactory factory = provider.LazyGetService<ILoggerFactory>();
             return factory.CreateLogger(type);
         }
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="provider"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
         public static object GetServiceOrCreateInstance(this IServiceProvider provider, Type type)
         {
             return ActivatorUtilities.GetServiceOrCreateInstance(provider, type);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="provider"></param>
+        /// <param name="type"></param>
+        /// <param name="arguments"></param>
+        /// <returns></returns>
         public static object CreateInstance(this IServiceProvider provider, Type type, params object[] arguments)
         {
             return ActivatorUtilities.CreateInstance(provider, type, arguments);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="provider"></param>
+        /// <param name="action"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <exception cref="ArgumentNullException"></exception>
         public static void GetService<T>(this IServiceProvider provider, Action<T> action)
         {
             if(action==null)
@@ -81,6 +111,11 @@ namespace Microsoft.Extensions.DependencyInjection
             action(t);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="provider"></param>
+        /// <param name="callback"></param>
         public static void CreateScoped(this IServiceProvider provider, Action<IServiceProvider> callback)
         {
             using var scope = provider.CreateScope();

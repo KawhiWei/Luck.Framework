@@ -10,7 +10,7 @@
         /// </summary>
         /// <param name="event"></param>
         /// <typeparam name="TEvent"></typeparam>
-        void Publish<TEvent>(IIntegrationEvent @event) where TEvent : IIntegrationEvent;
+        void Publish<TEvent>(TEvent @event) where TEvent : IIntegrationEvent;
         
         
         /// <summary>

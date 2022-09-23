@@ -10,6 +10,7 @@ internal class  DiagnosticSourceSubscriber: IObserver<DiagnosticListener>
 {
     private readonly List<IDisposable> _listenerSubscriptions;
     private readonly Func<string, LuckDiagnosticSourceListener> _handlerFactory;
+    
     private IDisposable _allSourcesSubscription;
 
     /// <summary>
@@ -34,6 +35,6 @@ internal class  DiagnosticSourceSubscriber: IObserver<DiagnosticListener>
     public void OnNext(DiagnosticListener value)
     {
         var listener=new LuckDiagnosticSourceListener();
-        value.Subscribe(listener);
+        value.Subscribe(listener!);
     }
 }

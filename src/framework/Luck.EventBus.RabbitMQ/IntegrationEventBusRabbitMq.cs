@@ -47,7 +47,7 @@ public class IntegrationEventBusRabbitMq : IIntegrationEventBus, IDisposable
     /// <param name="event"></param>
     /// <typeparam name="TEvent"></typeparam>
     /// <exception cref="ArgumentNullException"></exception>
-    public void Publish<TEvent>(IIntegrationEvent @event) where TEvent : IIntegrationEvent
+    public void Publish<TEvent>(TEvent @event) where TEvent : IIntegrationEvent
     {
         if (_listener.IsEnabled(RabbitMqDiagnosticListenerNames.CreateRabbitMqConnectionBefore))
         {
@@ -105,7 +105,7 @@ public class IntegrationEventBusRabbitMq : IIntegrationEventBus, IDisposable
             _listener.Write(RabbitMqDiagnosticListenerNames.RabbitMqCreateModelBefore, $"准备创建Rabbit虚拟通道");
         }
 
-        using var channel = _persistentConnection.CreateModel();
+        using IModel channel = _persistentConnection.CreateModel();
         var properties = channel.CreateBasicProperties();
         if (_listener.IsEnabled(RabbitMqDiagnosticListenerNames.RabbitMqCreateModelAfter))
         {

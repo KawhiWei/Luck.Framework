@@ -1,6 +1,8 @@
 ﻿using Luck.Framework.Infrastructure;
 using Luck.Framework.Infrastructure.Caching;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using IRedisHash = Luck.Framework.Infrastructure.Caching.Interface.IRedisHash;
+using IRedisList = Luck.Framework.Infrastructure.Caching.Interface.IRedisList;
 
 namespace Luck.Redis.StackExchange
 {

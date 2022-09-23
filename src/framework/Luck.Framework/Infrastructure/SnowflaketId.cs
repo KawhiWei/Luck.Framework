@@ -2,8 +2,11 @@
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Luck.Framework
+namespace Luck.Framework.Infrastructure
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public struct SnowflakeId : IComparable<SnowflakeId>, IEquatable<SnowflakeId>
     {
         private static readonly DateTime UnixEpoch;
@@ -31,6 +34,14 @@ namespace Luck.Framework
             _staticIncrement = new Random().Next();
             StaticPid = (short)GetCurrentProcessId();
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="timestamp"></param>
+        /// <param name="machine"></param>
+        /// <param name="pid"></param>
+        /// <param name="increment"></param>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
         public SnowflakeId(int timestamp, int machine, short pid, int increment)
         {
             if ((machine & 0xff000000) != 0)
@@ -51,32 +62,67 @@ namespace Luck.Framework
             _increment = increment;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="lhs"></param>
+        /// <param name="rhs"></param>
+        /// <returns></returns>
         public static bool operator ==(SnowflakeId lhs, SnowflakeId rhs)
         {
             return lhs.Equals(rhs);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="lhs"></param>
+        /// <param name="rhs"></param>
+        /// <returns></returns>
         public static bool operator !=(SnowflakeId lhs, SnowflakeId rhs)
         {
             return !(lhs == rhs);
         }
-
+        
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public static SnowflakeId GenerateNewId()
         {
             return GenerateNewId(GetTimestampFromDateTime(DateTime.UtcNow));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="timestamp"></param>
+        /// <returns></returns>
         public static SnowflakeId GenerateNewId(int timestamp)
         {
             var increment = Interlocked.Increment(ref _staticIncrement) & 0x00ffffff; // only use low order 3 bytes
             return new SnowflakeId(timestamp, StaticMachine, StaticPid, increment);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public static string GenerateNewStringId()
         {
             return GenerateNewId().ToString();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="timestamp"></param>
+        /// <param name="machine"></param>
+        /// <param name="pid"></param>
+        /// <param name="increment"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
         public static byte[] Pack(int timestamp, int machine, short pid, int increment)
         {
             if ((machine & 0xff000000) != 0)
@@ -127,6 +173,11 @@ namespace Luck.Framework
         }
 
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="other"></param>
+        /// <returns></returns>
         public int CompareTo(SnowflakeId other)
         {
             var r = _timestamp.CompareTo(other._timestamp);
@@ -150,6 +201,12 @@ namespace Luck.Framework
             return _increment.CompareTo(other._increment);
         }
 
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="rhs"></param>
+        /// <returns></returns>
         public bool Equals(SnowflakeId rhs)
         {
             return
@@ -160,6 +217,11 @@ namespace Luck.Framework
         }
 
 #pragma warning disable CS8765 // 参数类型的为 Null 性与重写成员不匹配(可能是由于为 Null 性特性)。
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
         public override bool Equals(object obj)
 #pragma warning restore CS8765 // 参数类型的为 Null 性与重写成员不匹配(可能是由于为 Null 性特性)。
         {

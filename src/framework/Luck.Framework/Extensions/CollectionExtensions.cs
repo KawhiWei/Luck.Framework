@@ -161,46 +161,47 @@ namespace Luck.Framework.Extensions
         /// <summary>
         /// 将列表转换为树形结构（泛型无限递归）
         /// </summary>
-        /// <typeparam name="T">类型</typeparam>
-        /// <param name="list">数据</param>
-        /// <param name="rootwhere">根条件</param>
-        /// <param name="childswhere">节点条件</param>
-        /// <param name="addchilds">添加子节点</param>
+        /// <param name="list"></param>
+        /// <param name="rootWhere"></param>
+        /// <param name="childWhere"></param>
+        /// <param name="addChildList"></param>
         /// <param name="entity"></param>
+        /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public static List<T> ToTree<T>(this List<T> list, Func<T, T, bool> rootwhere, Func<T, T, bool> childswhere, Action<T, IEnumerable<T>> addchilds, T entity = default(T))
+        public static List<T> ToTree<T>(this List<T>? list, Func<T, T, bool> rootWhere, Func<T, T, bool> childWhere, Action<T, IEnumerable<T>> addChildList, T entity = default(T))
         {
-            var treelist = new List<T>();
+            if (entity == null) throw new ArgumentNullException(nameof(entity));
+            var treeList = new List<T>();
             //空树
             if (list == null || list.Count == 0)
             {
-                return treelist;
+                return treeList;
             }
-            if (!list.Any<T>(e => rootwhere(entity, e)))
+            if (!list.Any<T>(e => rootWhere(entity, e)))
             {
-                return treelist;
+                return treeList;
             }
             //树根
-            if (list.Any<T>(e => rootwhere(entity, e)))
+            if (list.Any<T>(e => rootWhere(entity, e)))
             {
-                treelist.AddRange(list.Where(e => rootwhere(entity, e)));
+                treeList.AddRange(list.Where(e => rootWhere(entity, e)));
             }
             //树叶
-            foreach (var item in treelist)
+            foreach (var item in treeList)
             {
-                if (list.Any(e => childswhere(item, e)))
+                if (list.Any(e => childWhere(item, e)))
                 {
-                    var nodedata = list.Where(e => childswhere(item, e)).ToList();
+                    var nodedata = list.Where(e => childWhere(item, e)).ToList();
                     foreach (var child in nodedata)
                     {
                         //添加子集
-                        var data = list.ToTree(childswhere, childswhere, addchilds, child);
-                        addchilds(child, data);
+                        var data = list.ToTree(childWhere, childWhere, addChildList, child);
+                        addChildList(child, data);
                     }
-                    addchilds(item, nodedata);
+                    addChildList(item, nodedata);
                 }
             }
-            return treelist;
+            return treeList;
         }
 
         /// <summary>
@@ -229,6 +230,13 @@ namespace Luck.Framework.Extensions
             yield break;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="item"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
         public static bool AddIfNotContains<T>([NotNull] this ICollection<T> source, T item)
         {
             source.NotNull(nameof(source));

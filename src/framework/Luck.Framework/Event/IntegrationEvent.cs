@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using Luck.Framework.Infrastructure;
 
 namespace Luck.Framework.Event
 {
