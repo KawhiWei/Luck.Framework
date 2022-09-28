@@ -4,7 +4,7 @@ using Luck.Framework.Infrastructure.DependencyInjectionModule;
 
 namespace Module.Sample.EventHandlers;
 
-[RabbitMQ("fanout_test_exchange", ExchangeType.FanOut, "", "fanout_test_queue_002")]
+[RabbitMq("fanout_test_exchange", ExchangeType.FanOut, "", "fanout_test_queue_002")]
 public class TestIntegrationFanOutPayEvent: IntegrationEvent
 {
     public string Name { get; set; } = default!;

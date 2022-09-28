@@ -25,9 +25,9 @@ namespace Microsoft.Extensions.DependencyInjection
 
         private static IServiceCollection AddRabbitMqPersistentConnection(this IServiceCollection service, RabbitMqConfig config)
         {
-            service.AddSingleton<IRabbitMQPersistentConnection>(sp =>
+            service.AddSingleton<IRabbitMqPersistentConnection>(sp =>
             {
-                var logger = sp.GetRequiredService<ILogger<DefaultRabbitMQPersistentConnection>>();
+                var logger = sp.GetRequiredService<ILogger<DefaultRabbitMqPersistentConnection>>();
                 var factory = new ConnectionFactory()
                 {
                     HostName = config.Host,
@@ -37,7 +37,7 @@ namespace Microsoft.Extensions.DependencyInjection
                     Port = config.Port,
                     VirtualHost = config.VirtualHost,
                 };
-                return new DefaultRabbitMQPersistentConnection(factory, logger, config.RetryCount);
+                return new DefaultRabbitMqPersistentConnection(factory, logger, config.RetryCount);
             });
             return service;
         }

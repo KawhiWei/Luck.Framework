@@ -2,7 +2,10 @@
 
 namespace Luck.EventBus.RabbitMQ
 {
-    public interface IRabbitMQPersistentConnection : IDisposable
+    /// <summary>
+    /// 
+    /// </summary>
+    public interface IRabbitMqPersistentConnection : IDisposable
     {
         bool IsConnected { get;  }
 

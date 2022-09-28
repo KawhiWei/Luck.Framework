@@ -3,10 +3,13 @@ using Luck.Framework.Extensions;
 
 namespace Luck.EventBus.RabbitMQ.Attributes
 {
+    /// <summary>
+    /// 
+    /// </summary>
     [AttributeUsage(AttributeTargets.Class)]
-    public class RabbitMQAttribute : Attribute
+    public class RabbitMqAttribute : Attribute
     {
-        public RabbitMQAttribute(string exchange, ExchangeType exchangeType, string routingKey, string? queue = null)
+        public RabbitMqAttribute(string exchange, ExchangeType exchangeType, string routingKey, string? queue = null)
         {
             Exchange = exchange;
             Type = exchangeType.ToDescription() ?? "direct";
@@ -17,24 +20,22 @@ namespace Luck.EventBus.RabbitMQ.Attributes
         /// <summary>
         /// 交换机
         /// </summary>
-        public string Exchange { get; set; } = default!;
+        public string Exchange { get; set; }
 
         /// <summary>
         /// 交换机模式
         /// </summary>
-        public string Type { get; set; }=default!;
+        public string Type { get; set; }
 
         /// <summary>
         /// 路由键《路由键和队列名称配合使用》
         /// </summary>
-        public string RoutingKey { get; set; } = default!;
+        public string RoutingKey { get; set; }
 
         /// <summary>
         /// 队列名称《队列名称和路由键配合使用》
         /// </summary>
         public string? Queue { get; set; }
-
-     
     }
 
 
@@ -43,8 +44,8 @@ namespace Luck.EventBus.RabbitMQ.Attributes
         /// <summary>
         /// 路由模式
         /// </summary>
-        [Description("direct")]
-        Routing = 1,
+        [Description("direct")] Routing = 1,
+
         ///// <summary>
         ///// 主题模式
         ///// </summary>
@@ -53,8 +54,6 @@ namespace Luck.EventBus.RabbitMQ.Attributes
         /// <summary>
         /// 订阅模式
         /// </summary>
-        [Description("fanout")]
-        FanOut = 3,
-    
+        [Description("fanout")] FanOut = 3,
     }
 }

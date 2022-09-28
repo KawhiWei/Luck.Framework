@@ -22,7 +22,7 @@ namespace Luck.EventBus.RabbitMQ;
 
 public class IntegrationEventBusRabbitMq : IIntegrationEventBus, IDisposable
 {
-    private readonly IRabbitMQPersistentConnection _persistentConnection;
+    private readonly IRabbitMqPersistentConnection _persistentConnection;
     private readonly ILogger<IntegrationEventBusRabbitMq> _logger;
     private readonly int _retryCount;
     private readonly IIntegrationEventBusSubscriptionsManager _subsManager;
@@ -33,7 +33,7 @@ public class IntegrationEventBusRabbitMq : IIntegrationEventBus, IDisposable
 
     public IntegrationEventBusRabbitMq(int retryCount, IServiceProvider serviceProvider)
     {
-        _persistentConnection = serviceProvider.GetService<IRabbitMQPersistentConnection>() ?? throw new ArgumentNullException(nameof(_persistentConnection)); // persistentConnection;
+        _persistentConnection = serviceProvider.GetService<IRabbitMqPersistentConnection>() ?? throw new ArgumentNullException(nameof(_persistentConnection)); // persistentConnection;
         _logger = serviceProvider.GetService<ILogger<IntegrationEventBusRabbitMq>>() ?? throw new ArgumentNullException(nameof(_logger)); //(logger);
         _retryCount = retryCount;
         _subsManager = serviceProvider.GetService<IIntegrationEventBusSubscriptionsManager>() ?? throw new ArgumentNullException(nameof(_subsManager)); //subsManager ?? new RabbitMqEventBusSubscriptionsManager();
@@ -74,7 +74,7 @@ public class IntegrationEventBusRabbitMq : IIntegrationEventBus, IDisposable
 
         _logger.LogTrace("创建RabbitMQ通道来发布事件: {EventId} ({EventName})", @event.EventId, type.Name);
 
-        var rabbitMqAttribute = type.GetCustomAttribute<RabbitMQAttribute>();
+        var rabbitMqAttribute = type.GetCustomAttribute<RabbitMqAttribute>();
 
         if (rabbitMqAttribute is null)
             throw new ArgumentNullException($"{nameof(@event)}未设置<RabbitMQAttribute>特性,无法发布事件");
@@ -187,7 +187,7 @@ public class IntegrationEventBusRabbitMq : IIntegrationEventBus, IDisposable
 
             CheckEventType(eventType);
             CheckHandlerType(handlerType);
-            var rabbitMqAttribute = eventType.GetCustomAttribute<RabbitMQAttribute>();
+            var rabbitMqAttribute = eventType.GetCustomAttribute<RabbitMqAttribute>();
 
             if (rabbitMqAttribute == null)
                 throw new ArgumentNullException($"{nameof(eventType)}未设置<RabbitMQAttribute>特性,无法发布事件");
@@ -208,7 +208,7 @@ public class IntegrationEventBusRabbitMq : IIntegrationEventBus, IDisposable
     /// </summary>
     /// <param name="rabbitMqAttribute"></param>
     /// <returns></returns>
-    private IModel CreateConsumerChannel(RabbitMQAttribute rabbitMqAttribute)
+    private IModel CreateConsumerChannel(RabbitMqAttribute rabbitMqAttribute)
     {
         // if (!_persistentConnection.IsConnected)
         // {
@@ -231,7 +231,7 @@ public class IntegrationEventBusRabbitMq : IIntegrationEventBus, IDisposable
         return channel;
     }
 
-    private void StartBasicConsume(Type eventType, RabbitMQAttribute rabbitMqAttribute, IModel? consumerChannel)
+    private void StartBasicConsume(Type eventType, RabbitMqAttribute rabbitMqAttribute, IModel? consumerChannel)
         //where T : IntegrationEvent
     {
         _logger.LogTrace("启动RabbitMQ基本消耗");
@@ -312,7 +312,7 @@ public class IntegrationEventBusRabbitMq : IIntegrationEventBus, IDisposable
             _logger.LogWarning("没有订阅RabbitMQ事件: {EventName}", eventName);
     }
 
-    private void DoInternalSubscription(string eventName, RabbitMQAttribute rabbitMqAttribute, IModel consumerChannel)
+    private void DoInternalSubscription(string eventName, RabbitMqAttribute rabbitMqAttribute, IModel consumerChannel)
     {
         var containsKey = _subsManager.HasSubscriptionsForEvent(eventName);
         if (!containsKey)
@@ -336,7 +336,7 @@ public class IntegrationEventBusRabbitMq : IIntegrationEventBus, IDisposable
 
 
         using var channel = _persistentConnection.CreateModel();
-        var type = args.EventType.GetCustomAttribute<RabbitMQAttribute>();
+        var type = args.EventType.GetCustomAttribute<RabbitMqAttribute>();
         if (type is null)
             throw new ArgumentNullException($"事件未配置[RabbitMQAttribute] 特性");
 

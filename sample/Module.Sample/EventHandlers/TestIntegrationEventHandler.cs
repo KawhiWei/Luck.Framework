@@ -6,7 +6,7 @@ using Luck.Framework.Infrastructure.DependencyInjectionModule;
 
 namespace Module.Sample.EventHandlers
 {
-    [RabbitMQ("ddtest", ExchangeType.Routing, "test_0001", "testqueue1")]
+    [RabbitMq("ddtest", ExchangeType.Routing, "test_0001", "testqueue1")]
     public class TestIntegrationEvent : IntegrationEvent
     {
 
