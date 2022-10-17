@@ -364,7 +364,7 @@ public static class LoggerExtensions
         logger.Log(LogLevel.Critical, eventId, $"{GetMessage(method, null, message ?? "", businessFilter)}", args);
     }
 
-    private static string GetMessage(string method, Exception? exception, string message = "", string businessFilter = "")
+    private static DoveLoggerModule GetMessage(string method, Exception? exception, string message = "", string businessFilter = "")
     {
         return new DoveLoggerModule()
         {
@@ -372,7 +372,7 @@ public static class LoggerExtensions
             BusinessFilter = businessFilter,
             Exception = exception,
             Method = method,
-        }.Serialize();
+        };
     }
 
     #endregion

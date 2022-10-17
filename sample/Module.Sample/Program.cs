@@ -22,10 +22,10 @@ builder.Services.AddMediatR(AssemblyHelper.AllAssemblies);
 
 builder.Services.AddEventBusRabbitMq(x =>
 {
-    x.UserName = "admin";
-    x.Host = "101.34.26.221";
-    x.PassWord = "&duyu789";
-    x.Port = 40013; // 40014 管理面板
+    x.UserName = "kawhi";
+    x.Host = "192.168.31.40";
+    x.PassWord = "wzw0126..";
+    x.Port = 5672; // 40014 管理面板
 });
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

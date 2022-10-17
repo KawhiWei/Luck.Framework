@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.Logging;
 
@@ -6,10 +7,12 @@ namespace Luck.Dove.Logging;
 
 public class DoveLoggerProvider : ILoggerProvider
 {
-    private ConcurrentDictionary<string, DoveLogger> _doveLoggers = new ConcurrentDictionary<string, DoveLogger>();
+    private ConcurrentDictionary<string, DoveLogger> _doveLoggers = new();
     private readonly IDoveLoggerProcessor _doveLoggerProcessor;
-    public DoveLoggerProvider()
+    private readonly IHttpContextAccessor _httpContextAccessor;
+    public DoveLoggerProvider(IHttpContextAccessor httpContextAccessor)
     {
+        _httpContextAccessor = httpContextAccessor;
         _doveLoggerProcessor = new DoveLoggerProcessor();
     }
 
@@ -19,6 +22,6 @@ public class DoveLoggerProvider : ILoggerProvider
 
     public ILogger CreateLogger(string categoryName)
     {
-        return _doveLoggers.GetOrAdd(categoryName, _ => new DoveLogger(categoryName, _doveLoggerProcessor));
+        return _doveLoggers.GetOrAdd(categoryName, _ => new DoveLogger(categoryName, _doveLoggerProcessor,_httpContextAccessor));
     }
 }

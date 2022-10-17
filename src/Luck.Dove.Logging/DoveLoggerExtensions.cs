@@ -9,6 +9,7 @@ public static class DoveLoggerExtensions
 {
     public static IServiceCollection AddDoveLogger(this IServiceCollection service)
     {
+        service.AddHttpContextAccessor();
         service.TryAddEnumerable(ServiceDescriptor.Singleton<ILoggerProvider, DoveLoggerProvider>());
         // service.AddSingleton<IDoveLoggerProcessor, DoveLoggerProcessor>();
         return service;
