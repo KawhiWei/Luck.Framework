@@ -2,12 +2,20 @@
 
 namespace Luck.Framework.Infrastructure
 {
+    /// <summary>
+    /// 
+    /// </summary>
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
     public class DependsOnAttribute : Attribute, IDependedTypesProvider
     {
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="dependedTypes"></param>
         public DependsOnAttribute(params Type[] dependedTypes)
         {
-            DependedTypes = dependedTypes ?? new Type[0];
+            DependedTypes = dependedTypes ?? Type.EmptyTypes;
         }
 
         /// <summary>

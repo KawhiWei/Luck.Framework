@@ -7,11 +7,18 @@ namespace Luck.Framework.Infrastructure
     /// </summary>
     public class ConfigureServicesContext
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="services"></param>
         public ConfigureServicesContext(IServiceCollection services)
         {
             Services = services;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public IServiceCollection Services { get; }
     }
 }

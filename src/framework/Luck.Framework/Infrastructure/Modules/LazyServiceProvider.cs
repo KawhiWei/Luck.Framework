@@ -4,6 +4,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Luck.Framework.Infrastructure
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class LazyServiceProvider : ILazyServiceProvider, ITransientDependency
     {
         /// <summary>
@@ -38,11 +41,11 @@ namespace Luck.Framework.Infrastructure
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="serviceType"></param>
+        /// <param name="service"></param>
         /// <returns></returns>
-        public object LazyGetRequiredService(Type serviceType)
+        public object LazyGetRequiredService(Type service)
         {
-            return CacheServices.GetOrAdd(serviceType, serviceType => ServiceProvider.GetRequiredService(serviceType));
+            return CacheServices.GetOrAdd(service, serviceType => ServiceProvider.GetRequiredService(serviceType));
         }
 
         /// <summary>
@@ -58,11 +61,15 @@ namespace Luck.Framework.Infrastructure
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="serviceType"></param>
+        /// <param name="service"></param>
         /// <returns></returns>
-        public object LazyGetService(Type serviceType)
+        public object LazyGetService(Type? service)
         {
-            return CacheServices.GetOrAdd(serviceType, serviceType => ServiceProvider.GetService(serviceType));
+            return CacheServices!.GetOrAdd(service, serviceType =>
+            {
+                if (serviceType == null) throw new ArgumentNullException(nameof(serviceType));
+                return ServiceProvider.GetService(serviceType);
+            });
         }
 
         /// <summary>
@@ -71,7 +78,7 @@ namespace Luck.Framework.Infrastructure
         /// <param name="defaultValue"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public T LazyGetService<T>(T defaultValue)
+        public T LazyGetService<T>(T? defaultValue)
         {
             return (T)LazyGetService(typeof(T), defaultValue);
         }
@@ -79,23 +86,23 @@ namespace Luck.Framework.Infrastructure
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="serviceType"></param>
+        /// <param name="service"></param>
         /// <param name="defaultValue"></param>
         /// <returns></returns>
-        public object LazyGetService(Type serviceType, object defaultValue)
+        public object LazyGetService(Type service, object? defaultValue)
         {
-            return LazyGetService(serviceType) ?? defaultValue;
+            return LazyGetService(service) ?? defaultValue;
         }
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="serviceType"></param>
+        /// <param name="service"></param>
         /// <param name="factory"></param>
         /// <returns></returns>
-        public object LazyGetService(Type serviceType, Func<IServiceProvider, object> factory)
+        public object LazyGetService(Type service, Func<IServiceProvider, object> factory)
         {
-            return CacheServices.GetOrAdd(serviceType, serviceType => factory(ServiceProvider));
+            return CacheServices.GetOrAdd(service, serviceType => factory(ServiceProvider));
         }
 
         /// <summary>

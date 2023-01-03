@@ -4,6 +4,9 @@ using System.Text.RegularExpressions;
 
 namespace Luck.Framework.Extensions
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public static class StringExtention
     {
         /// <summary>

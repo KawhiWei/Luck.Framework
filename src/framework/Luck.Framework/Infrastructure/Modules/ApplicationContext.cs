@@ -7,12 +7,19 @@ namespace Luck.Framework.Infrastructure
     /// </summary>
     public class ApplicationContext : IServiceProviderAccessor
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="serviceProvider"></param>
         public ApplicationContext(IServiceProvider serviceProvider)
         {
             serviceProvider.NotNull(nameof(serviceProvider));
             ServiceProvider = serviceProvider;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public IServiceProvider ServiceProvider { get; set; }
     }
 }

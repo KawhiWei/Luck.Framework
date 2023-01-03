@@ -31,6 +31,9 @@ namespace Luck.Framework.Infrastructure
         {
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public static IocManage Instance => InstanceLazy.Value;
 
         /// <summary>

@@ -6,12 +6,24 @@ using System.Linq.Expressions;
 
 namespace Luck.Framework.Infrastructure
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class ModuleApplicationBase : IModuleApplication
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public Type StartupModuleType { get; set; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public IServiceCollection Services { get; set; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public IServiceProvider ServiceProvider { get; set; }
 
         /// <summary>
@@ -19,8 +31,16 @@ namespace Luck.Framework.Infrastructure
         /// </summary>
         public IReadOnlyList<IAppModule> Modules { get; set; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public List<IAppModule> Source { get; protected set; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="startupModuleType"></param>
+        /// <param name="services"></param>
         public ModuleApplicationBase(Type startupModuleType, IServiceCollection services)
         {
             StartupModuleType = startupModuleType;
@@ -32,6 +52,12 @@ namespace Luck.Framework.Infrastructure
             Modules = this.LoadModules();
         }
 
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="services"></param>
+        /// <returns></returns>
         protected virtual List<IAppModule> GetAllModule(IServiceCollection services)
         {
             var typs = AssemblyHelper.FindTypes(o => AppModule.IsAppModule(o));
@@ -39,6 +65,10 @@ namespace Luck.Framework.Infrastructure
             return modules.ToList();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="serviceProvider"></param>
         protected virtual void SetServiceProvider(IServiceProvider serviceProvider)
         {
             ServiceProvider = serviceProvider;
@@ -101,6 +131,9 @@ namespace Luck.Framework.Infrastructure
             return module;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public virtual void Dispose()
         {
 

@@ -1,8 +1,16 @@
 ﻿namespace Luck.Framework.Helpers
 {
 
-    public class ArrayHelper
+    /// <summary>
+    /// 
+    /// </summary>
+    public static class ArrayHelper
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
         public static T[] Empty<T>() =>
 #if NET45
 

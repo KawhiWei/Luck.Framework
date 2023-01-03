@@ -2,6 +2,9 @@
 
 namespace Luck.Framework.Infrastructure
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public interface IDependedTypesProvider
     {
         /// <summary>

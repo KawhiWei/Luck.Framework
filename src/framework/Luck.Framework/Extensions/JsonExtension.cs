@@ -4,6 +4,9 @@ using System.Text.Unicode;
 
 namespace Luck.Framework.Extensions
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public static class JsonExtension
     {
         /// <summary>

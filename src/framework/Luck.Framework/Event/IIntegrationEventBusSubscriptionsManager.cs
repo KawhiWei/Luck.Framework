@@ -1,5 +1,8 @@
 ﻿namespace Luck.Framework.Event
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public interface IIntegrationEventBusSubscriptionsManager
     {
 
@@ -70,7 +73,6 @@
         /// <summary>
         /// 判断订阅者是否存在
         /// </summary>
-        /// <param name="t"></param>
         /// <returns></returns>
         bool HasSubscriptionsForEvent<T>() where T : IntegrationEvent;
 

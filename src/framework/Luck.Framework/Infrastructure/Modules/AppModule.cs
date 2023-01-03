@@ -3,12 +3,22 @@ using System.Reflection;
 
 namespace Luck.Framework.Infrastructure
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class AppModule : IAppModule
     {
 
         
+        /// <summary>
+        /// 
+        /// </summary>
         public virtual bool Enable { get;  set; } = true;
-        private ConfigureServicesContext? _configureServicesContext;
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="context"></param>
         public virtual void ApplicationInitialization(ApplicationContext context)
         {
         }
@@ -24,23 +34,14 @@ namespace Luck.Framework.Infrastructure
           
         //    Enable = true;
         //}
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="context"></param>
         public virtual void ConfigureServices(ConfigureServicesContext context)
         {
         }
-        protected internal ConfigureServicesContext ConfigureServicesContext
-        {
-            get
-            {
-                if (_configureServicesContext == null)
-                {
-                    throw new LuckException($"{nameof(ConfigureServicesContext)}仅适用于{nameof(ConfigureServices)}方法。");
-                }
-
-                return _configureServicesContext;
-            }
-            internal set => _configureServicesContext = value;
-        }
-
+        
         /// <summary>
         /// 获取模块程序集
         /// </summary>

@@ -7,6 +7,9 @@ namespace Luck.Framework.Infrastructure
     /// </summary>
     public interface IServiceProviderAccessor
     {
+        /// <summary>
+        /// 
+        /// </summary>
         IServiceProvider ServiceProvider { get; }
     }
 }

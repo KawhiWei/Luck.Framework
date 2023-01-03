@@ -7,8 +7,15 @@ using System.Threading.Tasks;
 
 namespace Luck.Framework.Helpers
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public static class ReflectHelper
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public static Assembly[] GetAssemblies()
         {
             Assembly[]? assemblies = null;

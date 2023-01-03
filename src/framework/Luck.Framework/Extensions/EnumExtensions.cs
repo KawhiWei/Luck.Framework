@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace Luck.Framework.Extensions
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public static class EnumExtensions
     {
         /// <summary>

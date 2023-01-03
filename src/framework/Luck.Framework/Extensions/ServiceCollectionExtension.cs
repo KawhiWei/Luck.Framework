@@ -66,7 +66,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="serviceLifetime">service lifetime</param>
         /// <param name="assemblies">assemblies</param>
         /// <returns>services</returns>
-        public static IServiceCollection RegisterAssemblyTypes(this IServiceCollection services, Func<Type, bool> typesFilter, ServiceLifetime serviceLifetime, params Assembly[] assemblies)
+        private static IServiceCollection RegisterAssemblyTypes(this IServiceCollection services, Func<Type, bool>? typesFilter, ServiceLifetime serviceLifetime, params Assembly[]? assemblies)
         {
             if (assemblies == null || assemblies.Length == 0)
             {
@@ -128,7 +128,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="serviceLifetime">service lifetime</param>
         /// <param name="assemblies">assemblies</param>
         /// <returns>services</returns>
-        public static IServiceCollection RegisterAssemblyTypesAsImplementedInterfaces(this IServiceCollection services, Func<Type, bool> typesFilter, ServiceLifetime serviceLifetime, params Assembly[] assemblies)
+        public static IServiceCollection RegisterAssemblyTypesAsImplementedInterfaces(this IServiceCollection services, Func<Type, bool>? typesFilter, ServiceLifetime serviceLifetime, params Assembly[]? assemblies)
         {
             if (assemblies == null || assemblies.Length == 0)
             {
@@ -185,45 +185,7 @@ namespace Microsoft.Extensions.DependencyInjection
             var provider = services.BuildServiceProvider();
             return provider.GetService<TType>();
         }
-
-        /// <summary>
-        /// 得到或添加Singleton服务
-        /// </summary>
-        /// <typeparam name="TServiceType"></typeparam>
-        /// <typeparam name="TImplementation"></typeparam>
-        /// <param name="services"></param>
-        /// <returns></returns>
-        public static TServiceType GetOrAddSingletonService<TServiceType, TImplementation>(this IServiceCollection services)
-            where TServiceType : class
-            where TImplementation : class, TServiceType
-        {
-            var type = services.GetSingletonInstanceOrNull<TServiceType>();
-            if (type is null)
-            {
-                var provider = services.BuildServiceProvider();
-                var serviceType = (TServiceType)provider.GetInstance(new ServiceDescriptor(typeof(TServiceType), typeof(TImplementation), ServiceLifetime.Singleton));
-                return serviceType;
-            }
-
-            return type;
-        }
-
-        /// <summary>
-        /// 得到或添加Singleton服务
-        /// </summary>
-        /// <typeparam name="TServiceType"></typeparam>
-        public static TServiceType GetOrAddSingletonService<TServiceType>(this IServiceCollection services, Func<TServiceType> factory) where TServiceType : class
-        {
-            var servciceType = services.GetSingletonInstanceOrNull<TServiceType>();
-            if (servciceType is null)
-            {
-                servciceType = factory();
-                services.AddSingleton<TServiceType>(servciceType);
-            }
-
-            return servciceType;
-        }
-
+        
         /// <summary>
         /// 
         /// </summary>
@@ -248,7 +210,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
             if (descriptor?.ImplementationFactory != null)
             {
-                return (T)descriptor.ImplementationFactory.Invoke(null);
+                return (T)descriptor.ImplementationFactory.Invoke(null!);
             }
 
             return default;
@@ -365,7 +327,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// </summary>
         /// <param name="services"></param>
         /// <returns></returns>
-        public static IServiceProvider BuildServiceProviderFromFactory([NotNull] this IServiceCollection services)
+        public static IServiceProvider? BuildServiceProviderFromFactory([NotNull] this IServiceCollection services)
         {
             foreach (var service in services)
             {
@@ -469,7 +431,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static IServiceCollection AddFileProvider(this IServiceCollection services)
         {
-            var basePath = Microsoft.DotNet.PlatformAbstractions.ApplicationEnvironment.ApplicationBasePath; //获取项目路径
+            var basePath = Path.Combine(AppContext.BaseDirectory);// Microsoft.DotNet.PlatformAbstractions.ApplicationEnvironment.ApplicationBasePath; //获取项目路径
             return services.AddSingleton<IFileProvider>(new PhysicalFileProvider(basePath));
         }
 

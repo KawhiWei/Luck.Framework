@@ -5,6 +5,9 @@ using System.Runtime.Loader;
 
 namespace Luck.Framework.Infrastructure
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public static class AssemblyHelper
     {
       
@@ -16,7 +19,7 @@ namespace Luck.Framework.Infrastructure
 
         public static IEnumerable<Assembly> GetAssembliesByName(params string[] assemblyNames)
         {
-            var basePath = Microsoft.DotNet.PlatformAbstractions.ApplicationEnvironment.ApplicationBasePath; //获取项目路径
+            var basePath =  Path.Combine(AppContext.BaseDirectory);//Microsoft.DotNet.PlatformAbstractions.ApplicationEnvironment.ApplicationBasePath; //获取项目路径
             return assemblyNames.Select(o => AssemblyLoadContext.Default.LoadFromAssemblyPath(Path.Combine(basePath, $"{o}.dll")));
         }
 
@@ -32,7 +35,7 @@ namespace Luck.Framework.Infrastructure
         {
 
             get {
-                if (_allAssemblies == null)
+                if (!_allAssemblies.Any())
                 {
                     Init();
                 }
@@ -48,14 +51,17 @@ namespace Luck.Framework.Infrastructure
 
             get
             {
-                if (_allTypes == null)
+                if (!_allTypes.Any())
                 {
                     Init();
                 }
                 return _allTypes;
             }
         }
-        public static void Init()
+        /// <summary>
+        /// 
+        /// </summary>
+        private static void Init()
         {
 
             _allAssemblies = DependencyContext.Default.GetDefaultAssemblyNames().Where(o => o.Name != null && !Filters.Any(o.Name.StartsWith)).Select(Assembly.Load).ToArray();
@@ -70,15 +76,25 @@ namespace Luck.Framework.Infrastructure
             return AllTypes.Where(predicate).ToArray();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TAttribute"></typeparam>
+        /// <returns></returns>
         public static Type[] FindTypesByAttribute<TAttribute>()
         
         {
-            var attrbuteType = typeof(TAttribute);
-            return FindTypesByAttribute(attrbuteType);
+            var attributeType = typeof(TAttribute);
+            return FindTypesByAttribute(attributeType);
         }
 
 
-        public static Type[] FindTypesByAttribute(Type type)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        private static Type[] FindTypesByAttribute(Type type)
         {
             return AllTypes.Where(a=>a.IsDefined(type,true)).Distinct().ToArray();
         }

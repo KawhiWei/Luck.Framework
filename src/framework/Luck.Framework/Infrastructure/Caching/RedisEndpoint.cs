@@ -1,5 +1,8 @@
 ﻿namespace Luck.Framework.Infrastructure
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class RedisEndpoint
     {
         /// <summary>

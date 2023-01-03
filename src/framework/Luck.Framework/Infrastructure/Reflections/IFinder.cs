@@ -2,6 +2,10 @@
 
 namespace Luck.Framework.Infrastructure
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="TItem"></typeparam>
     [IgnoreDependency]
     public interface IFinder<out TItem>
     {

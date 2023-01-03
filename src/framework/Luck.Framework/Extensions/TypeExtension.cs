@@ -65,7 +65,7 @@ namespace Luck.Framework.Extensions
         /// <param name="genericType">泛型类型</param>
         /// <param name="type">指定类型</param>
         /// <returns></returns>
-        public static bool IsGenericAssignableFrom(this Type genericType, Type type)
+        private static bool IsGenericAssignableFrom(this Type genericType, Type type)
         {
             genericType.NotNull(nameof(genericType));
             type.NotNull(nameof(type));
@@ -83,7 +83,7 @@ namespace Luck.Framework.Extensions
 
             foreach (var other in allOthers)
             {
-                Type cur = other;
+                var cur = other;
                 while (cur != null)
                 {
                     if (cur.IsGenericType)

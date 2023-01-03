@@ -7,6 +7,9 @@ using System.Text;
 
 namespace Luck.Framework.Extensions
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public static partial class Extensions
     {
         /// <summary>
@@ -99,29 +102,19 @@ namespace Luck.Framework.Extensions
             {
                 sb.AppendFormat("{0}{1}{2}{3}", left, o, right, separator);
             });
-            string newStr = sb.ToString()?.TrimEnd($"{separator}".ToCharArray());
+            var newStr = sb.ToString()?.TrimEnd($"{separator}".ToCharArray());
             return newStr;
         }
 
+        
         /// <summary>
-        /// 根据集合字典转成字典
+        /// 
         /// </summary>
-        /// <typeparam name="TKey">键的类型</typeparam>
-        /// <typeparam name="TValue">值的类型</typeparam>
-        /// <param name="keyValuePairs">数据源</param>
-        /// <returns>返回所需的字典</returns>
-        public static IDictionary<TKey, TValue> AsDictionary<TKey, TValue>(this IEnumerable<KeyValuePair<TKey, TValue>> keyValuePairs)
-        {
-            keyValuePairs.NotNullOrEmpty(nameof(keyValuePairs));
-            IDictionary<TKey, TValue> dic = new Dictionary<TKey, TValue>();
-
-            foreach (KeyValuePair<TKey, TValue> keys in keyValuePairs)
-            {
-                dic.Add(keys.Key, keys.Value);
-            }
-            return dic;
-        }
-
+        /// <param name="source"></param>
+        /// <param name="predicate"></param>
+        /// <param name="condition"></param>
+        /// <typeparam name="TSource"></typeparam>
+        /// <returns></returns>
         public static IEnumerable<TSource> WhereIf<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> predicate, bool condition) where TSource : IEnumerable
         {
             source.NotNullOrEmpty(nameof(source));
@@ -133,11 +126,11 @@ namespace Luck.Framework.Extensions
         /// 给IEnumerable拓展ForEach方法
         /// </summary>
         /// <typeparam name="T">模型类</typeparam>
-        /// <param name="iEnumberable">数据源</param>
+        /// <param name="data">数据源</param>
         /// <param name="func">方法</param>
-        public static void ForEach<T>(this IEnumerable<T> iEnumberable, Action<T> func)
+        public static void ForEach<T>(this IEnumerable<T> data, Action<T> func)
         {
-            foreach (var item in iEnumberable)
+            foreach (var item in data)
             {
                 func(item);
             }
@@ -168,7 +161,7 @@ namespace Luck.Framework.Extensions
         /// <param name="entity"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public static List<T> ToTree<T>(this List<T>? list, Func<T, T, bool> rootWhere, Func<T, T, bool> childWhere, Action<T, IEnumerable<T>> addChildList, T entity = default(T))
+        public static List<T> ToTree<T>(this List<T>? list, Func<T, T, bool> rootWhere, Func<T, T, bool> childWhere, Action<T, IEnumerable<T>> addChildList, T? entity = default(T))
         {
             if (entity == null) throw new ArgumentNullException(nameof(entity));
             var treeList = new List<T>();

@@ -3,8 +3,17 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Luck.Framework.Infrastructure
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public static class AppModuleExtensions
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="services"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
         public static IServiceCollection AddApplication<T>(this IServiceCollection services) where T : IAppModule
         {
             services.AddApplication(typeof(T));
@@ -25,6 +34,11 @@ namespace Luck.Framework.Infrastructure
             return services;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="builder"></param>
+        /// <returns></returns>
         public static IApplicationBuilder InitializeApplication(this IApplicationBuilder builder)
         {
             builder.ApplicationServices.GetRequiredService<ObjectAccessor<IApplicationBuilder>>().Value = builder;

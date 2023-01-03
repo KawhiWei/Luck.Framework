@@ -5,8 +5,14 @@
     /// </summary>
     public interface IIntegrationEvent
     {
+        /// <summary>
+        /// 
+        /// </summary>
         string EventId { get; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         DateTime EventCreationDate { get; }
     }
 

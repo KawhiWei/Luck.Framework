@@ -10,6 +10,10 @@ namespace Luck.Framework.Infrastructure
     /// </summary>
     public class DependencyAppModule : AppModule
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="context"></param>
         public override void ConfigureServices(ConfigureServicesContext context)
         {
             var services = context.Services;
@@ -32,7 +36,9 @@ namespace Luck.Framework.Infrastructure
                 {
                     break;
                 }
-                if (serviceTypes.Count() == 0)
+
+                var enumerable = serviceTypes as Type[] ?? serviceTypes.ToArray();
+                if (!enumerable.Any())
                 {
                     services.Add(new ServiceDescriptor(implementedInterType, implementedInterType, lifetime.Value));
                     continue;
@@ -41,7 +47,7 @@ namespace Luck.Framework.Infrastructure
                 {
                     services.Add(new ServiceDescriptor(implementedInterType, implementedInterType, lifetime.Value));
                 }
-                foreach (var serviceType in serviceTypes.Where(o => !o.HasAttribute<IgnoreDependencyAttribute>()))
+                foreach (var serviceType in enumerable.Where(o => !o.HasAttribute<IgnoreDependencyAttribute>()))
                 {
                     services.Add(new ServiceDescriptor(serviceType, implementedInterType, lifetime.Value));
                 }
@@ -74,6 +80,10 @@ namespace Luck.Framework.Infrastructure
             return null;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="context"></param>
         public override void ApplicationInitialization(ApplicationContext context)
         {
             var app = context.GetApplicationBuilder();

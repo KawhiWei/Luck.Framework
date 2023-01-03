@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace Luck.Framework.Extensions
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public static class ObjectExtension
     {
         /// <summary>
@@ -15,6 +18,7 @@ namespace Luck.Framework.Extensions
         /// <typeparam name="TException">异常类型</typeparam>
         /// <param name="assertion">要验证的断言。</param>
         /// <param name="message">异常消息。</param>
+        /// <exception cref="ArgumentNullException"></exception>
         public static void Require<TException>(bool assertion, string message)
             where TException : Exception
         {
@@ -26,7 +30,12 @@ namespace Luck.Framework.Extensions
             {
                 throw new ArgumentNullException(nameof(message));
             }
-            TException exception = (TException)Activator.CreateInstance(typeof(TException), message);
+            var ex = Activator.CreateInstance(typeof(TException), message);
+            if (ex is null)
+            {
+                throw new ArgumentNullException(nameof(ex));    
+            }
+            var exception = (TException) ex;
             throw exception;
         }
 
@@ -144,7 +153,7 @@ namespace Luck.Framework.Extensions
             //枚举类型
             if (type.IsEnum)
             {
-                return Enum.Parse(type, value.ToString());
+                return Enum.Parse(type, value.ToString() ?? string.Empty);
             }
 
             //if (type == typeof(Enum))
@@ -173,7 +182,7 @@ namespace Luck.Framework.Extensions
         /// <returns>转化后的指定类型的对象</returns>
         public static T? AsTo<T>(this object value)
         {
-            return (T)AsTo(value, typeof(T));
+            return (T)AsTo(value, typeof(T))!;
         }
 
         /// <summary>
@@ -192,11 +201,16 @@ namespace Luck.Framework.Extensions
         /// </summary>
         /// <param name="value">判断的值</param>
         /// <returns>true为null,false不为null</returns>
-        public static bool IsNull(this object value)
+        public static bool IsNull(this object? value)
         {
             return value == null ? true : false;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public static bool IsNotNull(this object value)
         {
             return !value.IsNull();

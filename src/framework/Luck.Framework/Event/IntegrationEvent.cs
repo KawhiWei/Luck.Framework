@@ -3,15 +3,27 @@ using Luck.Framework.Infrastructure;
 
 namespace Luck.Framework.Event
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class IntegrationEvent: IIntegrationEvent
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public IntegrationEvent()
         {
             EventId = SnowflakeId.GenerateNewStringId();
             EventCreationDate = DateTime.Now;
         }
-        [JsonInclude]
-        public string EventId { get; }
+        /// <summary>
+        /// 
+        /// </summary>
+        [JsonInclude] 
+        public string EventId { get; } 
+        /// <summary>
+        /// 
+        /// </summary>
         [JsonInclude]
         public DateTime EventCreationDate { get; }
     }

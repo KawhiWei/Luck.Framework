@@ -2,6 +2,9 @@
 
 namespace Luck.Framework.Infrastructure
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class StartupModuleRunner : ModuleApplicationBase, IStartupModuleRunner
     {
         /// <summary>
@@ -15,30 +18,19 @@ namespace Luck.Framework.Infrastructure
             services.AddSingleton<IStartupModuleRunner>(this);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="services"></param>
         public void ConfigureServices(IServiceCollection services)
         {
             IocManage.Instance.SetServiceCollection(services);
             var context = new ConfigureServicesContext(services);
             services.AddSingleton(context);
-            foreach (var module in Modules)
-            {
-                //如果是继承了AppModule
-                if (module is AppModule appModule)
-                {
-                    appModule.ConfigureServicesContext = context;
-                }
-            }
             foreach (var config in Modules)
             {
                 services.AddSingleton(config);
                 config.ConfigureServices(context);
-            }
-            foreach (var module in Modules)
-            {
-                if (module is AppModule appModule)
-                {
-                    appModule.ConfigureServicesContext = null;
-                }
             }
         }
 
@@ -59,6 +51,9 @@ namespace Luck.Framework.Infrastructure
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public override void Dispose()
         {
             base.Dispose();
