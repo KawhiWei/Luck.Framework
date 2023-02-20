@@ -12,4 +12,14 @@ namespace Module.Sample.Domain.EntityTypeConfiguration
             builder.HasKey(o => o.Id);
         }
     }
+    
+    public class OrderItemConfiguration:IEntityTypeConfiguration<OrderItem>
+    {
+        public void Configure(EntityTypeBuilder<OrderItem> builder)
+        {
+            builder.ToTable("order_items");
+
+            builder.HasKey(o => o.Id);
+        }
+    }
 }

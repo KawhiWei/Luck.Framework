@@ -10,7 +10,7 @@ namespace Module.Sample
         {
             services.AddLuckDbContext<ModuleDbContext>(x =>
             {
-                x.ConnnectionString = "User ID=postgres;Password=&duyu789;Host=101.34.26.221;Port=40011;Database=module.test";
+                x.ConnectionString = "User ID=postgres;Password=wzw0126..;Host=47.100.213.49;Port=8832;Database=module.test";
                 x.Type = DataBaseType.PostgreSQL;
             });
         }

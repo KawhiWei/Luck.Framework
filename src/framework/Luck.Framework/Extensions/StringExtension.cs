@@ -1,4 +1,6 @@
-﻿using System.Globalization;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -7,7 +9,7 @@ namespace Luck.Framework.Extensions
     /// <summary>
     /// 
     /// </summary>
-    public static class StringExtention
+    public static class StringExtension
     {
         /// <summary>
         /// 以指定字符串作为分隔符将指定字符串分隔成数组
@@ -82,7 +84,8 @@ namespace Luck.Framework.Extensions
         /// </summary>
         /// <param name="value">要判断的值</param>
         /// <returns>返回true/false</returns>
-        public static bool IsNullOrWhiteSpace(this string value)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsNullOrWhiteSpace([NotNullWhen(false)]this string value)
         {
             return string.IsNullOrWhiteSpace(value);
         }
@@ -92,7 +95,9 @@ namespace Luck.Framework.Extensions
         /// </summary>
         /// <param name="value">要判断的值</param>
         /// <returns>返回true/false</returns>
-        public static bool IsNullOrEmpty(this string value)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+
+        public static bool IsNullOrEmpty([NotNullWhen(false)]this string value)
         {
             return string.IsNullOrEmpty(value);
         }
@@ -102,7 +107,7 @@ namespace Luck.Framework.Extensions
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static bool IsInt(this string value)
+        public static bool IsInt([NotNullWhen(false)]this string value)
         {
             return Regex.IsMatch(value, @"^[0-9]*$");
         }
@@ -113,7 +118,7 @@ namespace Luck.Framework.Extensions
         /// <param name="value">要搜索匹配项的字符串</param>
         /// <param name="pattern">要匹配的正则表达式模式</param>
         /// <returns>一个对象，包含有关匹配项的信息</returns>
-        public static string Match(this string? value, string pattern)
+        public static string Match([NotNullWhen(false)]this string? value, string pattern)
         {
             if (value == null)
             {
@@ -128,7 +133,7 @@ namespace Luck.Framework.Extensions
         /// <param name="format"></param>
         /// <param name="args"></param>
         /// <returns></returns>
-        public static string FormatWith(this string format, params object[] args)
+        public static string FormatWith([NotNullWhen(false)]this string format, params object[] args)
         {
             format.NotNull("format");
             return string.Format(CultureInfo.CurrentCulture, format, args);
@@ -136,7 +141,7 @@ namespace Luck.Framework.Extensions
         /// <summary>
         /// 将驼峰字符串的第一个字符小写
         /// </summary>
-        public static string LowerFirstChar(this string str)
+        public static string LowerFirstChar([NotNullWhen(false)]this string str)
         {
             if (string.IsNullOrEmpty(str) || !char.IsUpper(str[0]))
             {

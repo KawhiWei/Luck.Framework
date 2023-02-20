@@ -1,15 +1,18 @@
 ﻿using Luck.EntityFrameworkCore.DbContextDrivenProvides;
+using Microsoft.EntityFrameworkCore;
 
 namespace Luck.EntityFrameworkCore
 {
-    public class EFDbContextConfig
+    public class EfDbContextConfig
     {
 
-        public string ConnnectionString { get; set; } = default!;
+        public string ConnectionString { get; set; } = default!;
 
         public DataBaseType Type { get; set; }
 
-    
+        public QuerySplittingBehavior QuerySplittingBehavior { get; set; } = QuerySplittingBehavior.SplitQuery;
+
+
 
     }
 }

@@ -34,6 +34,13 @@ namespace Module.Sample.Controllers
 
             return _orderService.CreateAndEventAsync();
         }
+        
+        [HttpPost]
+        public  Task CreateOrder()
+        {
+
+            return _orderService.CreateAndEventAsync();
+        }
 
     }
 

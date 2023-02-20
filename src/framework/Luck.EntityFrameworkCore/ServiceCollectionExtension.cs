@@ -24,21 +24,21 @@ namespace Microsoft.Extensions.DependencyInjection
             return services;
         }
 
-        public static IServiceCollection AddLuckDbContext<TDbContext>(this IServiceCollection services, Action<EFDbContextConfig> efDbContextAction, Action<IServiceProvider, DbContextOptionsBuilder>? optionsAction = null) where TDbContext : LuckDbContextBase
+        public static IServiceCollection AddLuckDbContext<TDbContext>(this IServiceCollection services, Action<EfDbContextConfig> efDbContextAction, Action<IServiceProvider, DbContextOptionsBuilder>? optionsAction = null) where TDbContext : LuckDbContextBase
         {
             if (efDbContextAction == null)
                 throw new LuckException(nameof(efDbContextAction));
 
-            services.AddDbContext<ILuckDbContext, TDbContext>((provider, dbcontextbuilder) =>
+            services.AddDbContext<ILuckDbContext, TDbContext>((provider, dbContextBuilder) =>
             {
-                EFDbContextConfig config = new EFDbContextConfig();
+                var config = new EfDbContextConfig();
                 efDbContextAction.Invoke(config);
                 var dbType = config.Type;
                 var drivenProvider = provider.GetServices<IDbContextDrivenProvider>().FirstOrDefault(x => x.Type.Equals(dbType));
 
                 if (drivenProvider == null)
                     throw new LuckException($"{nameof(drivenProvider)}没有对应的{dbType}的实现！");
-                var builder = drivenProvider.Builder<TDbContext>(dbcontextbuilder, config.ConnnectionString);
+                var builder = drivenProvider.Builder<TDbContext>(dbContextBuilder, config.ConnectionString,config.QuerySplittingBehavior);
                 optionsAction?.Invoke(provider, builder);
             });
 

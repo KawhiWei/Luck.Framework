@@ -21,20 +21,17 @@ namespace Module.Sample.Controllers
         }
 
         [HttpGet(Name = "GetWeatherForecast")]
-        public IEnumerable<WeatherForecast> Get()
+        public async Task<object?>  Get()
         {
-            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
-            {
-                Date = DateTime.Now.AddDays(index),
-                TemperatureC = Random.Shared.Next(-20, 55),
-                Summary = Summaries[Random.Shared.Next(Summaries.Length)]
-            })
-            .ToArray();
+
+           return await _orderService.TestQuerySplittingBehavior();
         }
         [HttpPost]
         public async Task CreateAsync()
         {
             await _orderService.CreateAsync();
         }
+        
+       
     }
 }

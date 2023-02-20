@@ -10,7 +10,7 @@ namespace Module.Sample.AppModules
         {
          
             var moduleDbContext = context.ServiceProvider.GetService<ModuleDbContext>();
-            //moduleDbContext?.Database.EnsureCreated();
+            moduleDbContext?.Database.EnsureCreated();
         }
     }
 }

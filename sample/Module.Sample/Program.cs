@@ -20,17 +20,17 @@ builder.Services.AddMediatR(AssemblyHelper.AllAssemblies);
 
 //});
 
-builder.Services.AddEventBusRabbitMq(x =>
-{
-    x.UserName = "kawhi";
-    x.Host = "192.168.31.40";
-    x.PassWord = "wzw0126..";
-    x.Port = 5672; // 40014 管理面板
-});
+// builder.Services.AddEventBusRabbitMq(x =>
+// {
+//     x.UserName = "kawhi";
+//     x.Host = "192.168.31.40";
+//     x.PassWord = "wzw0126..";
+//     x.Port = 5672; // 40014 管理面板
+// });
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddDoveLogger();
+// builder.Services.AddDoveLogger();
 
 var app = builder.Build();
 

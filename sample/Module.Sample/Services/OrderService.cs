@@ -4,6 +4,7 @@ using Luck.Framework.Infrastructure.Caching;
 using Luck.Framework.Infrastructure.DependencyInjectionModule;
 using Luck.Framework.UnitOfWorks;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Module.Sample.Domain;
 using Module.Sample.EventHandlers;
 
@@ -26,6 +27,8 @@ namespace Module.Sample.Services
         public async Task CreateAsync()
         {
             var order = new Order("asdasdsa", "asdasdadas");
+            order.SetOrderItem();
+            
             _aggregateRootRepository.Add(order);
             await _unitOfWork.CommitAsync();
         }
@@ -49,6 +52,16 @@ namespace Module.Sample.Services
             //}
 
         }
+
+        public async Task<object?> TestQuerySplittingBehavior()
+        {
+            var order= await _aggregateRootRepository.FindAll().Include(x => x.OrderItems)
+                .FirstOrDefaultAsync(x => x.Id == "63e2ff08aa331eb8f03a5f9d");
+
+            return order;
+
+
+        }
     }
     public interface IOrderService : IScopedDependency
     {
@@ -59,5 +72,8 @@ namespace Module.Sample.Services
         /// </summary>
         /// <returns></returns>
         Task CreateAndEventAsync();
+
+        Task<object?> TestQuerySplittingBehavior();
+
     }
 }

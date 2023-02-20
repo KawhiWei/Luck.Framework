@@ -10,22 +10,20 @@ namespace Luck.Framework.Infrastructure
     /// </summary>
     public static class AssemblyHelper
     {
-      
         /// <summary>
         /// 根据程序集名字得到程序集
         /// </summary>
         /// <param name="assemblyNames"></param>
         /// <returns></returns>
-
         public static IEnumerable<Assembly> GetAssembliesByName(params string[] assemblyNames)
         {
-            var basePath =  Path.Combine(AppContext.BaseDirectory);//Microsoft.DotNet.PlatformAbstractions.ApplicationEnvironment.ApplicationBasePath; //获取项目路径
+            var basePath = Path.Combine(AppContext.BaseDirectory); //Microsoft.DotNet.PlatformAbstractions.ApplicationEnvironment.ApplicationBasePath; //获取项目路径
             return assemblyNames.Select(o => AssemblyLoadContext.Default.LoadFromAssemblyPath(Path.Combine(basePath, $"{o}.dll")));
         }
 
         private static readonly string[] Filters = { "dotnet-", "Microsoft.", "mscorlib", "netstandard", "System", "Windows" };
 
-        private static Assembly[] _allAssemblies;
+        private static Assembly[]? _allAssemblies;
         private static Type[] _allTypes;
 
         /// <summary>
@@ -33,12 +31,13 @@ namespace Luck.Framework.Infrastructure
         /// </summary>
         public static Assembly[] AllAssemblies
         {
-
-            get {
-                if (!_allAssemblies.Any())
+            get
+            {
+                if (_allAssemblies == null)
                 {
                     Init();
                 }
+
                 return _allAssemblies;
             }
         }
@@ -48,24 +47,24 @@ namespace Luck.Framework.Infrastructure
         /// </summary>
         public static Type[] AllTypes
         {
-
             get
             {
-                if (!_allTypes.Any())
+                if (_allAssemblies == null)
                 {
                     Init();
                 }
+
                 return _allTypes;
             }
         }
+
         /// <summary>
         /// 
         /// </summary>
         private static void Init()
         {
-
             _allAssemblies = DependencyContext.Default.GetDefaultAssemblyNames().Where(o => o.Name != null && !Filters.Any(o.Name.StartsWith)).Select(Assembly.Load).ToArray();
-            _allTypes = _allAssemblies.SelectMany(m=>m.GetTypes()).ToArray();
+            _allTypes = _allAssemblies.SelectMany(m => m.GetTypes()).ToArray();
         }
 
         /// <summary>
@@ -82,7 +81,7 @@ namespace Luck.Framework.Infrastructure
         /// <typeparam name="TAttribute"></typeparam>
         /// <returns></returns>
         public static Type[] FindTypesByAttribute<TAttribute>()
-        
+
         {
             var attributeType = typeof(TAttribute);
             return FindTypesByAttribute(attributeType);
@@ -96,8 +95,9 @@ namespace Luck.Framework.Infrastructure
         /// <returns></returns>
         private static Type[] FindTypesByAttribute(Type type)
         {
-            return AllTypes.Where(a=>a.IsDefined(type,true)).Distinct().ToArray();
+            return AllTypes.Where(a => a.IsDefined(type, true)).Distinct().ToArray();
         }
+
         /// <summary>
         /// 查找指定条件的类型
         /// </summary>
@@ -105,9 +105,5 @@ namespace Luck.Framework.Infrastructure
         {
             return AllAssemblies.Where(predicate).ToArray();
         }
-
-
-
     }
-
 }
