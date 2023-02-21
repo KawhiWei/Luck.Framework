@@ -12,8 +12,10 @@ namespace Luck.EntityFrameworkCore.DbContexts
     public abstract class LuckDbContextBase : DbContext, ILuckDbContext
     {
         protected IMediator _mediator;
+        // ReSharper disable once MemberCanBePrivate.Global
         protected IServiceProvider ServiceProvider { get; set; }
 
+        // ReSharper disable once PublicConstructorInAbstractClass
         public LuckDbContextBase(DbContextOptions options, IServiceProvider serviceProvider) : base(options)
         {
             ServiceProvider = Check.NotNull(serviceProvider,nameof(serviceProvider));

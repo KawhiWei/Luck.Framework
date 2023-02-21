@@ -5,5 +5,12 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
     </PropertyGroup>
-
+    <ItemGroup>
+        <PackageReference Include="MongoDB.Driver" Version="2.19.0" />
+    </ItemGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\Luck.DDD.Domain\Luck.DDD.Domain.csproj" />
+      <ProjectReference Include="..\Luck.EntityFrameworkCore\Luck.EntityFrameworkCore.csproj" />
+      <ProjectReference Include="..\Luck.Framework\Luck.Framework.csproj" />
+    </ItemGroup>
 </Project>
