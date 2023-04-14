@@ -14,9 +14,9 @@ public static class ServiceCollectionExtension
     }
     
     public static IServiceCollection AddClickHouseDbConnectionString(this IServiceCollection services,
-        Action<ClickHouseConfig> action)
+        Action<ClickHouseConnectionConfig> action)
     {
-        services.Configure<ClickHouseConfig>(action);
+        services.Configure<ClickHouseConnectionConfig>(action);
         return services;
     }
 }

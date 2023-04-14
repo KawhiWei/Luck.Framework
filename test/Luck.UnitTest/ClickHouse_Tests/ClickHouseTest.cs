@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Data;
 using Luck.Dapper.ClickHouse;
 using Luck.Dapper.DbConnectionFactories;
@@ -33,18 +34,29 @@ public class ClickHouseTest : IntegratedTest<ClickHouseTestModule>
     }
 }
 
+/// <summary>
+/// 
+/// </summary>
 public class ClickHouseTestModule : ClickHouseBaseModule
 {
     public override void ConfigureServices(ConfigureServicesContext context)
     {
         base.ConfigureServices(context);
+        var connectionOptionList = new List<ConnectionStringOptions>
+        {
+            new ConnectionStringOptions()
+            {
+                Host = "192.168.31.20",
+                Port = 9000,
+                User = "kawhi",
+                Password = "wzw0126..",
+                Database = "luck_asa",
+            }
+        };
         context.Services.AddClickHouseDbConnectionString(x =>
         {
-            x.Host = "192.168.31.20";
-            x.Port = 9000;
-            x.User = "kawhi";
-            x.Password = "wzw0126..";
-            x.Database = "db_name";
+            x.IsCluster = false;
+            x.ConnectionOptionList = connectionOptionList;
         });
     }
 }

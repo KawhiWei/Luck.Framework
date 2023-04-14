@@ -18,7 +18,7 @@ public class DapperAggregateRootRepositoryBase<TEntity, TKey> : SqlAggregateRoot
     public override int Add(string sql, TEntity entity, IDbTransaction? transaction = null)
     {
         IDbConnection conn;
-        if (transaction is not null && transaction.Connection is not null)
+        if (transaction?.Connection  is not null)
         {
             conn = transaction.Connection;
             return conn.Execute(sql, entity, transaction);
@@ -33,7 +33,7 @@ public class DapperAggregateRootRepositoryBase<TEntity, TKey> : SqlAggregateRoot
     public override int Update(string sql, TEntity entity, IDbTransaction? transaction = null)
     {
         IDbConnection conn;
-        if (transaction is not null && transaction.Connection is not null)
+        if (transaction?.Connection  is not null)
         {
             conn = transaction.Connection;
             return conn.Execute(sql, entity, transaction);
@@ -48,7 +48,7 @@ public class DapperAggregateRootRepositoryBase<TEntity, TKey> : SqlAggregateRoot
     public override int Remove(string sql, TEntity entity, IDbTransaction? transaction = null)
     {
         IDbConnection conn;
-        if (transaction is not null && transaction.Connection is not null)
+        if (transaction?.Connection  is not null)
         {
             conn = transaction.Connection;
             return conn.Execute(sql, entity, transaction);
@@ -67,7 +67,7 @@ public class DapperAggregateRootRepositoryBase<TEntity, TKey> : SqlAggregateRoot
             throw new ArgumentNullException(nameof(entity));
         }
         IDbConnection conn;
-        if (transaction is not null && transaction.Connection is not null)
+        if (transaction?.Connection  is not null)
         {
             conn = transaction.Connection;
             return await conn.ExecuteAsync(sql, entity, transaction);
@@ -82,7 +82,7 @@ public class DapperAggregateRootRepositoryBase<TEntity, TKey> : SqlAggregateRoot
     public override async Task<int> UpdateAsync(string sql, TEntity entity, IDbTransaction? transaction = null)
     {
         IDbConnection conn;
-        if (transaction is not null && transaction.Connection is not null)
+        if (transaction?.Connection  is not null)
         {
             conn = transaction.Connection;
             return await conn.ExecuteAsync(sql, entity, transaction);
@@ -97,7 +97,7 @@ public class DapperAggregateRootRepositoryBase<TEntity, TKey> : SqlAggregateRoot
     public override async Task<int> RemoveAsync(string sql, TEntity entity, IDbTransaction? transaction = null)
     {
         IDbConnection conn;
-        if (transaction is not null && transaction.Connection is not null)
+        if (transaction?.Connection  is not null)
         {
             conn = transaction.Connection;
             return await conn.ExecuteAsync(sql, entity, transaction);

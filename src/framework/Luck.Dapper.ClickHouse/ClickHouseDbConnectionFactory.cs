@@ -1,5 +1,7 @@
 ﻿using System.Data;
+// using ClickHouse.Client.ADO;
 using Luck.Dapper.DbConnectionFactories;
+using Luck.Framework.Exceptions;
 using Microsoft.Extensions.Options;
 using Octonica.ClickHouseClient;
 
@@ -7,11 +9,11 @@ namespace Luck.Dapper.ClickHouse;
 
 public class ClickHouseDbConnectionFactory : IDbConnectionFactory
 {
-    private readonly ClickHouseConfig _clickHouseConfig;
+    private readonly ClickHouseConnectionConfig _clickHouseConnectionConfig;
 
-    public ClickHouseDbConnectionFactory(IOptions<ClickHouseConfig> clickHouseConfig)
+    public ClickHouseDbConnectionFactory(IOptions<ClickHouseConnectionConfig> clickHouseConfig)
     {
-        _clickHouseConfig = clickHouseConfig.Value;
+        _clickHouseConnectionConfig = clickHouseConfig.Value;
     }
 
     public IDbConnection GetDbConnection()
@@ -23,24 +25,34 @@ public class ClickHouseDbConnectionFactory : IDbConnectionFactory
 
     public async Task<IDbConnection> GetDbConnectionAsync()
     {
-        var conn = new ClickHouseConnection(GetClickHouseConnectionStringBuilder());
+        var conn = new ClickHouseConnection("");
         await conn.OpenAsync();
         return conn;
     }
 
-    private ClickHouseConnectionStringBuilder GetClickHouseConnectionStringBuilder()
+    private string GetClickHouseConnectionStringBuilder()
     {
-        var clickHouseConnectionString = new ClickHouseConnectionStringBuilder
+        string connectionString;
+        ConnectionStringOptions? connectionOption;
+        if (!_clickHouseConnectionConfig.IsCluster)
         {
-            Host = _clickHouseConfig.Host,
-            User = _clickHouseConfig.User,
-            Password = _clickHouseConfig.Password,
-            Port = _clickHouseConfig.Port,
-            Database = _clickHouseConfig.Database,
-            ReadWriteTimeout = _clickHouseConfig.ReadWriteTimeout,
-            BufferSize = _clickHouseConfig.BufferSize,
-            Compress = _clickHouseConfig.Compress
-        };
-        return clickHouseConnectionString;
+            connectionOption = _clickHouseConnectionConfig.ConnectionOptionList.FirstOrDefault();
+
+            if (connectionOption is null)
+            {
+                throw new LuckException("无法找到数据库链接字符串，请检查数据库连接字符串是否配置正确！");
+            }
+
+            connectionString =
+                $"Host={connectionOption.Host};Port={connectionOption.Port};User={connectionOption.User};Password={connectionOption.Password};Database={connectionOption.Database}";
+        }
+        else
+        {
+            connectionOption = _clickHouseConnectionConfig.ConnectionOptionList[0];
+            connectionString =
+                $"Host={connectionOption.Host};Port={connectionOption.Port};User={connectionOption.User};Password={connectionOption.Password};Database={connectionOption.Database}";
+        }
+
+        return connectionString;
     }
 }

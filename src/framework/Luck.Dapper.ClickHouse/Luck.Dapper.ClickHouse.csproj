@@ -11,5 +11,6 @@
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="Octonica.ClickHouseClient" Version="2.2.9" />
+        <PackageReference Include="ClickHouse.Client" Version="6.5.2" />
     </ItemGroup>
 </Project>
