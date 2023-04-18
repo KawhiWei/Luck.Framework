@@ -6,16 +6,17 @@ namespace Module.Sample
 {
     public class EntityFrameworkCoreModule : EntityFrameworkCoreBaseModule
     {
-        public override void AddDbContextWithUnitOfWork(IServiceCollection services)
+        protected override void AddDbContextWithUnitOfWork(IServiceCollection services)
         {
             services.AddLuckDbContext<ModuleDbContext>(x =>
             {
-                x.ConnectionString = "User ID=postgres;Password=wzw0126..;Host=47.100.213.49;Port=8832;Database=module.test";
+                x.ConnectionString =
+                    "User ID=postgres;Password=wzw0126..;Host=47.100.213.49;Port=8832;Database=module.test";
                 x.Type = DataBaseType.PostgreSQL;
             });
         }
 
-        public override void AddDbDriven(IServiceCollection service)
+        protected override void AddDbDriven(IServiceCollection service)
         {
             service.AddPostgreSQLDriven();
         }

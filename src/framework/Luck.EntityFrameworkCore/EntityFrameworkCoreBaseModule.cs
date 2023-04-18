@@ -14,8 +14,8 @@ namespace Luck.EntityFrameworkCore
             AddDbContextWithUnitOfWork(context.Services);
             AddDbDriven(context.Services);
         }
-        public abstract void AddDbContextWithUnitOfWork(IServiceCollection services);
+        protected abstract void AddDbContextWithUnitOfWork(IServiceCollection services);
 
-        public abstract void AddDbDriven(IServiceCollection service);
+        protected abstract void AddDbDriven(IServiceCollection service);
     }
 }

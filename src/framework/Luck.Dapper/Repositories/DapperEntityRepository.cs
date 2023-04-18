@@ -7,34 +7,34 @@ namespace Luck.Dapper.Repositories;
 public class DapperEntityRepository<TEntity, TKey> :
     ISqlEntityRepository<TEntity, TKey> where TEntity : IEntityWithIdentity
 {
-    private readonly IDbConnectionFactory _dbConnectionFactory;
+    private readonly IDapperDrivenProvider _dapperDrivenProvider;
     
-    public DapperEntityRepository(IDbConnectionFactory dbConnectionFactory)
+    public DapperEntityRepository(IDapperDrivenProvider dapperDrivenProvider)
     {
-        _dbConnectionFactory = dbConnectionFactory;
+        _dapperDrivenProvider = dapperDrivenProvider;
     }
     
     public IEnumerable<TEntity> FindAll(string sql, object? param)
     {
-        using var conn = _dbConnectionFactory.GetDbConnection();
+        using var conn = _dapperDrivenProvider.GetDbConnection();
         return conn.Query<TEntity>(sql, param);
     }
 
     public TEntity? Find(string sql, object? param)
     {
-        using var conn = _dbConnectionFactory.GetDbConnection();
+        using var conn = _dapperDrivenProvider.GetDbConnection();
         return conn.QueryFirstOrDefault<TEntity>(sql,param);
     }
 
     public async ValueTask<TEntity?> FindAsync(string sql, object? param)
     {
-        using var conn = await _dbConnectionFactory.GetDbConnectionAsync();
+        using var conn = await _dapperDrivenProvider.GetDbConnectionAsync();
         return await conn.QueryFirstOrDefaultAsync<TEntity>(sql,param);
     }
 
     public async Task<IEnumerable<TEntity>> FindAllAsync(string sql, object? param)
     {
-        using var conn = await _dbConnectionFactory.GetDbConnectionAsync();
+        using var conn = await _dapperDrivenProvider.GetDbConnectionAsync();
         return await conn.QueryAsync<TEntity>(sql, param);
     }
 }

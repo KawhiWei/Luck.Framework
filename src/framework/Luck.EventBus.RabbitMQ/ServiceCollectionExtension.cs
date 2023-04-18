@@ -9,10 +9,9 @@ namespace Microsoft.Extensions.DependencyInjection
     {
         public static IServiceCollection AddEventBusRabbitMq(this IServiceCollection service, Action<RabbitMqConfig> action)
         {
-            RabbitMqConfig config = new RabbitMqConfig();
+            var config = new RabbitMqConfig();
             action.Invoke(config);
-
-
+            
             service.AddRabbitMqPersistentConnection(config)
                 .AddSingleton<IIntegrationEventBus, IntegrationEventBusRabbitMq>(serviceProvider
                 => new IntegrationEventBusRabbitMq(config.RetryCount, serviceProvider)

@@ -1,22 +1,20 @@
 using Luck.Dapper.ClickHouse;
-using Luck.Dapper.Repositories;
-using Luck.DDD.Domain.SqlRepositories;
+using Luck.Dapper.DbConnectionFactories;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
 public static class ServiceCollectionExtension
 {
-    public static IServiceCollection AddDefaultSqlRepository(this IServiceCollection services, ServiceLifetime lifetime = ServiceLifetime.Scoped)
-    {
-        services.Add(new ServiceDescriptor(typeof(ISqlAggregateRootRepository<,>), typeof(DapperAggregateRootRepositoryBase<,>), lifetime));
-        services.Add(new ServiceDescriptor(typeof(ISqlEntityRepository<,>), typeof(DapperEntityRepository<,>), lifetime));
-        return services;
-    }
-    
     public static IServiceCollection AddClickHouseDbConnectionString(this IServiceCollection services,
         Action<ClickHouseConnectionConfig> action)
     {
-        services.Configure<ClickHouseConnectionConfig>(action);
+        services.Configure(action);
+        return services;
+    }
+    
+    public static IServiceCollection AddClickHouseDapperDriven(this IServiceCollection services)
+    {
+        services.AddSingleton<IDapperDrivenProvider, DapperClickHouseDrivenProvider>();
         return services;
     }
 }

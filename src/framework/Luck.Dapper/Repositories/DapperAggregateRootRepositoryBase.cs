@@ -8,11 +8,11 @@ namespace Luck.Dapper.Repositories;
 public class DapperAggregateRootRepositoryBase<TEntity, TKey> : SqlAggregateRootRepositoryBase<TEntity, TKey> where TEntity : class, IAggregateRootBase
     where TKey : IEquatable<TKey>
 {
-    private readonly IDbConnectionFactory _dbConnectionFactory;
+    private readonly IDapperDrivenProvider _dapperDrivenProvider;
 
-    public DapperAggregateRootRepositoryBase(IDbConnectionFactory dbConnectionFactory)
+    public DapperAggregateRootRepositoryBase(IDapperDrivenProvider dapperDrivenProvider)
     {
-        _dbConnectionFactory = dbConnectionFactory;
+        _dapperDrivenProvider = dapperDrivenProvider;
     }
 
     public override int Add(string sql, TEntity entity, IDbTransaction? transaction = null)
@@ -24,7 +24,7 @@ public class DapperAggregateRootRepositoryBase<TEntity, TKey> : SqlAggregateRoot
             return conn.Execute(sql, entity, transaction);
         }
 
-        using (conn = _dbConnectionFactory.GetDbConnection())
+        using (conn = _dapperDrivenProvider.GetDbConnection())
         {
             return conn.Execute(sql, entity);
         }
@@ -39,7 +39,7 @@ public class DapperAggregateRootRepositoryBase<TEntity, TKey> : SqlAggregateRoot
             return conn.Execute(sql, entity, transaction);
         }
 
-        using (conn = _dbConnectionFactory.GetDbConnection())
+        using (conn = _dapperDrivenProvider.GetDbConnection())
         {
             return conn.Execute(sql, entity);
         }
@@ -54,7 +54,7 @@ public class DapperAggregateRootRepositoryBase<TEntity, TKey> : SqlAggregateRoot
             return conn.Execute(sql, entity, transaction);
         }
 
-        using (conn = _dbConnectionFactory.GetDbConnection())
+        using (conn = _dapperDrivenProvider.GetDbConnection())
         {
             return conn.Execute(sql, entity);
         }
@@ -73,7 +73,7 @@ public class DapperAggregateRootRepositoryBase<TEntity, TKey> : SqlAggregateRoot
             return await conn.ExecuteAsync(sql, entity, transaction);
         }
 
-        using (conn = await _dbConnectionFactory.GetDbConnectionAsync())
+        using (conn = await _dapperDrivenProvider.GetDbConnectionAsync())
         {
             return await conn.ExecuteAsync(sql, entity);
         }
@@ -88,7 +88,7 @@ public class DapperAggregateRootRepositoryBase<TEntity, TKey> : SqlAggregateRoot
             return await conn.ExecuteAsync(sql, entity, transaction);
         }
 
-        using (conn = await _dbConnectionFactory.GetDbConnectionAsync())
+        using (conn = await _dapperDrivenProvider.GetDbConnectionAsync())
         {
             return await conn.ExecuteAsync(sql, entity);
         }
@@ -103,7 +103,7 @@ public class DapperAggregateRootRepositoryBase<TEntity, TKey> : SqlAggregateRoot
             return await conn.ExecuteAsync(sql, entity, transaction);
         }
 
-        using (conn = await _dbConnectionFactory.GetDbConnectionAsync())
+        using (conn = await _dapperDrivenProvider.GetDbConnectionAsync())
         {
             return await conn.ExecuteAsync(sql, entity);
         }
@@ -111,25 +111,25 @@ public class DapperAggregateRootRepositoryBase<TEntity, TKey> : SqlAggregateRoot
 
     public override IEnumerable<TEntity> FindAll(string sql, object? param)
     {
-        using var conn = _dbConnectionFactory.GetDbConnection();
+        using var conn = _dapperDrivenProvider.GetDbConnection();
         return conn.Query<TEntity>(sql, param);
     }
 
     public override async Task<IEnumerable<TEntity>> FindAllAsync(string sql, object? param)
     {
-        using var conn = await _dbConnectionFactory.GetDbConnectionAsync();
+        using var conn = await _dapperDrivenProvider.GetDbConnectionAsync();
         return await conn.QueryAsync<TEntity>(sql, param);
     }
 
     public override TEntity? Find(string sql,  object? param)
     {
-        using var conn = _dbConnectionFactory.GetDbConnection();
+        using var conn = _dapperDrivenProvider.GetDbConnection();
         return conn.QueryFirstOrDefault<TEntity>(sql,param);
     }
 
     public override async ValueTask<TEntity?> FindAsync(string sql,  object? param)
     {
-        using var conn = await _dbConnectionFactory.GetDbConnectionAsync();
+        using var conn = await _dapperDrivenProvider.GetDbConnectionAsync();
         return await conn.QueryFirstOrDefaultAsync<TEntity>(sql,param);
     }
 }

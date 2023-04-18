@@ -11,6 +11,8 @@ public static class ServiceCollectionExtension
     /// </summary>
     /// <param name="services"></param>
     /// <returns></returns>
+    // ReSharper disable once InconsistentNaming
+    // ReSharper disable once IdentifierTypo
     public static IServiceCollection AddPostgreSQLDriven(this IServiceCollection services)
     {
         services.AddSingleton<IDbContextDrivenProvider, PostgreSqlDbContextDrivenProvider>();

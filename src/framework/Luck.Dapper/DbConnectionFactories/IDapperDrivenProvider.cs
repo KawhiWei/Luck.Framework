@@ -2,7 +2,7 @@ using System.Data;
 
 namespace Luck.Dapper.DbConnectionFactories;
 
-public interface IDbConnectionFactory
+public interface IDapperDrivenProvider
 {
     /// <summary>
     /// 获取数据库连接

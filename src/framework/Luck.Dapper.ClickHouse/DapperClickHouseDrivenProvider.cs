@@ -7,11 +7,11 @@ using Octonica.ClickHouseClient;
 
 namespace Luck.Dapper.ClickHouse;
 
-public class ClickHouseDbConnectionFactory : IDbConnectionFactory
+public class DapperClickHouseDrivenProvider : IDapperDrivenProvider
 {
     private readonly ClickHouseConnectionConfig _clickHouseConnectionConfig;
 
-    public ClickHouseDbConnectionFactory(IOptions<ClickHouseConnectionConfig> clickHouseConfig)
+    public DapperClickHouseDrivenProvider(IOptions<ClickHouseConnectionConfig> clickHouseConfig)
     {
         _clickHouseConnectionConfig = clickHouseConfig.Value;
     }
