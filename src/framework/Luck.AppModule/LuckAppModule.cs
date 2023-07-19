@@ -1,20 +1,20 @@
-﻿using Luck.Framework.Exceptions;
+﻿using Luck.Framework.Infrastructure;
 using System.Reflection;
 
-namespace Luck.Framework.Infrastructure
+namespace Luck.AppModule
 {
     /// <summary>
     /// 
     /// </summary>
-    public class AppModule : IAppModule
+    public class LuckAppModule : IAppModule
     {
 
-        
+
         /// <summary>
         /// 
         /// </summary>
-        public virtual bool Enable { get;  set; } = true;
-        
+        public virtual bool Enable { get; set; } = true;
+
         /// <summary>
         /// 
         /// </summary>
@@ -31,7 +31,7 @@ namespace Luck.Framework.Infrastructure
         //public virtual void IsEnable()
         //{
 
-          
+
         //    Enable = true;
         //}
         /// <summary>
@@ -41,7 +41,7 @@ namespace Luck.Framework.Infrastructure
         public virtual void ConfigureServices(ConfigureServicesContext context)
         {
         }
-        
+
         /// <summary>
         /// 获取模块程序集
         /// </summary>

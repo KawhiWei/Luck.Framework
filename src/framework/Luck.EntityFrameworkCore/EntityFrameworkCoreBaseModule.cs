@@ -1,10 +1,10 @@
-﻿using Luck.EntityFrameworkCore.DbContextDrivenProvides;
+﻿using Luck.AppModule;
 using Luck.Framework.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Luck.EntityFrameworkCore
 {
-    public abstract class EntityFrameworkCoreBaseModule : AppModule
+    public abstract class EntityFrameworkCoreBaseModule : LuckAppModule
     {
 
         public override void ConfigureServices(ConfigureServicesContext context)

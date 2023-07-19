@@ -1,8 +1,8 @@
-﻿using Luck.Framework.Infrastructure;
+﻿using Luck.AppModule;
 
 namespace Luck.TestBase
 {
-    internal class TestBaseModule : AppModule
+    internal class TestBaseModule : LuckAppModule
     {
     }
 }

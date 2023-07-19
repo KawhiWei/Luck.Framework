@@ -1,12 +1,12 @@
-﻿using Luck.Framework.Infrastructure;
-using Luck.Framework.Infrastructure.Caching;
+﻿using Luck.AppModule;
+using Luck.Framework.Infrastructure;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using IRedisHash = Luck.Framework.Infrastructure.Caching.Interface.IRedisHash;
 using IRedisList = Luck.Framework.Infrastructure.Caching.Interface.IRedisList;
 
 namespace Luck.Redis.StackExchange
 {
-    public class StackExchangeRedisModule: AppModule
+    public class StackExchangeRedisModule : LuckAppModule
     {
         public override void ConfigureServices(ConfigureServicesContext context)
         {

@@ -1,21 +1,22 @@
-﻿using Luck.Framework.Infrastructure;
-using Luck.Redis.StackExchange;
+﻿using Luck.AppModule;
+using Luck.AutoDependencyInjection;
+using Luck.Framework.Infrastructure;
 using Module.Sample.AppModules;
 
 namespace Module.Sample
 {
     [DependsOn(
-        typeof(DependencyAppModule),
+        typeof(AutoDependencyAppModule),
         typeof(EntityFrameworkCoreModule),
         typeof(MigrationModule)
     )]
-    public class AppWebModule: AppModule
+    public class AppWebModule : LuckAppModule
     {
         public override void ConfigureServices(ConfigureServicesContext context)
         {
-            
+
             base.ConfigureServices(context);
-            
+
         }
     }
 }

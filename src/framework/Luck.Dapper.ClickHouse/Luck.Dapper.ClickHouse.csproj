@@ -7,6 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Luck.AppModule\Luck.AppModule.csproj" />
       <ProjectReference Include="..\Luck.Dapper\Luck.Dapper.csproj" />
     </ItemGroup>
     <ItemGroup>

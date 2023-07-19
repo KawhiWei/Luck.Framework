@@ -2,10 +2,11 @@ using System.Diagnostics;
 using Luck.Framework.Infrastructure;
 using MediatR;
 using Module.Sample;
+using Luck.AppModule;
+
+
 
 var builder = WebApplication.CreateBuilder(args);
-
-
 // Add services to the container.
 builder.Services.AddApplication<AppWebModule>();
 

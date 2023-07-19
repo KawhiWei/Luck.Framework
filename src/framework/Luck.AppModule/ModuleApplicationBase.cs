@@ -1,10 +1,9 @@
 ﻿using Luck.Framework.Extensions;
-using Luck.Framework.Utilities;
+using Luck.Framework.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using System.Linq.Expressions;
 
-namespace Luck.Framework.Infrastructure
+namespace Luck.AppModule
 {
     /// <summary>
     /// 
@@ -45,14 +44,14 @@ namespace Luck.Framework.Infrastructure
         {
             StartupModuleType = startupModuleType;
             Services = services;
-      
+
             services.AddSingleton<IModuleApplication>(this);
             services.TryAddObjectAccessor<IServiceProvider>();
             Source = this.GetAllModule(services);
             Modules = this.LoadModules();
         }
 
-        
+
         /// <summary>
         /// 
         /// </summary>
@@ -60,8 +59,8 @@ namespace Luck.Framework.Infrastructure
         /// <returns></returns>
         protected virtual List<IAppModule> GetAllModule(IServiceCollection services)
         {
-            var typs = AssemblyHelper.FindTypes(o => AppModule.IsAppModule(o));
-            var modules = typs.Select(o =>CreateModule(services, o)).Where(o=>o.IsNotNull()).Distinct();
+            var typs = AssemblyHelper.FindTypes(o => LuckAppModule.IsAppModule(o));
+            var modules = typs.Select(o => CreateModule(services, o)).Where(o => o.IsNotNull()).Distinct();
             return modules.ToList();
         }
 
@@ -90,7 +89,7 @@ namespace Luck.Framework.Infrastructure
             }
             modules.Add(module);
             var dependeds = module.GetDependedTypes();
-            foreach (var dependType in dependeds.Where(o => AppModule.IsAppModule(o)))
+            foreach (var dependType in dependeds.Where(o => LuckAppModule.IsAppModule(o)))
             {
                 var dependModule = Source.Find(m => m.GetType() == dependType);
                 if (dependModule == null)
@@ -110,7 +109,7 @@ namespace Luck.Framework.Infrastructure
         /// <returns></returns>
         private IAppModule CreateModule(IServiceCollection services, Type moduleType)
         {
-            var invoke=   Expression.Lambda(Expression.New(moduleType)).Compile().DynamicInvoke();
+            var invoke = Expression.Lambda(Expression.New(moduleType)).Compile().DynamicInvoke();
 
 
             if (invoke == null)
@@ -119,7 +118,7 @@ namespace Luck.Framework.Infrastructure
             }
             var module = (IAppModule)invoke;
 
-  
+
             if (module == null)
                 throw new ArgumentNullException(nameof(module));
 

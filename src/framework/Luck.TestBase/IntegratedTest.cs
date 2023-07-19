@@ -7,10 +7,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Luck.AppModule;
 
 namespace Luck.TestBase
 {
-    public abstract class IntegratedTest<TStartup>: TestBaseWithServiceProvider where TStartup : IAppModule
+    public abstract class IntegratedTest<TStartup> : TestBaseWithServiceProvider where TStartup : IAppModule
     {
         protected IModuleApplication Application { get; }
 
@@ -22,7 +23,7 @@ namespace Luck.TestBase
 
         protected IntegratedTest()
         {
-            Environment.SetEnvironmentVariable("appid","apppidaasdasd");
+            Environment.SetEnvironmentVariable("appid", "apppidaasdasd");
             var services = CreateServiceCollection();
 
             BeforeAddApplication(services);

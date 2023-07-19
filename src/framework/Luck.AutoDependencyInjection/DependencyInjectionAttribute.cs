@@ -1,11 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Luck.Framework.Infrastructure.DependencyInjectionModule
+namespace Luck.AutoDependencyInjection
 {
     /// <summary>
     /// 配置此特性将自动进行注入

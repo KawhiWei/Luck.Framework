@@ -1,14 +1,14 @@
-using Luck.EventBus.RabbitMQ.Attributes;
+﻿using Luck.EventBus.RabbitMQ.Attributes;
 using Luck.Framework.Event;
-using Luck.Framework.Infrastructure.DependencyInjectionModule;
+using Luck.AutoDependencyInjection;
 
 namespace Module.Sample.EventHandlers;
 
 [RabbitMq("fanout_test_exchange", ExchangeType.FanOut, "", "fanout_test_queue_002")]
-public class TestIntegrationFanOutPayEvent: IntegrationEvent
+public class TestIntegrationFanOutPayEvent : IntegrationEvent
 {
     public string Name { get; set; } = default!;
-        
+
 }
 
 
@@ -25,6 +25,6 @@ public class TestIntegrationFanOutPayEventHandler : IIntegrationEventHandler<Tes
     public Task HandleAsync(TestIntegrationFanOutPayEvent @event)
     {
         _logger.DoveLogInformation($"{@event.Name}---A1---{DateTime.Now}");
-        return Task.CompletedTask; 
+        return Task.CompletedTask;
     }
 }

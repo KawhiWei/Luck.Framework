@@ -1,8 +1,8 @@
-﻿using Luck.Framework.Extensions;
+﻿using Luck.Framework.Infrastructure;
 using Luck.Framework.Infrastructure.DependencyInjectionModule;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Luck.Framework.Infrastructure
+namespace Luck.AppModule
 {
     /// <summary>
     /// 

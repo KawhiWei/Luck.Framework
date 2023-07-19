@@ -1,14 +1,16 @@
 ﻿using Luck.Framework.Extensions;
+using Luck.Framework.Infrastructure;
 using Luck.Framework.Infrastructure.DependencyInjectionModule;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
+using Luck.AppModule;
 
-namespace Luck.Framework.Infrastructure
+namespace Luck.AutoDependencyInjection
 {
     /// <summary>
     /// 自动注入模块，继承与AppModuleBase类进行实现
     /// </summary>
-    public class DependencyAppModule : AppModule
+    public class AutoDependencyAppModule : Luck.AppModule.LuckAppModule
     {
         /// <summary>
         /// 

@@ -2,7 +2,7 @@
 using Luck.EventBus.RabbitMQ.Attributes;
 using Luck.Framework.Event;
 using Luck.Framework.Extensions;
-using Luck.Framework.Infrastructure.DependencyInjectionModule;
+using Luck.AutoDependencyInjection;
 
 namespace Module.Sample.EventHandlers
 {
@@ -26,7 +26,7 @@ namespace Module.Sample.EventHandlers
         public Task HandleAsync(TestIntegrationEvent @event)
         {
             _logger.DoveLogInformation($"{@event.Name}------{DateTime.Now}");
-            return Task.CompletedTask; 
+            return Task.CompletedTask;
         }
     }
 }

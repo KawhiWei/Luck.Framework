@@ -2,7 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace Luck.Framework.Infrastructure
+namespace Luck.AppModule
 {
     /// <summary>
     /// IOC管理
