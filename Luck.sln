@@ -67,6 +67,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Luck.AppModule", "src\frame
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Luck.AutoDependencyInjection", "src\framework\Luck.AutoDependencyInjection\Luck.AutoDependencyInjection.csproj", "{404C5BB1-243A-4BB8-8FFF-740A2A5A1F5C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Luck.EventBus.Kafka", "src\framework\Luck.EventBus.Kafka\Luck.EventBus.Kafka.csproj", "{9876D845-5C04-4B04-84A0-A57148253666}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -145,6 +147,10 @@ Global
 		{404C5BB1-243A-4BB8-8FFF-740A2A5A1F5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{404C5BB1-243A-4BB8-8FFF-740A2A5A1F5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{404C5BB1-243A-4BB8-8FFF-740A2A5A1F5C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9876D845-5C04-4B04-84A0-A57148253666}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9876D845-5C04-4B04-84A0-A57148253666}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9876D845-5C04-4B04-84A0-A57148253666}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9876D845-5C04-4B04-84A0-A57148253666}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -176,6 +182,7 @@ Global
 		{2893A93A-E580-4137-8229-BEB5EACA86E8} = {50FF08B1-264C-40B1-BA12-91A57B3C896D}
 		{CD68536D-E0DF-44E0-9243-14E9A44DCF07} = {DE49CCE6-B41E-493A-ADCC-EA6075DD0038}
 		{404C5BB1-243A-4BB8-8FFF-740A2A5A1F5C} = {DE49CCE6-B41E-493A-ADCC-EA6075DD0038}
+		{9876D845-5C04-4B04-84A0-A57148253666} = {5779CF18-7FD7-434D-B47A-1C8A50A3E5A4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4719568B-E10A-4815-AAAA-8C6D6CEE798F}

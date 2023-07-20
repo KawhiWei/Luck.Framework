@@ -17,13 +17,13 @@ namespace Luck.EventBus.RabbitMQ
         private readonly IConnectionFactory _connectionFactory;
         private readonly ILogger<DefaultRabbitMqPersistentConnection> _logger;
         private readonly int _retryCount;
-        IConnection? _connection;
-        bool _disposed;
+        private IConnection? _connection;
+        private bool _disposed;
 
         /// <summary>
         /// 
         /// </summary>
-        object sync_root = new object();
+        private readonly object _syncRoot = new object();
 
 
         public DefaultRabbitMqPersistentConnection(IConnectionFactory connectionFactory, ILogger<DefaultRabbitMqPersistentConnection> logger, int retryCount = 5)
@@ -34,10 +34,7 @@ namespace Luck.EventBus.RabbitMQ
         }
 
 
-        public bool IsConnected
-        {
-            get { return _connection != null && _connection.IsOpen && !_disposed; }
-        }
+        public bool IsConnected => _connection is { IsOpen: true } && !_disposed;
 
         public IModel CreateModel()
         {
@@ -76,9 +73,9 @@ namespace Luck.EventBus.RabbitMQ
         {
             _logger.LogInformation("RabbitMQ客户端尝试连接");
 
-            lock (sync_root)
+            lock (_syncRoot)
             {
-                var policy = RetryPolicy.Handle<SocketException>()
+                var policy = Policy.Handle<SocketException>()
                     .Or<BrokerUnreachableException>()
                     .WaitAndRetry(_retryCount, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)), (ex, time) => { _logger.LogWarning(ex, "RabbitMQ客户端无法连接 {TimeOut}s ({ExceptionMessage})", $"{time.TotalSeconds:n1}", ex.Message); }
                     );
