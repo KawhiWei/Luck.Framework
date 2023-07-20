@@ -1,4 +1,5 @@
-﻿using Luck.DDD.Domain.Repositories;
+﻿using Luck.AutoDependencyInjection.Attributes;
+using Luck.DDD.Domain.Repositories;
 using Luck.Framework.Extensions;
 using Luck.Framework.Infrastructure.Caching;
 using Luck.Framework.Infrastructure.DependencyInjectionModule;
@@ -14,21 +15,25 @@ namespace Module.Sample.Services
     {
 
         private readonly IAggregateRootRepository<Order, string> _aggregateRootRepository;
+        //[Injection]
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMediator _mediator;
 
-        public OrderService(IAggregateRootRepository<Order, string> aggregateRootRepository, IUnitOfWork unitOfWork, IMediator mediator)
+        public OrderService(IAggregateRootRepository<Order, string> aggregateRootRepository
+            , IUnitOfWork unitOfWork
+            //, IMediator mediator
+            )
         {
             _aggregateRootRepository = aggregateRootRepository;
             _unitOfWork = unitOfWork;
-            _mediator = mediator;
+            //_mediator = mediator;
         }
 
         public async Task CreateAsync()
         {
             var order = new Order("asdasdsa", "asdasdadas");
             order.SetOrderItem();
-            
+
             _aggregateRootRepository.Add(order);
             await _unitOfWork.CommitAsync();
         }
@@ -55,7 +60,7 @@ namespace Module.Sample.Services
 
         public async Task<object?> TestQuerySplittingBehavior()
         {
-            var order= await _aggregateRootRepository.FindAll().Include(x => x.OrderItems)
+            var order = await _aggregateRootRepository.FindAll().Include(x => x.OrderItems)
                 .FirstOrDefaultAsync(x => x.Id == "63e2ff08aa331eb8f03a5f9d");
 
             return order;

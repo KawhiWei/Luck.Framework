@@ -1,4 +1,4 @@
-﻿namespace Luck.Framework.Infrastructure.DependencyInjectionPropertyInjection.Attributes
+﻿namespace Luck.AutoDependencyInjection.Attributes
 {
     /// <summary>
     /// 实现属性注入特性

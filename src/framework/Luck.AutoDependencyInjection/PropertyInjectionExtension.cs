@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Hosting;
 
-namespace Luck.Framework.Infrastructure.DependencyInjectionPropertyInjection
+namespace Luck.AutoDependencyInjection
 {
     /// <summary>
     /// 属性注入扩展

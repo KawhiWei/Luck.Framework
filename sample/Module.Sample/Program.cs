@@ -3,7 +3,7 @@ using Luck.Framework.Infrastructure;
 using MediatR;
 using Module.Sample;
 using Luck.AppModule;
-
+using Luck.AutoDependencyInjection;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,26 +12,11 @@ builder.Services.AddApplication<AppWebModule>();
 
 builder.Services.AddControllers();
 
-builder.Services.AddMediatR(AssemblyHelper.AllAssemblies);
-
-//builder.Services.AddRedis(x =>
-//{
-//    x.Timeout = 1000;
-//    x.Host = "127.0.0.1:6379";
-
-//});
-
-// builder.Services.AddEventBusRabbitMq(x =>
-// {
-//     x.UserName = "kawhi";
-//     x.Host = "192.168.31.40";
-//     x.PassWord = "wzw0126..";
-//     x.Port = 5672; // 40014 管理面板
-// });
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHttpContextAccessor();
 // builder.Services.AddDoveLogger();
+builder.Host.UseDefaultPropertyInjection();
 
 var app = builder.Build();
 

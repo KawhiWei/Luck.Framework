@@ -1,9 +1,9 @@
 ﻿using Luck.Framework.Extensions;
-using Luck.Framework.Infrastructure.DependencyInjectionPropertyInjection.Abstracts;
-using Luck.Framework.Infrastructure.DependencyInjectionPropertyInjection.Attributes;
+using Luck.AutoDependencyInjection.Attributes;
 using System.Reflection;
+using Luck.Framework.Infrastructure.DependencyInjectionPropertyInjection;
 
-namespace Luck.Framework.Infrastructure.DependencyInjectionPropertyInjection
+namespace Luck.AutoDependencyInjection
 {
 
     /// <summary>

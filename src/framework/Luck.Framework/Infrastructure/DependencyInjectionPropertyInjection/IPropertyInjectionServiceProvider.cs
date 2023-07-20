@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace Luck.Framework.Infrastructure.DependencyInjectionPropertyInjection.Abstracts
+namespace Luck.Framework.Infrastructure.DependencyInjectionPropertyInjection
 {
     /// <summary>
     /// 属性注入提供者

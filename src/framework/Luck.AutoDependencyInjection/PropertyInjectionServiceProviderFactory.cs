@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace Luck.Framework.Infrastructure.DependencyInjectionPropertyInjection
+namespace Luck.AutoDependencyInjection
 {
 
     /// <summary>

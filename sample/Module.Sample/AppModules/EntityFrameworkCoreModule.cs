@@ -11,7 +11,7 @@ namespace Module.Sample
             services.AddLuckDbContext<ModuleDbContext>(x =>
             {
                 x.ConnectionString =
-                    "User ID=postgres;Password=wzw0126..;Host=47.100.213.49;Port=8832;Database=module.test";
+                    "User ID=postgres;Password=wzw0126..;Host=39.101.165.187;Port=8832;Database=module.test";
                 x.Type = DataBaseType.PostgreSQL;
             });
         }
