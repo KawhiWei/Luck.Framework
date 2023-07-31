@@ -1,5 +1,5 @@
-﻿using Luck.Framework.Extensions;
-using Microsoft.AspNetCore.Http;
+﻿using Luck.AutoDependencyInjection.Attributes;
+using Luck.Framework.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Module.Sample.Services;
 using System.ComponentModel;
@@ -11,32 +11,33 @@ namespace Module.Sample.Controllers
     public class TestsController : ControllerBase
     {
 
+        [Injection]
         private readonly IOrderService _orderService;
 
-        public TestsController(IOrderService orderService)
-        {
-            _orderService = orderService;
-        }
+        //public TestsController(IOrderService orderService)
+        //{
+        //    _orderService = orderService;
+        //}
 
 
         [HttpGet]
         public Task TestEnumToList()
         {
 
-          var list=  typeof(TestEnum).TypeToEnumList();
-          
-           return Task.FromResult(list);
+            var list = typeof(TestEnum).TypeToEnumList();
+
+            return Task.FromResult(list);
         }
 
         [HttpPost]
-        public  Task CreateAndEventAsync()
+        public Task CreateAndEventAsync()
         {
 
             return _orderService.CreateAndEventAsync();
         }
-        
+
         [HttpPost]
-        public  Task CreateOrder()
+        public Task CreateOrder()
         {
 
             return _orderService.CreateAndEventAsync();
