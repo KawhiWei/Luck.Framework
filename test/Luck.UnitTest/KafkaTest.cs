@@ -14,7 +14,7 @@ namespace Luck.UnitTest
         [Fact]
         public async Task Kafka_Connect_Test()
         {
-            var config = new ProducerConfig { BootstrapServers = "192.168.31.10:30200" };
+            var config = new ProducerConfig { BootstrapServers = "192.168.31.11:30115",Acks =Acks.All };
             try
             {
                 using (var p = new ProducerBuilder<Null, string>(config).Build())

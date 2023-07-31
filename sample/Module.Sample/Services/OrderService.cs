@@ -1,10 +1,7 @@
 ﻿using Luck.AutoDependencyInjection.Attributes;
 using Luck.DDD.Domain.Repositories;
-using Luck.Framework.Extensions;
-using Luck.Framework.Infrastructure.Caching;
 using Luck.Framework.Infrastructure.DependencyInjectionModule;
 using Luck.Framework.UnitOfWorks;
-using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Module.Sample.Domain;
 using Module.Sample.EventHandlers;
@@ -14,20 +11,14 @@ namespace Module.Sample.Services
     public class OrderService : IOrderService
     {
 
+        [Injection]
         private readonly IAggregateRootRepository<Order, string> _aggregateRootRepository;
-        //[Injection]
+        [Injection]
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IMediator _mediator;
 
-        public OrderService(IAggregateRootRepository<Order, string> aggregateRootRepository
-            , IUnitOfWork unitOfWork
-            //, IMediator mediator
-            )
-        {
-            _aggregateRootRepository = aggregateRootRepository;
-            _unitOfWork = unitOfWork;
-            //_mediator = mediator;
-        }
+
+        [Injection]
+        private readonly ILogger<OrderService> _logger;
 
         public async Task CreateAsync()
         {
@@ -35,6 +26,7 @@ namespace Module.Sample.Services
             order.SetOrderItem();
 
             _aggregateRootRepository.Add(order);
+            _logger?.LogInformation("调用了CreateAsync()方法");
             await _unitOfWork.CommitAsync();
         }
 
@@ -48,6 +40,7 @@ namespace Module.Sample.Services
             var order = new Order("asdasdsa", "asdasdadas");
             _aggregateRootRepository.Add(order);
             order.AddDomainEvent(new OrderCreatedEto() { Id = order.Id, Name = order.Name });
+            _logger?.LogInformation("调用了CreateAndEventAsync()方法");
             await _unitOfWork.CommitAsync();
             //await _cache.AddAsync("order_a1", order);
             //var test=await _cache.GetAsync<Order>("order_a1");
