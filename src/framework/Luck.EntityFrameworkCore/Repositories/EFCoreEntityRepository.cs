@@ -3,6 +3,7 @@ using Luck.DDD.Domain.Repositories;
 using Luck.EntityFrameworkCore.DbContexts;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using Luck.DDD.Domain.Domain.Entities;
 
 namespace Luck.EntityFrameworkCore.Repositories
 {

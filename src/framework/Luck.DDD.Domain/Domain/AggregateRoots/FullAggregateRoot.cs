@@ -1,9 +1,6 @@
-﻿
+﻿using Luck.Framework.Infrastructure;
 
-using Luck.Framework;
-using Luck.Framework.Infrastructure;
-
-namespace Luck.DDD.Domain
+namespace Luck.DDD.Domain.Domain.AggregateRoots
 {
     public class FullAggregateRoot : AggregateRootWithIdentity<string>, IUpdatable, ISoftDeletable
     {

@@ -1,4 +1,4 @@
-﻿namespace Luck.DDD.Domain
+﻿namespace Luck.DDD.Domain.Domain.AggregateRoots
 {
     public class AggregateRootWithIdentity<TKey> : AggregateRootBase
     {

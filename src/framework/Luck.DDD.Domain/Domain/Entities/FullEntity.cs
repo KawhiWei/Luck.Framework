@@ -1,7 +1,6 @@
-﻿using Luck.Framework;
-using Luck.Framework.Infrastructure;
+﻿using Luck.Framework.Infrastructure;
 
-namespace Luck.DDD.Domain
+namespace Luck.DDD.Domain.Domain.Entities
 {
     public abstract class FullEntity : EntityWithIdentity<string>, IUpdatable, ISoftDeletable
     {

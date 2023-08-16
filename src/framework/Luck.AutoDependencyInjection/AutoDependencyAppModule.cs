@@ -10,7 +10,7 @@ namespace Luck.AutoDependencyInjection
     /// <summary>
     /// 自动注入模块，继承与AppModuleBase类进行实现
     /// </summary>
-    public class AutoDependencyAppModule : Luck.AppModule.LuckAppModule
+    public class AutoDependencyAppModule : LuckAppModule
     {
         /// <summary>
         /// 

@@ -1,4 +1,5 @@
 ﻿using System.Linq.Expressions;
+using Luck.DDD.Domain.Domain.AggregateRoots;
 
 namespace Luck.DDD.Domain.Repositories
 {

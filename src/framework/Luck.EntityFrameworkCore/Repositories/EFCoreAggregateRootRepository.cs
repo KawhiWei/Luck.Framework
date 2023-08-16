@@ -4,6 +4,7 @@ using Luck.DDD.Domain.Repositories;
 using Luck.EntityFrameworkCore.DbContexts;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using Luck.DDD.Domain.Domain.AggregateRoots;
 
 namespace Luck.EntityFrameworkCore.Repositories
 {

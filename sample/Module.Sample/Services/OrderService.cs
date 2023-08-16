@@ -39,7 +39,7 @@ namespace Module.Sample.Services
         {
             var order = new Order("asdasdsa", "asdasdadas");
             _aggregateRootRepository.Add(order);
-            order.AddDomainEvent(new OrderCreatedEto() { Id = order.Id, Name = order.Name });
+            //order.AddDomainEvent(new OrderCreatedEto() { Id = order.Id, Name = order.Name });
             _logger?.LogInformation("调用了CreateAndEventAsync()方法");
             await _unitOfWork.CommitAsync();
             //await _cache.AddAsync("order_a1", order);

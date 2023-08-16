@@ -1,4 +1,6 @@
 ﻿using Luck.DDD.Domain;
+using Luck.DDD.Domain.Domain.AggregateRoots;
+using Luck.DDD.Domain.Domain.Entities;
 
 namespace Module.Sample.Domain
 {
