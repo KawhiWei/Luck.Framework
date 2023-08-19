@@ -1,4 +1,22 @@
 # Luck.Framework
++ ## change 2.0.3 version
+  + ### update
+    + **1、Luck.Framework内的System.Text.Json自定义序列化删除，迁移到Luck.AspNetCore**
+    + 添加System.Text.Json自定义序列化扩展；
+    ```c#
+        builder.Services.AddControllers()
+                .AddJsonOptions(c =>
+                {
+                c.JsonSerializerOptions.Converters.Add(new SystemTextJsonConvert.TimeOnlyJsonConverter());
+                c.JsonSerializerOptions.Converters.Add(new SystemTextJsonConvert.DateOnlyJsonConverter());
+                c.JsonSerializerOptions.Converters.Add(new SystemTextJsonConvert.TimeOnlyNullJsonConverter());
+                c.JsonSerializerOptions.Converters.Add(new SystemTextJsonConvert.DateOnlyNullJsonConverter());
+                c.JsonSerializerOptions.Converters.Add(new SystemTextJsonConvert.DateTimeConverter());
+                c.JsonSerializerOptions.Converters.Add(new SystemTextJsonConvert.DateTimeNullConverter());  
+                c.JsonSerializerOptions.Converters.Add(new SystemTextJsonConvert.DateTimeOffsetConverter());
+                c.JsonSerializerOptions.Converters.Add(new SystemTextJsonConvert.DateTimeOffsetNullConverter());
+                });
+      ```
 + ## change 2.0.2 version
   + ### Add
     + **1、Luck.Framework**

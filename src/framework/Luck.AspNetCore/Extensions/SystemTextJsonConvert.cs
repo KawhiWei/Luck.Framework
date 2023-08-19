@@ -2,7 +2,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Luck.Framework.Extensions;
+namespace Luck.AspNetCore.Extensions;
 
 /// <summary>
 /// 自定义Json序列化
