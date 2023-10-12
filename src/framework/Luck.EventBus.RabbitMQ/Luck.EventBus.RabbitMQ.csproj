@@ -9,6 +9,18 @@
     <ItemGroup>
         <ProjectReference Include="..\Luck.Framework\Luck.Framework.csproj" />
     </ItemGroup>
+    
+    <ItemGroup  Condition="'$(TargetFramework)' == 'net6.0'">
+        <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="6.0.0" />
+    </ItemGroup>
+
+    <ItemGroup  Condition="'$(TargetFramework)' == 'net7.0'">
+        <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="7.0.0" />
+    </ItemGroup>
+
+    <ItemGroup  Condition="'$(TargetFramework)' == 'net8.0'">
+        <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="8.0.0-rc.2.23479.6" />
+    </ItemGroup>
     <ItemGroup>
         <PackageReference Include="Polly" Version="7.2.3" />
         <PackageReference Include="RabbitMQ.Client" Version="6.4.0" />

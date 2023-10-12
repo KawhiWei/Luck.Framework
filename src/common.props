@@ -2,7 +2,7 @@
 	<PropertyGroup>
 		<LangVersion>latest</LangVersion>
 		<Version>2.0.3</Version>
-		<NoWarn>$(NoWarn);CS1591;CS0436</NoWarn>
+		<NoWarn>$(NoWarn);CS1591;CS0436;NU5104</NoWarn>
 		<PackageLicenseExpression>LGPL-3.0-only</PackageLicenseExpression>
 		<RepositoryType>git</RepositoryType>
 		<Authors>GeorGeWzw</Authors>
@@ -15,7 +15,13 @@
 		<!-- Include symbol files (*.pdb) in the built .nupkg -->
 		<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
 	</PropertyGroup>
-
+	
+	<PropertyGroup>
+		<TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
+		<LangVersion>preview</LangVersion>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+	</PropertyGroup>
 	<ItemGroup>
 		<!-- <None Include="..\logo.jpg">
       <Pack>True</Pack>
