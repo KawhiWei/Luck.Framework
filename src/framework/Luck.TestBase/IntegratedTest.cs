@@ -14,13 +14,13 @@ namespace Luck.TestBase
 {
     public abstract class IntegratedTest<TStartup> : TestBaseWithServiceProvider where TStartup : IAppModule
     {
-        protected IModuleApplication Application { get; }
+        private IModuleApplication? Application { get; }
 
-        protected IServiceProvider RootServiceProvider { get; }
+        private IServiceProvider RootServiceProvider { get; }
 
-        protected IServiceScope TestServiceScope { get; }
+        private IServiceScope TestServiceScope { get; }
 
-        protected override IServiceProvider ServiceProvider => Application.ServiceProvider;
+        protected override IServiceProvider ServiceProvider => Application is null ? throw new InvalidOperationException() : Application.ServiceProvider;
 
         protected IntegratedTest()
         {
@@ -30,37 +30,43 @@ namespace Luck.TestBase
             BeforeAddApplication(services);
             var application = services.AddApplication<TStartup>();
             Application = services.GetBuildService<IModuleApplication>();
+            if (Application is null)
+            {
+                throw new InvalidOperationException();
+            }
+
             AfterAddApplication(services);
             RootServiceProvider = CreateServiceProvider(services);
             TestServiceScope = RootServiceProvider.CreateScope();
-            ((StartupModuleRunner)Application).Initialize(TestServiceScope.ServiceProvider);
+            ((StartupModuleRunner)Application!)?.Initialize(TestServiceScope.ServiceProvider);
         }
 
-        protected virtual IServiceCollection CreateServiceCollection()
+        private IServiceCollection CreateServiceCollection()
         {
             return new ServiceCollection();
         }
 
-        protected virtual void BeforeAddApplication(IServiceCollection services)
+        private void BeforeAddApplication(IServiceCollection services)
         {
         }
 
-        protected virtual void AfterAddApplication(IServiceCollection services)
+        private void AfterAddApplication(IServiceCollection services)
         {
         }
 
-        protected virtual IServiceProvider CreateServiceProvider(IServiceCollection services)
+        private IServiceProvider CreateServiceProvider(IServiceCollection services)
         {
-            return services.BuildServiceProviderFromFactory();
+            var serviceProvider = services.BuildServiceProviderFromFactory();
+            return serviceProvider ?? throw new InvalidOperationException();
         }
 
-        protected virtual IServiceProvider ConfigureProvider(Action<IServiceCollection> configure)
+        private IServiceProvider ConfigureProvider(Action<IServiceCollection> configure)
         {
             var services = new ServiceCollection();
 
             configure(services);
-
-            return services.BuildServiceProviderFromFactory();
+            var serviceProvider = services.BuildServiceProviderFromFactory();
+            return serviceProvider ?? throw new InvalidOperationException();
         }
     }
 }
