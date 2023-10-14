@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Luck.AppModule
+namespace Luck.AutoDependencyInjection
 {
     /// <summary>
     /// 

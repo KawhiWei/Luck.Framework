@@ -1,8 +1,9 @@
-﻿using Luck.Framework.Infrastructure;
+﻿using Luck.AppModule;
+using Luck.Framework.Infrastructure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Luck.AppModule
+namespace Luck.AutoDependencyInjection
 {
     /// <summary>
     /// 

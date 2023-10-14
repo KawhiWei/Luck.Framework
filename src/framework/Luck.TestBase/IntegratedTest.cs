@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Luck.AppModule;
+using Luck.AutoDependencyInjection;
 
 namespace Luck.TestBase
 {

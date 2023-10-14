@@ -2,6 +2,7 @@ using Luck.AppModule;
 using Luck.AutoDependencyInjection.PropertyInjection;
 using Module.Sample;
 using System.Diagnostics;
+using Luck.AutoDependencyInjection;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,7 +15,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHttpContextAccessor();
 
-//Ìí¼ÓÕâ¸ö¡£
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 builder.Host.UsePropertyInjection();
 // builder.Services.AddDoveLogger();
 
