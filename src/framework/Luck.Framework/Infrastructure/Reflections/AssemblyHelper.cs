@@ -12,13 +12,16 @@ namespace Luck.Framework.Infrastructure
     {
         private static readonly string[] Filters = { "dotnet-", "Microsoft.", "mscorlib", "netstandard", "System", "Windows" };
 
+        // ReSharper disable once InconsistentNaming
         private static readonly IEnumerable<Assembly>? _allAssemblies;
+        // ReSharper disable once InconsistentNaming
         private static readonly IEnumerable<Type>? _allTypes;
         
         /// <summary>
         /// 需要排除的项目
         /// </summary>
-        private static readonly List<string> _filterLibs = new List<string>();
+        // ReSharper disable once InconsistentNaming
+        private static readonly List<string> _filterLibs = new();
         
         /// <summary>
         /// 构造函数
