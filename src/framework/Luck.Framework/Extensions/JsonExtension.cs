@@ -51,11 +51,7 @@ namespace Luck.Framework.Extensions
         /// <returns></returns>
         public static T? Deserialize<T>(this string text)
         {
-            if (string.IsNullOrEmpty(text))
-            {
-                return default;
-            }
-            return JsonSerializer.Deserialize<T>(text);
+            return string.IsNullOrEmpty(text) ? default : JsonSerializer.Deserialize<T>(text);
         }
         /// <summary>
         /// 
@@ -66,11 +62,7 @@ namespace Luck.Framework.Extensions
         /// <returns></returns>
         public static T? Deserialize<T>(this string text, JsonSerializerOptions options)
         {
-            if (string.IsNullOrEmpty(text))
-            {
-                return default;
-            }
-            return JsonSerializer.Deserialize<T>(text, options);
+            return string.IsNullOrEmpty(text) ? default : JsonSerializer.Deserialize<T>(text, options);
         }
 
     }
