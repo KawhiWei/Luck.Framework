@@ -40,7 +40,7 @@ namespace Luck.AppModule
         /// </summary>
         /// <param name="startupModuleType"></param>
         /// <param name="services"></param>
-        public ModuleApplicationBase(Type startupModuleType, IServiceCollection services)
+        protected ModuleApplicationBase(Type startupModuleType, IServiceCollection services)
         {
             StartupModuleType = startupModuleType;
             Services = services;
@@ -59,8 +59,8 @@ namespace Luck.AppModule
         /// <returns></returns>
         protected virtual List<IAppModule> GetAllModule(IServiceCollection services)
         {
-            var typs = AssemblyHelper.FindTypes(o => LuckAppModule.IsAppModule(o));
-            var modules = typs.Select(o => CreateModule(services, o)).Where(o => o.IsNotNull()).Distinct();
+            var findTypes = AssemblyHelper.FindTypes(LuckAppModule.IsAppModule);
+            var modules = findTypes.Select(o => CreateModule(services, o)).Where(o => o.IsNotNull()).Distinct();
             return modules.ToList();
         }
 
@@ -80,7 +80,7 @@ namespace Luck.AppModule
         /// <returns></returns>
         protected virtual IReadOnlyList<IAppModule> LoadModules()
         {
-            List<IAppModule> modules = new List<IAppModule>();
+            var modules = new List<IAppModule>();
 
             var module = Source.FirstOrDefault(o => o.GetType() == StartupModuleType);
             if (module == null)
@@ -88,8 +88,8 @@ namespace Luck.AppModule
                 throw new Exception($"类型为“{StartupModuleType.FullName}”的模块实例无法找到");
             }
             modules.Add(module);
-            var dependeds = module.GetDependedTypes();
-            foreach (var dependType in dependeds.Where(o => LuckAppModule.IsAppModule(o)))
+            var dependedTypes = module.GetDependedTypes();
+            foreach (var dependType in dependedTypes.Where(LuckAppModule.IsAppModule))
             {
                 var dependModule = Source.Find(m => m.GetType() == dependType);
                 if (dependModule == null)
@@ -106,8 +106,9 @@ namespace Luck.AppModule
         /// </summary>
         /// <param name="services"></param>
         /// <param name="moduleType"></param>
+        /// <exception cref="ArgumentNullException"></exception>
         /// <returns></returns>
-        private IAppModule CreateModule(IServiceCollection services, Type moduleType)
+        private static IAppModule CreateModule(IServiceCollection services, Type moduleType)
         {
             var invoke = Expression.Lambda(Expression.New(moduleType)).Compile().DynamicInvoke();
 
@@ -135,7 +136,6 @@ namespace Luck.AppModule
         /// </summary>
         public virtual void Dispose()
         {
-
             Source?.Clear();
         }
     }

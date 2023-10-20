@@ -31,6 +31,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "0.Solution Items", "0.Solut
 	ProjectSection(SolutionItems) = preProject
 		src\common.props = src\common.props
 		README.md = README.md
+		Directory.Build.props = Directory.Build.props
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Luck.EventBus.RabbitMQ", "src\framework\Luck.EventBus.RabbitMQ\Luck.EventBus.RabbitMQ.csproj", "{79FEBCDD-AED6-4FEA-AD14-EF34DDE22905}"

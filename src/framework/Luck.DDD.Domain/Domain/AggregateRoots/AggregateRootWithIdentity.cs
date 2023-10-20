@@ -2,7 +2,7 @@
 {
     public class AggregateRootWithIdentity<TKey> : AggregateRootBase
     {
-        public AggregateRootWithIdentity(TKey id)
+        protected AggregateRootWithIdentity(TKey id)
         {
             if (id == null)
                 throw new ArgumentNullException(nameof(id));
