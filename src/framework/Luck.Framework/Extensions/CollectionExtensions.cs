@@ -68,19 +68,6 @@ namespace Luck.Framework.Extensions
         }
 
         /// <summary>
-        /// 去重
-        /// </summary>
-        /// <typeparam name="TSource">去重数据源</typeparam>
-        /// <typeparam name="TKey">键</typeparam>
-        /// <param name="source">数据源</param>
-        /// <param name="keySelector">键条件</param>
-        /// <returns>返回去重后集合数据</returns>
-        public static IList<TSource> ToDistinctBy<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector)
-        {
-            return source.DistinctBy(keySelector).ToList();
-        }
-
-        /// <summary>
         /// 把集合转成SqlIn
         /// </summary>
         /// <typeparam name="TSource">源</typeparam>
