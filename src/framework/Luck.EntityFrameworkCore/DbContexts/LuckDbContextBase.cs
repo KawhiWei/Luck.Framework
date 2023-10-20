@@ -1,23 +1,18 @@
 ﻿using Luck.EntityFrameworkCore.Extensions;
 using Luck.Framework.Utilities;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Luck.EntityFrameworkCore.DbContexts
 {
     /// <summary>
     /// 类类上下文
     /// </summary>
-    public abstract class LuckDbContextBase : DbContext, ILuckDbContext
+    public abstract class LuckDbContextBase(DbContextOptions options, IServiceProvider serviceProvider) : DbContext(options), ILuckDbContext
     {
         // ReSharper disable once MemberCanBePrivate.Global
-        protected IServiceProvider ServiceProvider { get; set; }
+        protected IServiceProvider ServiceProvider { get; set; } = Check.NotNull(serviceProvider, nameof(serviceProvider));
 
         // ReSharper disable once PublicConstructorInAbstractClass
-        public LuckDbContextBase(DbContextOptions options, IServiceProvider serviceProvider) : base(options)
-        {
-            ServiceProvider = Check.NotNull(serviceProvider, nameof(serviceProvider));
-        }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
