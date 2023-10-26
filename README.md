@@ -1,5 +1,7 @@
 # Luck.Framework
-+ ## change 2.0.4 version
++ ## change 2.0.4 version 
+  + ### add
+    + **1、Luck.EntityFrameworkCore.MemoryDataBase**
   + ### update
     + **1、Luck.Framework支持Net7.0和8.0**
     + **2、Luck.DDD.Domain支持Net7.0和8.0**
