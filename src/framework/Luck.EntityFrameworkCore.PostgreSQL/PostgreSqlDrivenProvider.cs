@@ -7,9 +7,9 @@ namespace Luck.EntityFrameworkCore.PostgreSQL
     /// <summary>
     ///  PostgreSql驱动
     /// </summary>
-    public class PostgreSqlDbContextDrivenProvider : IDbContextDrivenProvider
+    public class PostgreSqlDrivenProvider : IDbContextDrivenProvider
     {
-        public DataBaseType Type => DataBaseType.PostgreSQL;
+        public DataBaseType Type => DataBaseType.PostgreSql;
 
         /// <summary>
         /// 

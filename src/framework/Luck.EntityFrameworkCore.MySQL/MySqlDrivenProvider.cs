@@ -8,7 +8,7 @@ namespace Luck.EntityFrameworkCore.MySQL
     /// <summary>
     /// Mysql驱动
     /// </summary>
-    public class MySqlDbContextDrivenProvider : IDbContextDrivenProvider
+    public class MySqlDrivenProvider : IDbContextDrivenProvider
     {
         public DataBaseType Type => DataBaseType.MySql;
 

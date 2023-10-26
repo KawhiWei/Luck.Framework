@@ -16,6 +16,11 @@
         /// <summary>
         /// PostgreSQL数据库类型
         /// </summary>
-        PostgreSQL
+        PostgreSql,
+        
+        /// <summary>
+        /// 内存数据库
+        /// </summary>
+        MemoryDataBase
     }
 }

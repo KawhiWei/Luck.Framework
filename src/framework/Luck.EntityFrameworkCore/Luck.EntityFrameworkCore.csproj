@@ -19,10 +19,6 @@
         <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.0-rc.2.23480.1" />
     </ItemGroup>
     <ItemGroup>
-
-    </ItemGroup>
-
-    <ItemGroup>
         <ProjectReference Include="..\Luck.AppModule\Luck.AppModule.csproj" />
         <ProjectReference Include="..\Luck.DDD.Domain\Luck.DDD.Domain.csproj" />
         <ProjectReference Include="..\Luck.Framework\Luck.Framework.csproj" />
