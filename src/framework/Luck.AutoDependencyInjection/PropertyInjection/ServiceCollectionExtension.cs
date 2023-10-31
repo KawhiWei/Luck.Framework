@@ -14,7 +14,7 @@ namespace Luck.AutoDependencyInjection.PropertyInjection
         /// <returns></returns>
         public static void UsePropertyInjection(this IHostBuilder hostBuilder)
         {
-            hostBuilder.UseServiceProviderFactory(new PropertyInjectionServiceProviderFactory()).ConfigureServices(ConfigureServices);
+            //hostBuilder.UseServiceProviderFactory(new PropertyInjectionServiceProviderFactory()).ConfigureServices(ConfigureServices);
         }
 
         private static void ConfigureServices(IServiceCollection services)

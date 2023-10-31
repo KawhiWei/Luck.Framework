@@ -16,7 +16,7 @@ using System.Text;
 using System.Text.Json;
 using Luck.EventBus.RabbitMQ.Diagnostics;
 using Luck.Framework.Infrastructure;
-using ExchangeType = RabbitMQ.Client.ExchangeType;
+
 
 namespace Luck.EventBus.RabbitMQ;
 

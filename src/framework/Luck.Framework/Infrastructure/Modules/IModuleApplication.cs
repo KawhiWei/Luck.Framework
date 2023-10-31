@@ -23,7 +23,7 @@ namespace Luck.Framework.Infrastructure
         /// <summary>
         /// 
         /// </summary>
-        IServiceProvider ServiceProvider { get; }
+        IServiceProvider? ServiceProvider { get; }
 
         /// <summary>
         /// 
@@ -32,6 +32,6 @@ namespace Luck.Framework.Infrastructure
         /// <summary>
         /// 
         /// </summary>
-        List<IAppModule> Source { get; }
+        IEnumerable<IAppModule> Source { get; }
     }
 }

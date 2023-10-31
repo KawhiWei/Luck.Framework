@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "Luck.EventBus.RabbitMQ": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:55800;http://localhost:55801"
+    }
+  }
+}

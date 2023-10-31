@@ -11,9 +11,9 @@ public class ServiceCollectionExtension
     /// </summary>
     /// <param name="services"></param>
     /// <returns></returns>
-    public virtual IServiceCollection AddMySQLDriven(IServiceCollection services)
+    public virtual IServiceCollection AddMemoryDataBase(IServiceCollection services)
     {
-        services.AddSingleton<IDbContextDrivenProvider, MySqlDbContextDrivenProvider>();
+        services.AddSingleton<IDbContextDrivenProvider, MySqlDrivenProvider>();
         return services;
     }
 }

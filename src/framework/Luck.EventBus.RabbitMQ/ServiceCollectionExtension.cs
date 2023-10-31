@@ -17,7 +17,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 => new IntegrationEventBusRabbitMq(config.RetryCount, serviceProvider)
             );
             service.AddSingleton<IIntegrationEventBusSubscriptionsManager, RabbitMqEventBusSubscriptionsManager>();
-            service.AddHostedService<RabbitMqIntegrationEventBusBackgroundServiceSubscribe>();
+            service.AddHostedService<RabbitMqSubscribeService>();
             return service;
         }
 

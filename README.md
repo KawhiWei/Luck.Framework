@@ -1,4 +1,43 @@
 # Luck.Framework
++ ## change 2.0.4 version 
+  + ### add
+    + **1、Luck.EntityFrameworkCore.MemoryDataBase**
+  + ### update
+    + **1、Luck.Framework支持Net7.0和8.0**
+    + **2、Luck.DDD.Domain支持Net7.0和8.0**
+    + **3、Luck.AspNetCore支持Net7.0和8.0**
+    ```c#
+        <ItemGroup Condition="$(TargetFramework) == 'net6.0'">
+          <FrameworkReference Include="Microsoft.AspNetCore.App" />
+        </ItemGroup>
+        <ItemGroup Condition="$(TargetFramework) == 'net7.0'">
+            <FrameworkReference Include="Microsoft.AspNetCore.App" />
+        </ItemGroup>
+        <ItemGroup Condition="$(TargetFramework) == 'net8.0'">
+            <FrameworkReference Include="Microsoft.AspNetCore.App" />
+        </ItemGroup>
+      ```
+    + **4、Luck.AppModule支持Net7.0和8.0**
+    + **5、Luck.AutoDependencyInjection支持Net7.0和8.0；移动模块化扩展方法到Luck.AutoDependencyInjection类库**
+    + **6、Luck.MongoDB支持Net7.0和8.0**
+    + **7、Luck.EntityFrameworkCore支持EFCore7.0he 8.0**
+    + **8、Luck.EntityFrameworkCore.MySQL；升级6.0的nuget包版本**
+    + **9、Luck.EntityFrameworkCore.PostGreSQL支持Net7.0和8.0；升级6.0的nuget包版本**
+    + **10、Luck.Dapper支持Net7.0和8.0;**
+    + **11、Luck.Dapper.ClickHouse支持Net7.0和8.0**
+    + **12、Luck.EventBus.RabbitMQ支持Net7.0和8.0；升级Polly和RabbitMQ.Client版本；通过一下代码导入需要Hosting等组件，不在单独引入包**
+    ```c#
+        <ItemGroup Condition="$(TargetFramework) == 'net6.0'">
+          <FrameworkReference Include="Microsoft.AspNetCore.App" />
+        </ItemGroup>
+        <ItemGroup Condition="$(TargetFramework) == 'net7.0'">
+            <FrameworkReference Include="Microsoft.AspNetCore.App" />
+        </ItemGroup>
+        <ItemGroup Condition="$(TargetFramework) == 'net8.0'">
+            <FrameworkReference Include="Microsoft.AspNetCore.App" />
+        </ItemGroup>
+      ```
+    + **13、Luck.Redis.StackExchange支持Net7.0和8.0；升级6.0的nuget包版本**
 + ## change 2.0.3 version
   + ### update
     + **1、Luck.Framework内的System.Text.Json自定义序列化删除，迁移到Luck.AspNetCore**

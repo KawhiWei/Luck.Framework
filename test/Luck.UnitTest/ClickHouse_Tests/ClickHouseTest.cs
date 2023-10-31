@@ -3,7 +3,6 @@ using System.Data;
 using Luck.Dapper.DbConnectionFactories;
 using Luck.TestBase;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -21,7 +20,6 @@ public class ClickHouseTest : IntegratedTest<ClickHouseTestModule>
     [Fact]
     public void Connection_Test_Open()
     {
-        var hostEnvironment = ServiceProvider.GetService<IHostEnvironment>();
         var dbConnectionFactory = ServiceProvider.GetService<IDapperDrivenProvider>();
         if (dbConnectionFactory is null)
             throw new ArgumentNullException(nameof(dbConnectionFactory));

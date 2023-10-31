@@ -1,7 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <Import Project="..\..\common.props" />
     <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
     </PropertyGroup>
@@ -11,6 +10,6 @@
       <ProjectReference Include="..\Luck.Framework\Luck.Framework.csproj" />
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="Dapper" Version="2.0.123" />
+        <PackageReference Include="Dapper" Version="2.1.11" />
     </ItemGroup>
 </Project>

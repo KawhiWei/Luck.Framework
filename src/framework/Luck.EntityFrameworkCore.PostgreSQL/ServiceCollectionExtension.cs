@@ -1,7 +1,7 @@
-﻿using Luck.EntityFrameworkCore.PostgreSQL;
+﻿using Luck.EntityFrameworkCore.DbContextDrivenProvides;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Luck.EntityFrameworkCore.DbContextDrivenProvides;
+namespace Luck.EntityFrameworkCore.PostgreSQL;
 
 public static class ServiceCollectionExtension
 {
@@ -15,7 +15,7 @@ public static class ServiceCollectionExtension
     // ReSharper disable once IdentifierTypo
     public static IServiceCollection AddPostgreSQLDriven(this IServiceCollection services)
     {
-        services.AddSingleton<IDbContextDrivenProvider, PostgreSqlDbContextDrivenProvider>();
+        services.AddSingleton<IDbContextDrivenProvider, PostgreSqlDrivenProvider>();
         return services;
     }
 }

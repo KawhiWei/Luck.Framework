@@ -7,13 +7,11 @@ namespace Luck.MongoDB.DbContexts
 {
     public abstract class MongoDbContextBase : IMongoDbContext
     {
-
-
         private readonly MongoContextOptions _options;
 
-        protected const string DefaultDatabaseName = "Luck";
+        private const string DefaultDatabaseName = "Luck";
 
-        public MongoDbContextBase([NotNull] MongoContextOptions options)
+        protected MongoDbContextBase([NotNull] MongoContextOptions options)
         {
             _options = options;
             _connectionString = Check.NotNullOrEmpty(_options.ConnectionString, nameof(options.ConnectionString));
@@ -28,6 +26,11 @@ namespace Luck.MongoDB.DbContexts
         public virtual IMongoCollection<TEntity> Collection<TEntity>()
         {
             return Database.GetCollection<TEntity>(GetTableName<TEntity>());
+        }
+        
+        public virtual IMongoCollection<TEntity> Collection<TEntity>(string tableName)
+        {
+            return Database.GetCollection<TEntity>(tableName);
         }
 
         //public virtual IMongoCollection<TEntity> Collection<TEntity>(string tableName)
