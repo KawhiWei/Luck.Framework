@@ -1,5 +1,6 @@
 ﻿using Luck.AutoDependencyInjection.Attributes;
 using Luck.DDD.Domain.Repositories;
+using Luck.Framework.Extensions;
 using Luck.Framework.Infrastructure.DependencyInjectionModule;
 using Luck.Framework.UnitOfWorks;
 using Microsoft.EntityFrameworkCore;
@@ -53,6 +54,9 @@ namespace Module.Sample.Services
 
         public async Task<object?> TestQuerySplittingBehavior()
         {
+            string? name = null;
+            _aggregateRootRepository.FindAll().WhereIf(name.IsNullOrEmpty(), x => x.Id == name);
+            
             var order = await _aggregateRootRepository.FindAll().Include(x => x.OrderItems)
                 .FirstOrDefaultAsync(x => x.Id == "63e2ff08aa331eb8f03a5f9d");
 

@@ -929,27 +929,7 @@ public static class EnumerableExtensions
     /// <param name="where"></param>
     /// <returns></returns>
     public static IEnumerable<T> WhereIf<T>(this IEnumerable<T> source, Func<bool> condition, Func<T, bool> where) => condition() ? source.Where(where) : source;
-
-    /// <summary>
-    /// 满足条件时执行筛选条件
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <param name="source"></param>
-    /// <param name="condition"></param>
-    /// <param name="where"></param>
-    /// <returns></returns>
-    public static IQueryable<T> WhereIf<T>(this IQueryable<T> source, bool condition, Expression<Func<T, bool>> where) => condition ? source.Where(where) : source;
-
-    /// <summary>
-    /// 满足条件时执行筛选条件
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <param name="source"></param>
-    /// <param name="condition"></param>
-    /// <param name="where"></param>
-    /// <returns></returns>
-    public static IQueryable<T> WhereIf<T>(this IQueryable<T> source, Func<bool> condition, Expression<Func<T, bool>> where) => condition() ? source.Where(where) : source;
-
+    
     /// <summary>
     /// 改变元素的索引位置
     /// </summary>

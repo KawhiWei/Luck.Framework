@@ -8,5 +8,5 @@ public class EventRemovedEventArgs : EventArgs
     /// <summary>
     /// 
     /// </summary>
-    public Type EventType { get; set; }
+    public Type EventType { get; set; } = default!;
 }

@@ -85,7 +85,7 @@ namespace Luck.Framework.Extensions
         /// <param name="value">要判断的值</param>
         /// <returns>返回true/false</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsNullOrWhiteSpace([NotNullWhen(false)]this string value)
+        public static bool IsNullOrWhiteSpace([NotNullWhen(false)]this string? value)
         {
             return string.IsNullOrWhiteSpace(value);
         }
@@ -97,11 +97,11 @@ namespace Luck.Framework.Extensions
         /// <returns>返回true/false</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 
-        public static bool IsNullOrEmpty([NotNullWhen(false)]this string value)
+        public static bool IsNullOrEmpty([NotNullWhen(false)]this string? value)
         {
             return string.IsNullOrEmpty(value);
         }
-
+        
         /// <summary>
         /// 判断是否数字
         /// </summary>
@@ -120,11 +120,7 @@ namespace Luck.Framework.Extensions
         /// <returns>一个对象，包含有关匹配项的信息</returns>
         public static string Match([NotNullWhen(false)]this string? value, string pattern)
         {
-            if (value == null)
-            {
-                return null;
-            }
-            return Regex.Match(value, pattern).Value;
+            return value == null ? "" : Regex.Match(value, pattern).Value;
         }
 
         /// <summary>

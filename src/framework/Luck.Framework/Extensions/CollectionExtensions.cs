@@ -78,7 +78,7 @@ namespace Luck.Framework.Extensions
         /// <returns>返回组装好的值，例如"'a','b'"</returns>
         public static string ToSqlIn<TSource>(this IEnumerable<TSource> values, string separator = ",", string left = "'", string right = "'")
         {
-            StringBuilder sb = new StringBuilder();
+            var stringBuilder = new StringBuilder();
             var enumerable = values as TSource[] ?? values.ToArray();
             if (!enumerable.Any())
             {
@@ -87,10 +87,10 @@ namespace Luck.Framework.Extensions
 
             enumerable.ToList().ForEach(o =>
             {
-                sb.AppendFormat("{0}{1}{2}{3}", left, o, right, separator);
+                stringBuilder.AppendFormat("{0}{1}{2}{3}", left, o, right, separator);
             });
-            var newStr = sb.ToString()?.TrimEnd($"{separator}".ToCharArray());
-            return newStr;
+            var newStr = stringBuilder.ToString()?.TrimEnd($"{separator}".ToCharArray());
+            return newStr??"";
         }
 
         
@@ -190,24 +190,16 @@ namespace Luck.Framework.Extensions
         /// <typeparam name="TTarget">要转换的类型</typeparam>
         /// <param name="source">转换的数据源</param>
         /// <returns>返回转换后的集合</returns>
-        public static IEnumerable<TTarget> AsToAll<TTarget>(this IEnumerable source)
+        public static IEnumerable<TTarget?> AsToAll<TTarget>(this IEnumerable source)
         {
             source.NotNull(nameof(source));
-            IEnumerable<TTarget>? enumerable = source as IEnumerable<TTarget>;
-            if (enumerable != null)
-            {
-                return enumerable;
-            }
-            return CastIterator<TTarget>(source);
+            var enumerable = source as IEnumerable<TTarget>;
+            return enumerable ?? CastIterator<TTarget>(source);
         }
 
-        private static IEnumerable<TResult> CastIterator<TResult>(IEnumerable source)
+        private static IEnumerable<TResult?> CastIterator<TResult>(IEnumerable source)
         {
-            foreach (object current in source)
-            {
-                yield return (current.AsTo<TResult>());
-            }
-            yield break;
+            return from object? current in source select (current.AsTo<TResult>());
         }
 
         /// <summary>

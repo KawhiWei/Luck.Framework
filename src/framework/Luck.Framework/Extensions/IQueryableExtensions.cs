@@ -21,20 +21,26 @@ public static class QueryableExtensions
         var list = sources.Skip((pageIndex - 1) * pageSize).Take(pageSize);
         return list;
     }
+    
+    /// <summary>
+    /// IQueryable 多条件查询
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="source"></param>
+    /// <param name="condition"></param>
+    /// <param name="where"></param>
+    /// <returns></returns>
+    public static IQueryable<T> WhereIf<T>(this IQueryable<T> source, bool condition, Expression<Func<T, bool>> where) => condition ? source.Where(where) : source;
 
     /// <summary>
     /// IQueryable 多条件查询
     /// </summary>
-    /// <param name="sources"></param>
-    /// <param name="predicate"></param>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="source"></param>
     /// <param name="condition"></param>
-    /// <typeparam name="TSource"></typeparam>
+    /// <param name="where"></param>
     /// <returns></returns>
-    public static IQueryable<TSource> WhereIf<TSource>(this IQueryable<TSource> sources, Expression<Func<TSource, bool>> predicate, bool condition)
-    {
-        return condition ? sources.Where(predicate) : sources;
-    }
-
+    public static IQueryable<T> WhereIf<T>(this IQueryable<T> source, Func<bool> condition, Expression<Func<T, bool>> where) => condition() ? source.Where(where) : source;
 
     
 }

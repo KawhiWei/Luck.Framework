@@ -193,7 +193,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static IConfiguration GetConfiguration(this IServiceCollection services)
         {
-            return services.GetBuildService<IConfiguration>();
+            return services.GetBuildService<IConfiguration>()??throw new ArgumentNullException($"IConfiguration GetBuildService is null");
         }
 
         /// <summary>
@@ -405,9 +405,7 @@ namespace Microsoft.Extensions.DependencyInjection
             var configuration = services.GetService<IConfiguration>();
             var value = configuration?.GetSection(sectionKey)?.Value;
 
-            if (value == null)
-                return null;
-            return services.GetFileText(value, fileNotExistsMsg);
+            return value == null ? "" : services.GetFileText(value, fileNotExistsMsg);
         }
 
         /// <summary>
