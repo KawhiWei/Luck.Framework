@@ -23,63 +23,57 @@ namespace Luck.AutoDependencyInjection
         }
 
 
-
         private void AddAutoInjection(IServiceCollection services)
         {
-            var baseTypes = new Type[] { typeof(IScopedDependency), typeof(ITransientDependency), typeof(ISingletonDependency) };
-            var types = AssemblyHelper.FindTypes(type => type.IsClass && !type.IsAbstract && (baseTypes.Any(b => b.IsAssignableFrom(type))) || type.GetCustomAttribute<DependencyInjectionAttribute>() != null);
+            var baseTypes = new Type[]
+                { typeof(IScopedDependency), typeof(ITransientDependency), typeof(ISingletonDependency) };
+            var types = AssemblyHelper.FindTypes(type =>
+                type is { IsClass: true, IsAbstract: false } 
+                && (baseTypes.Any(b => b.IsAssignableFrom(type))) 
+                || type.GetCustomAttribute<DependencyInjectionAttribute>() != null);
             foreach (var implementedInterType in types)
             {
                 var attr = implementedInterType.GetCustomAttribute<DependencyInjectionAttribute>();
                 var typeInfo = implementedInterType.GetTypeInfo();
-                var serviceTypes = typeInfo.ImplementedInterfaces.Where(x => x.HasMatchingGenericArity(typeInfo) && !x.HasAttribute<IgnoreDependencyAttribute>() && x != typeof(IDisposable)).Select(t => t.GetRegistrationType(typeInfo));
+                var serviceTypes = typeInfo.ImplementedInterfaces
+                    .Where(x => x.HasMatchingGenericArity(typeInfo)
+                                && !x.HasAttribute<IgnoreDependencyAttribute>()
+                                && x != typeof(IDisposable))
+                    .Select(t => t.GetRegistrationType(typeInfo)).ToList();
                 var lifetime = GetServiceLifetime(implementedInterType);
                 if (lifetime == null)
                 {
                     break;
                 }
-
-                var enumerable = serviceTypes as Type[] ?? serviceTypes.ToArray();
-                if (!enumerable.Any())
+                if (!serviceTypes.Any())
                 {
                     services.Add(new ServiceDescriptor(implementedInterType, implementedInterType, lifetime.Value));
                     continue;
                 }
-                if (attr?.AddSelf == true)
+
+                if (attr?.AddSelf is true)
                 {
                     services.Add(new ServiceDescriptor(implementedInterType, implementedInterType, lifetime.Value));
                 }
-                foreach (var serviceType in enumerable.Where(o => !o.HasAttribute<IgnoreDependencyAttribute>()))
+
+                foreach (var serviceType in serviceTypes.Where(o => !o.HasAttribute<IgnoreDependencyAttribute>()))
                 {
                     services.Add(new ServiceDescriptor(serviceType, implementedInterType, lifetime.Value));
                 }
             }
         }
 
-        private ServiceLifetime? GetServiceLifetime(Type type)
+        private static ServiceLifetime? GetServiceLifetime(Type type)
         {
             var attr = type.GetCustomAttribute<DependencyInjectionAttribute>();
-            if (attr != null)
-            {
-                return attr.Lifetime;
-            }
-
-            if (typeof(IScopedDependency).IsAssignableFrom(type))
-            {
-                return ServiceLifetime.Scoped;
-            }
-
-            if (typeof(ITransientDependency).IsAssignableFrom(type))
-            {
-                return ServiceLifetime.Transient;
-            }
-
-            if (typeof(ISingletonDependency).IsAssignableFrom(type))
-            {
-                return ServiceLifetime.Singleton;
-            }
-
-            return null;
+            return attr?.Lifetime ??
+                   (typeof(IScopedDependency).IsAssignableFrom(type)
+                       ? ServiceLifetime.Scoped
+                       : typeof(ITransientDependency).IsAssignableFrom(type)
+                           ? ServiceLifetime.Transient
+                           : typeof(ISingletonDependency).IsAssignableFrom(type)
+                               ? ServiceLifetime.Singleton
+                               : null);
         }
 
         /// <summary>
@@ -88,8 +82,7 @@ namespace Luck.AutoDependencyInjection
         /// <param name="context"></param>
         public override void ApplicationInitialization(ApplicationContext context)
         {
-            var app = context.GetApplicationBuilder();
+            context.GetApplicationBuilder();
         }
-
     }
 }
