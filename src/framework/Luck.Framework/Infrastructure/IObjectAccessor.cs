@@ -39,6 +39,6 @@ namespace Luck.Framework.Infrastructure
         /// <summary>
         /// 
         /// </summary>
-        public TType Value { get; set; }
+        public TType Value { get; set; } = default!;
     }
 }

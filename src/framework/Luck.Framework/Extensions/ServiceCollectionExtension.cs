@@ -327,8 +327,9 @@ namespace Microsoft.Extensions.DependencyInjection
         /// </summary>
         /// <param name="services"></param>
         /// <returns></returns>
-        public static IServiceProvider? BuildServiceProviderFromFactory([NotNull] this IServiceCollection services)
+        public static IServiceProvider? BuildServiceProviderFromFactory([NotNull] this IServiceCollection? services)
         {
+            ArgumentNullException.ThrowIfNull(services);
             foreach (var service in services)
             {
                 var factoryInterface = service.ImplementationInstance?.GetType()
@@ -348,7 +349,7 @@ namespace Microsoft.Extensions.DependencyInjection
                     .GetMethods()?
                     .Single(m => m.Name == nameof(BuildServiceProviderFromFactory) && m.IsGenericMethod)?
                     .MakeGenericMethod(containerBuilderType)?
-                    .Invoke(null, new object[] { services, null });
+                    .Invoke(null, new object[] { services, null! })!;
             }
 
             return services.BuildServiceProvider();
