@@ -3,9 +3,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Luck.EntityFrameworkCore.ValueConversion;
 
-public class JsonValueConverter<T> : ValueConverter<T, string> where T : class
-{
-    public JsonValueConverter(ConverterMappingHints? hints = default) :
-        base(v => v.Serialize(), v => v.Deserialize<T>(), hints)
-    { }
-}
+public class JsonValueConverter<T>(ConverterMappingHints? hints = default)
+    : ValueConverter<T, string>(v => v.Serialize(), v => v.Deserialize<T>()!, hints)
+    where T : class;
+    
+    

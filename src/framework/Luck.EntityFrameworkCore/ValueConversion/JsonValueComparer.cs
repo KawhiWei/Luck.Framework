@@ -3,25 +3,19 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace Luck.EntityFrameworkCore.ValueConversion;
 
-public class JsonValueComparer<T> : ValueComparer<T>
+public class JsonValueComparer<T>()
+    : ValueComparer<T>((t1, t2) => DoEquals(t1, t2), t => DoGetHashCode(t), t => DoGetSnapshot(t))
 {
-    public JsonValueComparer() : base((t1, t2) => DoEquals(t1, t2), t => DoGetHashCode(t), t => DoGetSnapshot(t))
-    {
-    }
-
     private static T DoGetSnapshot(T instance)
     {
         if (instance is ICloneable cloneable)
             return (T)cloneable.Clone();
-        return instance.Serialize().Deserialize<T>();
+        return instance.Serialize().Deserialize<T>()!;
     }
 
     private static int DoGetHashCode(T instance)
     {
-        if (instance is IEquatable<T>)
-            return instance.GetHashCode();
-
-        return instance.Serialize().GetHashCode();
+        return instance is IEquatable<T> ? instance.GetHashCode() : instance.Serialize().GetHashCode();
     }
 
     private static bool DoEquals(T? left, T? right)

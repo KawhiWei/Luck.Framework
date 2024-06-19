@@ -11,4 +11,12 @@ public static class EfCoreConversionExtensions
             .Metadata.SetValueComparer(new JsonValueComparer<T>());
         return propertyBuilder;
     }
+
+    public static PropertyBuilder<T> HasJsonConversionNotNull<T>(this PropertyBuilder<T> propertyBuilder)
+        where T : class
+    {
+        propertyBuilder.HasConversion(new JsonValueConverter<T>())
+            .Metadata.SetValueComparer(new JsonValueComparer<T>());
+        return propertyBuilder;
+    }
 }
