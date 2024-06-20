@@ -1,6 +1,6 @@
 ﻿using RabbitMQ.Client;
 
-namespace Luck.EventBus.RabbitMQ
+namespace Luck.EventBus.RabbitMQ.Abstraction
 {
     /// <summary>
     /// 
@@ -10,6 +10,14 @@ namespace Luck.EventBus.RabbitMQ
         bool IsConnected { get;  }
 
         bool TryConnect();
+
+        void ReturnChannel(IModel channel);
+        
+        /// <summary>
+        /// 从池中获取Channel
+        /// </summary>
+        /// <returns></returns>
+        IModel GetChannel();
 
         IModel CreateModel();
     }

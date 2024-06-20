@@ -1,4 +1,6 @@
 ﻿using Luck.EventBus.RabbitMQ;
+using Luck.EventBus.RabbitMQ.Abstraction;
+using Luck.EventBus.RabbitMQ.Manager;
 using Luck.Framework.Event;
 using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;

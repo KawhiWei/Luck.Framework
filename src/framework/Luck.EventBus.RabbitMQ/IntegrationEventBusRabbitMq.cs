@@ -14,7 +14,9 @@ using System.Net.Sockets;
 using System.Reflection;
 using System.Text;
 using System.Text.Json;
+using Luck.EventBus.RabbitMQ.Abstraction;
 using Luck.EventBus.RabbitMQ.Diagnostics;
+using Luck.EventBus.RabbitMQ.Enums;
 using Luck.Framework.Infrastructure;
 
 
@@ -29,14 +31,20 @@ public class IntegrationEventBusRabbitMq : IIntegrationEventBus, IDisposable
     private readonly IServiceProvider _serviceProvider;
     private readonly string _handleName = nameof(IIntegrationEventHandler<IIntegrationEvent>.HandleAsync);
     private bool _isDisposed = false;
-    private readonly DiagnosticListener _listener = new DiagnosticListener(RabbitMqDiagnosticListenerNames.DiagnosticListenerName);
+
+    private readonly DiagnosticListener _listener =
+        new DiagnosticListener(RabbitMqDiagnosticListenerNames.DiagnosticListenerName);
 
     public IntegrationEventBusRabbitMq(int retryCount, IServiceProvider serviceProvider)
     {
-        _persistentConnection = serviceProvider.GetService<IRabbitMqPersistentConnection>() ?? throw new ArgumentNullException(nameof(_persistentConnection)); // persistentConnection;
-        _logger = serviceProvider.GetService<ILogger<IntegrationEventBusRabbitMq>>() ?? throw new ArgumentNullException(nameof(_logger)); //(logger);
+        _persistentConnection = serviceProvider.GetService<IRabbitMqPersistentConnection>() ??
+                                throw new ArgumentNullException(nameof(_persistentConnection)); // persistentConnection;
+        _logger = serviceProvider.GetService<ILogger<IntegrationEventBusRabbitMq>>() ??
+                  throw new ArgumentNullException(nameof(_logger)); //(logger);
         _retryCount = retryCount;
-        _subsManager = serviceProvider.GetService<IIntegrationEventBusSubscriptionsManager>() ?? throw new ArgumentNullException(nameof(_subsManager)); //subsManager ?? new RabbitMqEventBusSubscriptionsManager();
+        _subsManager = serviceProvider.GetService<IIntegrationEventBusSubscriptionsManager>() ??
+                       throw new ArgumentNullException(
+                           nameof(_subsManager)); //subsManager ?? new RabbitMqEventBusSubscriptionsManager();
         _serviceProvider = serviceProvider;
         _subsManager.OnEventRemoved += SubsManager_OnEventRemoved;
     }
@@ -45,9 +53,10 @@ public class IntegrationEventBusRabbitMq : IIntegrationEventBus, IDisposable
     /// 发布消息
     /// </summary>
     /// <param name="event"></param>
+    /// <param name="priority"></param>
     /// <typeparam name="TEvent"></typeparam>
     /// <exception cref="ArgumentNullException"></exception>
-    public void Publish<TEvent>(TEvent @event) where TEvent : IIntegrationEvent
+    public void Publish<TEvent>(TEvent @event, byte? priority = 1) where TEvent : IIntegrationEvent
     {
         if (_listener.IsEnabled(RabbitMqDiagnosticListenerNames.CreateRabbitMqConnectionBefore))
         {
@@ -69,7 +78,8 @@ public class IntegrationEventBusRabbitMq : IIntegrationEventBus, IDisposable
 
         if (_listener.IsEnabled(RabbitMqDiagnosticListenerNames.PublishIntegrationEventBusForRabbitMqBefore))
         {
-            _listener.Write(RabbitMqDiagnosticListenerNames.PublishIntegrationEventBusForRabbitMqBefore, $"发布集成事件前诊断器：EventId：{@event.EventId}；EventName：{type.Name}；Data：{@event.Serialize()}");
+            _listener.Write(RabbitMqDiagnosticListenerNames.PublishIntegrationEventBusForRabbitMqBefore,
+                $"发布集成事件前诊断器：EventId：{@event.EventId}；EventName：{type.Name}；Data：{@event.Serialize()}");
         }
 
         _logger.LogTrace("创建RabbitMQ通道来发布事件: {EventId} ({EventName})", @event.EventId, type.Name);
@@ -86,6 +96,31 @@ public class IntegrationEventBusRabbitMq : IIntegrationEventBus, IDisposable
         {
             WriteIndented = true
         });
+
+
+        if (_listener.IsEnabled(RabbitMqDiagnosticListenerNames.RabbitMqCreateModelBefore))
+        {
+            _listener.Write(RabbitMqDiagnosticListenerNames.RabbitMqCreateModelBefore, $"准备创建Rabbit虚拟通道");
+        }
+
+        var channel = _persistentConnection.GetChannel();
+
+        var properties = channel.CreateBasicProperties();
+        properties.Persistent = true;
+        properties.DeliveryMode = 2;
+        properties.Priority = priority.GetValueOrDefault();
+
+        if (_listener.IsEnabled(RabbitMqDiagnosticListenerNames.RabbitMqCreateModelAfter))
+        {
+            _listener.Write(RabbitMqDiagnosticListenerNames.RabbitMqCreateModelAfter, $"创建RabbitMQ虚拟通道成功");
+        }
+
+        if (rabbitMqAttribute is not { WorkModel: EWorkModel.None })
+        {
+            //创建交换机
+            channel.ExchangeDeclare(rabbitMqAttribute.Exchange, rabbitMqAttribute.Type, durable: true);
+        }
+
         var policy = Policy.Handle<BrokerUnreachableException>()
             .Or<SocketException>()
             .WaitAndRetry(_retryCount, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
@@ -93,45 +128,21 @@ public class IntegrationEventBusRabbitMq : IIntegrationEventBus, IDisposable
                 {
                     if (_listener.IsEnabled(RabbitMqDiagnosticListenerNames.PublishIntegrationEventBusForRabbitMqError))
                     {
-                        _listener.Write(RabbitMqDiagnosticListenerNames.PublishIntegrationEventBusForRabbitMqError, $"发布集成事件异常：EventId：{@event.EventId}；EventName：{type.Name}，异常：{ex.Message}");
+                        _listener.Write(RabbitMqDiagnosticListenerNames.PublishIntegrationEventBusForRabbitMqError,
+                            $"发布集成事件异常：EventId：{@event.EventId}；EventName：{type.Name}，异常：{ex.Message}");
                     }
 
-                    _logger.LogError(ex, "发布集成事件: {EventId} 超时 {Timeout}s ({ExceptionMessage})", @event.EventId,
+                    _logger.LogError(ex, "无法发布事件: {EventId} 超时 {Timeout}s ({ExceptionMessage})", @event.EventId,
                         $"{time.TotalSeconds:n1}", ex.Message);
                 });
 
-        if (_listener.IsEnabled(RabbitMqDiagnosticListenerNames.RabbitMqCreateModelBefore))
-        {
-            _listener.Write(RabbitMqDiagnosticListenerNames.RabbitMqCreateModelBefore, $"准备创建Rabbit虚拟通道");
-        }
-
-        using var channel = _persistentConnection.CreateModel();
-        var properties = channel.CreateBasicProperties();
-        if (_listener.IsEnabled(RabbitMqDiagnosticListenerNames.RabbitMqCreateModelAfter))
-        {
-            _listener.Write(RabbitMqDiagnosticListenerNames.RabbitMqCreateModelAfter, $"创建RabbitMQ虚拟通道成功");
-        }
-
-        //创建交换机
-        channel.ExchangeDeclare(rabbitMqAttribute.Exchange, rabbitMqAttribute.Type, durable: true);
-        //创建队列
-        //channel.QueueDeclare(queue: rabbitMQAttribute.Queue, durable: false);
-        // if (!string.IsNullOrEmpty(rabbitMqAttribute.RoutingKey) && !string.IsNullOrEmpty(rabbitMqAttribute.Queue))
-        //     //通过RoutingKey将队列绑定交换机
-        //     channel.QueueBind(rabbitMqAttribute.Queue, rabbitMqAttribute.Exchange, rabbitMqAttribute.RoutingKey);
         policy.Execute(() =>
         {
-            properties.DeliveryMode = 2;
-            if (channel is null)
-            {
-                throw new ArgumentNullException(nameof(channel));
-            }
-
             channel.BasicPublish(rabbitMqAttribute.Exchange, rabbitMqAttribute.RoutingKey, true, properties, body);
-
             if (_listener.IsEnabled(RabbitMqDiagnosticListenerNames.PublishIntegrationEventBusForRabbitMqAfter))
             {
-                _listener.Write(RabbitMqDiagnosticListenerNames.PublishIntegrationEventBusForRabbitMqAfter, $"发布集成事件成功：EventId：{@event.EventId}；EventName：{type.Name}");
+                _listener.Write(RabbitMqDiagnosticListenerNames.PublishIntegrationEventBusForRabbitMqAfter,
+                    $"发布集成事件成功：EventId：{@event.EventId}；EventName：{type.Name}");
             }
 
             _logger.LogTrace("向RabbitMQ发布事件成功: {EventId}", @event.EventId);
@@ -163,7 +174,6 @@ public class IntegrationEventBusRabbitMq : IIntegrationEventBus, IDisposable
             throw new ArgumentNullException(nameof(handlerType), $"{nameof(handlerType)}IIntegrationEventHandler<>");
     }
 
-
     /// <summary>
     /// 集成事件订阅者处理
     /// </summary>
@@ -175,10 +185,12 @@ public class IntegrationEventBusRabbitMq : IIntegrationEventBus, IDisposable
             _persistentConnection.TryConnect();
         }
 
-        var handlerTypes = AssemblyHelper.FindTypes(o => o is { IsClass: true, IsAbstract: false } && o.IsBaseOn(typeof(IIntegrationEventHandler<>)));
+        var handlerTypes = AssemblyHelper.FindTypes(o =>
+            o is { IsClass: true, IsAbstract: false } && o.IsBaseOn(typeof(IIntegrationEventHandler<>)));
         foreach (var handlerType in handlerTypes)
         {
-            var implementedType = handlerType.GetTypeInfo().ImplementedInterfaces.FirstOrDefault(o => o.IsBaseOn(typeof(IIntegrationEventHandler<>)));
+            var implementedType = handlerType.GetTypeInfo().ImplementedInterfaces
+                .FirstOrDefault(o => o.IsBaseOn(typeof(IIntegrationEventHandler<>)));
             var eventType = implementedType?.GetTypeInfo().GenericTypeArguments.FirstOrDefault();
             if (eventType == null)
             {

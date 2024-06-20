@@ -25,4 +25,8 @@
         <PackageReference Include="Polly" Version="7.2.4" />
         <PackageReference Include="RabbitMQ.Client" Version="6.6.0" />
     </ItemGroup>
+    
+    <ItemGroup>
+      <Folder Include="Configs\" />
+    </ItemGroup>
 </Project>
