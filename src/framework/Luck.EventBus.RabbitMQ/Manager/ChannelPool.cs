@@ -17,7 +17,10 @@ internal sealed class ChannelPool(IConnection connection, uint maxSize) : IChann
     }
 
     /// <inheritdoc />
-    public IModel GetChannel() => _channels.TryTake(out var channel) ? channel : connection.CreateModel();
+    public IModel GetChannel()
+    {
+        return _channels.TryTake(out var channel) ? channel : connection.CreateModel();
+    }
 
     /// <inheritdoc />
     public void ReturnChannel(IModel channel)
