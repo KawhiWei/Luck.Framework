@@ -331,8 +331,14 @@ public class IntegrationEventBusRabbitMq : IIntegrationEventBus, IDisposable
     private void DoInternalSubscription(string eventName, RabbitMqAttribute rabbitMqAttribute, IModel consumerChannel)
     {
         var containsKey = _subsManager.HasSubscriptionsForEvent(eventName);
-        if (containsKey) return;
-        if (!_persistentConnection.IsConnected) _persistentConnection.TryConnect();
+        if (containsKey)
+        {
+            return;
+        }
+        if (!_persistentConnection.IsConnected)
+        {
+            _persistentConnection.TryConnect();
+        }
 
         consumerChannel.QueueBind(rabbitMqAttribute.Queue,
             rabbitMqAttribute.Exchange,

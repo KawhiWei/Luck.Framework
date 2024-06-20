@@ -2,10 +2,11 @@
 using Luck.Framework.Event;
 using Luck.Framework.Extensions;
 using Luck.AutoDependencyInjection;
+using Luck.EventBus.RabbitMQ.Enums;
 
 namespace Module.Sample.EventHandlers
 {
-    [RabbitMq("test002", ExchangeType.Routing, "createorder", "testqueue")]
+    [RabbitMq(EWorkModel.None, "test002", ExchangeType.Routing, "createorder", "testqueue")]
     public class CreateOrderIntegrationEvent : IntegrationEvent
     {
 

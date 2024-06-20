@@ -3,10 +3,11 @@ using Luck.EventBus.RabbitMQ.Attributes;
 using Luck.Framework.Event;
 using Luck.Framework.Extensions;
 using Luck.AutoDependencyInjection;
+using Luck.EventBus.RabbitMQ.Enums;
 
 namespace Module.Sample.EventHandlers
 {
-    [RabbitMq("ddtest", ExchangeType.Routing, "test_0001", "testqueue1")]
+    [RabbitMq(EWorkModel.None, "ddtest", ExchangeType.Routing, "test_0001", "testqueue1")]
     public class TestIntegrationEvent : IntegrationEvent
     {
 

@@ -102,8 +102,11 @@ namespace Luck.EventBus.RabbitMQ.Manager
                     _connection.ConnectionShutdown += OnConnectionShutdown;
                     _connection.CallbackException += OnCallbackException;
                     _connection.ConnectionBlocked += OnConnectionBlocked;
-                    _logger.LogInformation("RabbitMQ Client获得了一个持久连接 '{HostName}' 并且订阅失败了事件",
+
+                    _logger.LogInformation("RabbitMQ Client获得了一个持久连接 '{HostName}' 并且订阅了故障事件",
                         _connection.Endpoint.HostName);
+                    _channelPool = new ChannelPool(_connection, _maxPoolCount);
+                    _logger.LogInformation("RabbitBus channel pool max count: {Count}", _maxPoolCount);
                     _disposed = false;
                     return true;
                 }
