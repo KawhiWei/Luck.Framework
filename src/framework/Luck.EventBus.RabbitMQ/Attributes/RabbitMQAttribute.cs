@@ -9,7 +9,7 @@ namespace Luck.EventBus.RabbitMQ.Attributes
     [AttributeUsage(AttributeTargets.Class)]
     public sealed class RabbitMqAttribute : Attribute
     {
-        public RabbitMqAttribute(EWorkModel workModel, string exchange, ExchangeType exchangeType, string routingKey, string? queue = null)
+        public RabbitMqAttribute(EWorkModel workModel, string exchange, ExchangeType exchangeType, string routingKey, string queue = "")
         {
             WorkModel = workModel;
             Exchange = exchange;
@@ -37,6 +37,6 @@ namespace Luck.EventBus.RabbitMQ.Attributes
         /// <summary>
         /// 队列名称《队列名称和路由键配合使用》
         /// </summary>
-        public string? Queue { get; set; }
+        public string Queue { get; set; }
     }
 }

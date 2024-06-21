@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.Concurrent;
+using System.Diagnostics;
 using Luck.EventBus.RabbitMQ.Attributes;
 using Luck.Framework.Event;
 using Luck.Framework.Exceptions;
@@ -22,29 +23,28 @@ using Luck.Framework.Infrastructure;
 
 namespace Luck.EventBus.RabbitMQ;
 
-public class IntegrationEventBusRabbitMq : IIntegrationEventBus, IDisposable
+internal sealed class RabbitMqEventBus : IIntegrationEventBus, IDisposable
 {
     private readonly IRabbitMqPersistentConnection _persistentConnection;
-    private readonly ILogger<IntegrationEventBusRabbitMq> _logger;
+    private readonly ILogger<RabbitMqEventBus> _logger;
     private readonly int _retryCount;
     private readonly IIntegrationEventBusSubscriptionsManager _subsManager;
     private readonly IServiceProvider _serviceProvider;
-    private readonly string _handleName = nameof(IIntegrationEventHandler<IIntegrationEvent>.HandleAsync);
-    private bool _isDisposed = false;
+    private readonly ConcurrentDictionary<(Type HandlerType, Type EventType), Delegate> _handleAsyncDelegateCache = [];
+    private const string HandlerName = nameof(IIntegrationEventHandler<IIntegrationEvent>.HandleAsync);
+    private bool isDisposed;
 
-    private readonly DiagnosticListener _listener =
-        new DiagnosticListener(RabbitMqDiagnosticListenerNames.DiagnosticListenerName);
+    private readonly DiagnosticListener _listener = new(RabbitMqDiagnosticListenerNames.DiagnosticListenerName);
 
-    public IntegrationEventBusRabbitMq(int retryCount, IServiceProvider serviceProvider)
+    public RabbitMqEventBus(int retryCount, IServiceProvider serviceProvider)
     {
         _persistentConnection = serviceProvider.GetService<IRabbitMqPersistentConnection>() ??
-                                throw new ArgumentNullException(nameof(_persistentConnection)); // persistentConnection;
-        _logger = serviceProvider.GetService<ILogger<IntegrationEventBusRabbitMq>>() ??
-                  throw new ArgumentNullException(nameof(_logger)); //(logger);
+                                throw new ArgumentNullException(nameof(_persistentConnection));
+        _logger = serviceProvider.GetService<ILogger<RabbitMqEventBus>>() ??
+                  throw new ArgumentNullException(nameof(_logger));
         _retryCount = retryCount;
         _subsManager = serviceProvider.GetService<IIntegrationEventBusSubscriptionsManager>() ??
-                       throw new ArgumentNullException(
-                           nameof(_subsManager)); //subsManager ?? new RabbitMqEventBusSubscriptionsManager();
+                       throw new ArgumentNullException(nameof(_subsManager));
         _serviceProvider = serviceProvider;
         _subsManager.OnEventRemoved += SubsManager_OnEventRemoved;
     }
@@ -58,6 +58,10 @@ public class IntegrationEventBusRabbitMq : IIntegrationEventBus, IDisposable
     /// <exception cref="ArgumentNullException"></exception>
     public void Publish<TEvent>(TEvent @event, byte? priority = 1) where TEvent : IIntegrationEvent
     {
+        var type = @event.GetType();
+
+        #region 事件检测
+
         if (_listener.IsEnabled(RabbitMqDiagnosticListenerNames.CreateRabbitMqConnectionBefore))
         {
             _listener.Write(RabbitMqDiagnosticListenerNames.CreateRabbitMqConnectionBefore, "准备创建RabbitMQ链接");
@@ -73,24 +77,23 @@ public class IntegrationEventBusRabbitMq : IIntegrationEventBus, IDisposable
             _listener.Write(RabbitMqDiagnosticListenerNames.CreateRabbitMqConnectionAfter, "创建RabbitMQ链接成功");
         }
 
-        var type = @event.GetType();
-
-
         if (_listener.IsEnabled(RabbitMqDiagnosticListenerNames.PublishIntegrationEventBusForRabbitMqBefore))
         {
             _listener.Write(RabbitMqDiagnosticListenerNames.PublishIntegrationEventBusForRabbitMqBefore,
                 $"发布集成事件前诊断器：EventId：{@event.EventId}；EventName：{type.Name}；Data：{@event.Serialize()}");
         }
 
+        #endregion
+
         _logger.LogTrace("创建RabbitMQ通道来发布事件: {EventId} ({EventName})", @event.EventId, type.Name);
+
 
         var rabbitMqAttribute = type.GetCustomAttribute<RabbitMqAttribute>();
 
         if (rabbitMqAttribute is null)
+        {
             throw new ArgumentNullException($"{nameof(@event)}未设置<RabbitMQAttribute>特性,无法发布事件");
-
-        if (string.IsNullOrEmpty(rabbitMqAttribute.Queue))
-            rabbitMqAttribute.Queue = type.Name;
+        }
 
         var body = JsonSerializer.SerializeToUtf8Bytes(@event, @event.GetType(), new JsonSerializerOptions
         {
@@ -231,7 +234,7 @@ public class IntegrationEventBusRabbitMq : IIntegrationEventBus, IDisposable
         //     _persistentConnection.TryConnect();
         // }
         _logger.LogTrace("创建RabbitMQ消费者通道");
-        var channel = _persistentConnection.CreateModel();
+        var channel = _persistentConnection.GetChannel();
         //创建交换机
         channel.ExchangeDeclare(rabbitMqAttribute.Exchange, rabbitMqAttribute.Type, durable: true);
         //创建队列
@@ -298,29 +301,42 @@ public class IntegrationEventBusRabbitMq : IIntegrationEventBus, IDisposable
                     new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
                 var concreteType = typeof(IIntegrationEventHandler<>).MakeGenericType(eventType);
 
-                if (integrationEvent is null) throw new LuckException("集成事件不能为空。。。");
-
-                var method = concreteType.GetMethod(_handleName);
-                if (method is null)
+                if (integrationEvent is null)
                 {
-                    _logger.LogError("无法找到IIntegrationEventHandler事件处理器,下处理者方法");
-                    throw new LuckException("无法找到IIntegrationEventHandler事件处理器,下处理者方法");
+                    throw new LuckException("集成事件不能为空。。。");
                 }
 
-                var handler = scope?.ServiceProvider.GetService(subscriptionType);
-                if (handler is null)
+                var key = (subscriptionType, eventType);
+
+                if (!_handleAsyncDelegateCache.TryGetValue(key, out var cachedDelegate))
+                {
+                    var method = concreteType.GetMethod(HandlerName);
+                    if (method is null)
+                    {
+                        _logger.LogError($"无法找到{nameof(integrationEvent)}事件处理器");
+                        return;
+                    }
+
+                    var delegateType = typeof(HandleAsyncDelegate<>).MakeGenericType(eventType);
+
+                    var handler = scope?.ServiceProvider.GetService(subscriptionType);
+                    if (handler is null)
+                    {
+                        _logger.LogError($"在DI中无法找到{nameof(eventType)}事件处理器");
+                        return;
+                    }
+
+                    var handleAsyncDelegate = Delegate.CreateDelegate(delegateType, handler, method);
+                    _handleAsyncDelegateCache[key] = handleAsyncDelegate;
+                    cachedDelegate = handleAsyncDelegate;
+                }
+
+                if (cachedDelegate.DynamicInvoke(integrationEvent) is not Task handlerTask)
                 {
                     continue;
                 }
 
-                await Task.Yield();
-                var obj = method.Invoke(handler, new[] { integrationEvent });
-                if (obj is null)
-                {
-                    continue;
-                }
-
-                await (Task)obj;
+                await handlerTask;
                 ack.Invoke();
             }
         }
@@ -335,6 +351,7 @@ public class IntegrationEventBusRabbitMq : IIntegrationEventBus, IDisposable
         {
             return;
         }
+
         if (!_persistentConnection.IsConnected)
         {
             _persistentConnection.TryConnect();
@@ -366,30 +383,18 @@ public class IntegrationEventBusRabbitMq : IIntegrationEventBus, IDisposable
     }
 
     /// <summary>
-    /// 释放对象和链接
-    /// </summary>
-    /// <param name="disposing"></param>
-    private void Dispose(bool disposing)
-    {
-        if (!_isDisposed)
-        {
-            if (disposing)
-            {
-                _subsManager.Clear();
-            }
-
-            _isDisposed = true;
-        }
-    }
-
-    /// <summary>
     /// 释放对象
     /// </summary>
     public void Dispose()
     {
-        Dispose(true);
+        if (isDisposed)
+        {
+            return;
+        }
 
-        //告诉GC，不要调用析构函数
-        GC.SuppressFinalize(this);
+        _subsManager.Clear();
+        isDisposed = true;
     }
+
+    private delegate Task HandleAsyncDelegate<in TEvent>(TEvent @event) where TEvent : IIntegrationEvent;
 }
