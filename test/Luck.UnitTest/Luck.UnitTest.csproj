@@ -28,6 +28,7 @@
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
         <PackageReference Include="MongoDB.Driver" Version="2.22.0" />
         <ProjectReference Include="..\..\src\framework\Luck.MongoDB\Luck.MongoDB.csproj" />
+        <ProjectReference Include="..\..\src\framework\Luck.Pipeline\Luck.Pipeline.csproj" />
         <ProjectReference Include="..\..\src\framework\Luck.TestBase\Luck.TestBase.csproj" />
     </ItemGroup>
 
