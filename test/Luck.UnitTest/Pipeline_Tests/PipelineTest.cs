@@ -15,8 +15,8 @@ public class PipelineTest
     {
         IServiceCollection services = new ServiceCollection();
         services.AddScoped<IPipelineFactory, PipelineFactory>()
-            .AddScoped<FetchOrderDetailMiddleware>()
-            .AddScoped<CreateCustomerMiddleware>();
+            .AddScoped<FetchOrderDetailPipe>()
+            .AddScoped<CreateCustomerPipe>();
         _serviceProvider = services.BuildServiceProvider();
     }
 
@@ -27,8 +27,8 @@ public class PipelineTest
         var customerContext = new CustomerContext(Guid.NewGuid().ToString());
 
         var pipeline = pipelineFactory.CreatePipelineBuilder<CustomerContext>()
-            .UseMiddleware<FetchOrderDetailMiddleware>()
-            .UseMiddleware<CreateCustomerMiddleware>()
+            .UseMiddleware<FetchOrderDetailPipe>()
+            .UseMiddleware<CreateCustomerPipe>()
             .Build();
 
         pipeline.InvokeAsync(customerContext);
@@ -41,8 +41,8 @@ public class PipelineTest
     //     var customerContext = new CustomerContext(Guid.NewGuid().ToString());
     //
     //     var pipeline = pipelineFactory.CreatePipelineBuilder<CustomerContext>()
-    //         .UseMiddleware<FetchOrderDetailMiddleware>()
-    //         .UseMiddleware<CreateCustomerMiddleware>()
+    //         .UseMiddleware<FetchOrderDetailPipe>()
+    //         .UseMiddleware<CreateCustomerPipe>()
     //         .Build();
     //
     //     pipeline.InvokeAsync(customerContext);

@@ -5,7 +5,7 @@ using Luck.UnitTest.Pipeline_Tests.Context;
 
 namespace Luck.UnitTest.Pipeline_Tests;
 
-public class FetchOrderDetailMiddleware : DefaultMiddleware<CustomerContext>
+public class FetchOrderDetailPipe : DefaultPipe<CustomerContext>
 {
     protected override ValueTask Invoke(CustomerContext context)
     {
@@ -15,7 +15,7 @@ public class FetchOrderDetailMiddleware : DefaultMiddleware<CustomerContext>
     }
 }
 
-public class CreateCustomerMiddleware : DefaultMiddleware<CustomerContext>
+public class CreateCustomerPipe : DefaultPipe<CustomerContext>
 {
     protected override ValueTask Invoke(CustomerContext context)
     {

@@ -12,18 +12,18 @@ public class PipelineBuilder<TContext> : IPipelineBuilder<TContext> where TConte
         _serviceProvider = serviceProvider;
     }
 
-    public IPipelineBuilder<TContext> UseMiddleware<TMiddleware>() where TMiddleware : IMiddleware<TContext>
+    public IPipelineBuilder<TContext> UseMiddleware<TMiddleware>() where TMiddleware : IPipe<TContext>
     {
         _types.Add(typeof(TMiddleware));
         return this;
     }
 
-    public IPipe<TContext> Build()
+    public IActuator<TContext> Build()
     {
-        var line = new DefaultPipeline<TContext>();
+        var line = new DefaultActuator<TContext>();
         foreach (var type in _types)
         {
-            var middleware = _serviceProvider.GetService(type) as IMiddleware<TContext>;
+            var middleware = _serviceProvider.GetService(type) as IPipe<TContext>;
             if (middleware == null)
             {
                 throw new NotImplementedException("中间件类" + type.Name + "未实现,请检查.");
@@ -40,6 +40,4 @@ public class PipelineBuilder<TContext> : IPipelineBuilder<TContext> where TConte
 
         return line;
     }
-    
-    
 }

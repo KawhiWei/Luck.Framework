@@ -2,8 +2,8 @@ namespace Luck.Framework.PipelineAbstract;
 
 public interface IPipelineBuilder<TContext> where TContext : IContext
 {
-    IPipelineBuilder<TContext> UseMiddleware<TMiddleware>() where TMiddleware : IMiddleware<TContext>;
+    IPipelineBuilder<TContext> UseMiddleware<TMiddleware>() where TMiddleware : IPipe<TContext>;
 
-    IPipe<TContext> Build();
+    IActuator<TContext> Build();
     
 }

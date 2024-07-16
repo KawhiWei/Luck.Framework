@@ -1,6 +1,8 @@
 namespace Luck.Framework.PipelineAbstract;
 
-public interface IPipe<in TContext> where TContext : IContext
+public interface IPipe<TContext> where TContext : IContext
 {
-    ValueTask InvokeAsync(TContext context);
+    IPipe<TContext>? NextMiddleware { get; set; }
+
+    ValueTask ExecuteAsync(TContext context);
 }
