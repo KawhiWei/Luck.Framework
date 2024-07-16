@@ -18,11 +18,14 @@ namespace Luck.EntityFrameworkCore.MySQL
         /// <param name="builder"></param>
         /// <param name="connectionString"></param>
         /// <param name="querySplittingBehavior">拆分查询配置，默认使用拆分查询</param>
-        /// <typeparam name="TDbContext"></typeparam>
         /// <returns></returns>
-        public DbContextOptionsBuilder Builder<TDbContext>(DbContextOptionsBuilder builder, string connectionString, QuerySplittingBehavior querySplittingBehavior = QuerySplittingBehavior.SplitQuery) where TDbContext : ILuckDbContext
+        public DbContextOptionsBuilder Builder(DbContextOptionsBuilder builder, string connectionString,
+            QuerySplittingBehavior querySplittingBehavior = QuerySplittingBehavior.SplitQuery)
         {
-            builder.UseMySql(connectionString, new MySqlServerVersion(new Version()), opt => opt.MigrationsAssembly(typeof(TDbContext).Assembly.GetName().Name)).EnableSensitiveDataLogging().UseSnakeCaseNamingConvention();
+            var serverVersion = ServerVersion.AutoDetect(connectionString);
+            builder.UseMySql(connectionString, serverVersion)
+                .EnableSensitiveDataLogging()
+                .UseSnakeCaseNamingConvention();
             return builder;
         }
     }

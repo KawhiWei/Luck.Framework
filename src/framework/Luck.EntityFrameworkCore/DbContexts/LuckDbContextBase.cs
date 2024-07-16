@@ -7,7 +7,7 @@ namespace Luck.EntityFrameworkCore.DbContexts
     /// <summary>
     /// 类类上下文
     /// </summary>
-    public abstract class LuckDbContextBase(DbContextOptions options, IServiceProvider serviceProvider) : DbContext(options), ILuckDbContext
+    public abstract class LuckDbContextBase(DbContextOptions options, IServiceProvider serviceProvider) : DbContext(options)
     {
         // ReSharper disable once MemberCanBePrivate.Global
         protected IServiceProvider ServiceProvider { get; set; } = Check.NotNull(serviceProvider, nameof(serviceProvider));

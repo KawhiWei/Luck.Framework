@@ -5,31 +5,29 @@ using Microsoft.Extensions.Logging;
 
 namespace Luck.EntityFrameworkCore.UnitOfWorks
 {
-    public class UnitOfWork: IUnitOfWork
+    public class UnitOfWork : IUnitOfWork
     {
-
-        private readonly LuckDbContextBase _dbContext;
+        private readonly IDbContextFactory<LuckDbContextBase> _dbContextFactory;
+        protected LuckDbContextBase DbContext { get; }
 
         private readonly ILogger<UnitOfWork> _logger;
 
-        public UnitOfWork(ILuckDbContext dbContext, ILogger<UnitOfWork> logger)
+        public UnitOfWork(ILogger<UnitOfWork> logger, IDbContextFactory<LuckDbContextBase> dbContextFactory)
         {
-            _dbContext = dbContext as LuckDbContextBase ?? throw new NotSupportedException();
+            _dbContextFactory = dbContextFactory;
+            DbContext = dbContextFactory.CreateDbContext();
             _logger = logger ?? throw new NotSupportedException();
-
-
         }
 
-        public  async Task<int> CommitAsync(CancellationToken cancellationToken = default)
+        public async Task<int> CommitAsync(CancellationToken cancellationToken = default)
         {
             try
             {
-             
-                return  await _dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+                return await DbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
             }
             catch (Exception exception)
             {
-                _dbContext.Rollback();
+                DbContext.Rollback();
 
                 if (exception is DbUpdateConcurrencyException)
                 {
@@ -38,7 +36,6 @@ namespace Luck.EntityFrameworkCore.UnitOfWorks
 
                 throw;
             }
-
         }
     }
 }

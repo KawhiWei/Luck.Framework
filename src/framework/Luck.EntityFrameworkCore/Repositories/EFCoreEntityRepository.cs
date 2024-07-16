@@ -7,26 +7,27 @@ using Luck.DDD.Domain.Domain.Entities;
 
 namespace Luck.EntityFrameworkCore.Repositories
 {
-    public class EfCoreEntityRepository<TEntity, TKey> : IEntityRepository<TEntity, TKey> where TEntity : class, IEntityWithIdentity where TKey : IEquatable<TKey>
+    public class EfCoreEntityRepository<TEntity, TKey> : IEntityRepository<TEntity, TKey>
+        where TEntity : class, IEntityWithIdentity where TKey : IEquatable<TKey>
     {
+        private readonly IDbContextFactory<LuckDbContextBase> _dbContextFactory;
 
-        private readonly LuckDbContextBase _dbContext;
+        protected LuckDbContextBase DbContext { get; }
 
-        public LuckDbContextBase DbContext => _dbContext;
-
-        public EfCoreEntityRepository(ILuckDbContext dbContext)
+        public EfCoreEntityRepository(IDbContextFactory<LuckDbContextBase> dbContextFactory)
         {
-            _dbContext = dbContext as LuckDbContextBase ?? throw new NotSupportedException();
+            _dbContextFactory = dbContextFactory;
+            DbContext = dbContextFactory.CreateDbContext();
         }
 
         public TEntity? Find(TKey primaryKey)
         {
-            return _dbContext.Find<TEntity>(primaryKey);
+            return DbContext.Find<TEntity>(primaryKey);
         }
 
         public IQueryable<TEntity> FindAll()
         {
-            return _dbContext.Set<TEntity>();
+            return DbContext.Set<TEntity>();
         }
 
         public IQueryable<TEntity> FindAll(Expression<Func<TEntity, bool>> predicate)
@@ -34,14 +35,14 @@ namespace Luck.EntityFrameworkCore.Repositories
             return FindAll().Where(predicate);
         }
 
-        public  ValueTask<TEntity?> FindAsync(TKey primaryKey)
+        public ValueTask<TEntity?> FindAsync(TKey primaryKey)
         {
-            return  _dbContext.FindAsync<TEntity>(primaryKey);
+            return DbContext.FindAsync<TEntity>(primaryKey);
         }
 
-        public  Task<TEntity?> FindAsync(Expression<Func<TEntity, bool>> predicate)
+        public Task<TEntity?> FindAsync(Expression<Func<TEntity, bool>> predicate)
         {
-            return  _dbContext.Set<TEntity>().FirstOrDefaultAsync(predicate);
+            return DbContext.Set<TEntity>().FirstOrDefaultAsync(predicate);
         }
     }
 }

@@ -17,14 +17,13 @@ namespace Luck.EntityFrameworkCore.PostgreSQL
         /// <param name="builder"></param>
         /// <param name="connectionString"></param>
         /// <param name="querySplittingBehavior">拆分查询配置，默认使用拆分查询</param>
-        /// <typeparam name="TDbContext"></typeparam>
         /// <returns></returns>
-        public DbContextOptionsBuilder Builder<TDbContext>(DbContextOptionsBuilder builder,string connectionString,QuerySplittingBehavior querySplittingBehavior=QuerySplittingBehavior.SplitQuery) where TDbContext : ILuckDbContext
+        public DbContextOptionsBuilder Builder(DbContextOptionsBuilder builder, string connectionString,
+            QuerySplittingBehavior querySplittingBehavior = QuerySplittingBehavior.SplitQuery)
         {
-            builder.UseNpgsql(connectionString, opt => 
-                opt.MigrationsAssembly(typeof(TDbContext).Assembly.GetName().Name)
-                    .UseQuerySplittingBehavior(querySplittingBehavior)
-            ).EnableSensitiveDataLogging().UseSnakeCaseNamingConvention(); 
+            builder.UseNpgsql(connectionString, opt =>
+                opt.UseQuerySplittingBehavior(querySplittingBehavior)
+            ).EnableSensitiveDataLogging().UseSnakeCaseNamingConvention();
             return builder;
         }
     }
