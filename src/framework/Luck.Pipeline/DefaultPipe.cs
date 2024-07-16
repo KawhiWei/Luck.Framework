@@ -3,7 +3,7 @@ using Luck.Framework.PipelineAbstract;
 namespace Luck.Pipeline;
 
 public class DefaultPipeline<TContext> : List<IMiddleware<TContext>>,
-    IPipeline<TContext> where TContext : IContext
+    IPipe<TContext> where TContext : IContext
 {
     public async ValueTask InvokeAsync(TContext context)
     {

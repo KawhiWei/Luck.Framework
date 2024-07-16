@@ -17,4 +17,10 @@ public class PipelineFactory : IPipelineFactory
         var pipelineBuilder = new PipelineBuilder<TContext>(_serviceProvider);
         return pipelineBuilder;
     }
+    
+    public IPipelineDelegateBuilder<TContext> CreatePipelineDelegateBuilder<TContext>() where TContext : IContext
+    {
+        var pipelineBuilder = new PipelineDelegateBuilder<TContext>(_serviceProvider);
+        return pipelineBuilder;
+    }
 }

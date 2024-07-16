@@ -33,4 +33,18 @@ public class PipelineTest
 
         pipeline.InvokeAsync(customerContext);
     }
+    
+    // [Fact]
+    // public void CreatePipelineDelegateFactory()
+    // {
+    //     var pipelineFactory = _serviceProvider.GetService<IPipelineFactory>()!;
+    //     var customerContext = new CustomerContext(Guid.NewGuid().ToString());
+    //
+    //     var pipeline = pipelineFactory.CreatePipelineBuilder<CustomerContext>()
+    //         .UseMiddleware<FetchOrderDetailMiddleware>()
+    //         .UseMiddleware<CreateCustomerMiddleware>()
+    //         .Build();
+    //
+    //     pipeline.InvokeAsync(customerContext);
+    // }
 }

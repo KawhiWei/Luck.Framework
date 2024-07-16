@@ -18,7 +18,7 @@ public class PipelineBuilder<TContext> : IPipelineBuilder<TContext> where TConte
         return this;
     }
 
-    public IPipeline<TContext> Build()
+    public IPipe<TContext> Build()
     {
         var line = new DefaultPipeline<TContext>();
         foreach (var type in _types)
@@ -40,4 +40,6 @@ public class PipelineBuilder<TContext> : IPipelineBuilder<TContext> where TConte
 
         return line;
     }
+    
+    
 }
