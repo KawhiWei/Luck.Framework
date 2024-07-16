@@ -43,7 +43,6 @@ public class PipelineTest
         var createCustomerDelegatePipe = serviceProvider.GetService<CreateCustomerDelegatePipe>()!;
         var cancelDelegatePipe = serviceProvider.GetService<CancelDelegatePipe>()!;
 
-
         var customerContext = new CustomerContext(Guid.NewGuid().ToString());
 
         var actuator = pipelineFactory.CreateDelegatePipelineBuilder<CustomerContext>()

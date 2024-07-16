@@ -15,11 +15,11 @@ public class DelegatePipelineBuilder<TContext> : IDelegatePipelineBuilder<TConte
 
     public IDelegatePipelineBuilder<TContext> UsePipe(IDelegatePipe<TContext> delegatePipe)
     {
-        DelegatePipe<TContext> PipelineDelegate(DelegatePipe<TContext> next) =>
-            context => delegatePipe.InvokeAsync(context, next);
-
         _pipes.Add(PipelineDelegate);
         return this;
+
+        DelegatePipe<TContext> PipelineDelegate(DelegatePipe<TContext> next) =>
+            context => delegatePipe.InvokeAsync(context, next);
     }
 
     public DelegatePipe<TContext> Build()
