@@ -9,42 +9,48 @@ namespace Luck.UnitTest.Pipeline_Tests;
 
 public class PipelineTest
 {
-    private readonly IServiceProvider _serviceProvider;
-
-    public PipelineTest()
+    [Fact]
+    public void CreatePipelineFactory()
     {
         IServiceCollection services = new ServiceCollection();
         services.AddScoped<IPipelineFactory, PipelineFactory>()
             .AddScoped<FetchOrderDetailPipe>()
             .AddScoped<CreateCustomerPipe>();
-        _serviceProvider = services.BuildServiceProvider();
-    }
-
-    [Fact]
-    public void CreatePipelineFactory()
-    {
-        var pipelineFactory = _serviceProvider.GetService<IPipelineFactory>()!;
+        var serviceProvider = services.BuildServiceProvider();
+        var pipelineFactory = serviceProvider.GetService<IPipelineFactory>()!;
         var customerContext = new CustomerContext(Guid.NewGuid().ToString());
 
-        var pipeline = pipelineFactory.CreatePipelineBuilder<CustomerContext>()
+        var actuator = pipelineFactory.CreatePipelineBuilder<CustomerContext>()
             .UseMiddleware<FetchOrderDetailPipe>()
             .UseMiddleware<CreateCustomerPipe>()
             .Build();
 
-        pipeline.InvokeAsync(customerContext);
+        actuator.InvokeAsync(customerContext);
     }
-    
-    // [Fact]
-    // public void CreatePipelineDelegateFactory()
-    // {
-    //     var pipelineFactory = _serviceProvider.GetService<IPipelineFactory>()!;
-    //     var customerContext = new CustomerContext(Guid.NewGuid().ToString());
-    //
-    //     var pipeline = pipelineFactory.CreatePipelineBuilder<CustomerContext>()
-    //         .UseMiddleware<FetchOrderDetailPipe>()
-    //         .UseMiddleware<CreateCustomerPipe>()
-    //         .Build();
-    //
-    //     pipeline.InvokeAsync(customerContext);
-    // }
+
+    [Fact]
+    public void CreateDelegatePipelineFactory()
+    {
+        IServiceCollection services = new ServiceCollection();
+        services.AddScoped<IPipelineFactory, PipelineFactory>()
+            .AddScoped<FetchOrderDetailDelegatePipePipe>()
+            .AddScoped<CreateCustomerDelegatePipe>()
+            .AddScoped<CancelDelegatePipe>();
+        var serviceProvider = services.BuildServiceProvider();
+        var pipelineFactory = serviceProvider.GetService<IPipelineFactory>()!;
+
+        var fetchOrderDetailDelegatePipePipe = serviceProvider.GetService<FetchOrderDetailDelegatePipePipe>()!;
+        var createCustomerDelegatePipe = serviceProvider.GetService<CreateCustomerDelegatePipe>()!;
+        var cancelDelegatePipe = serviceProvider.GetService<CancelDelegatePipe>()!;
+
+
+        var customerContext = new CustomerContext(Guid.NewGuid().ToString());
+
+        var actuator = pipelineFactory.CreateDelegatePipelineBuilder<CustomerContext>()
+            .UsePipe(fetchOrderDetailDelegatePipePipe)
+            .UsePipe(cancelDelegatePipe)
+            .UsePipe(createCustomerDelegatePipe)
+            .Build();
+        actuator.Invoke(customerContext);
+    }
 }

@@ -2,8 +2,8 @@ using Luck.Framework.PipelineAbstract;
 
 namespace Luck.Pipeline;
 
-public class DefaultActuator<TContext> : List<IPipe<TContext>>,
-    IActuator<TContext> where TContext : IContext
+public class DefaultPipeActuator<TContext> : List<IPipe<TContext>>,
+    IPipeActuator<TContext> where TContext : IContext
 {
     public async ValueTask InvokeAsync(TContext context)
     {

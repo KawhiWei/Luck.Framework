@@ -18,26 +18,25 @@ public class PipelineBuilder<TContext> : IPipelineBuilder<TContext> where TConte
         return this;
     }
 
-    public IActuator<TContext> Build()
+    public IPipeActuator<TContext> Build()
     {
-        var line = new DefaultActuator<TContext>();
+        var defaultActuator = new DefaultPipeActuator<TContext>();
         foreach (var type in _types)
         {
-            var middleware = _serviceProvider.GetService(type) as IPipe<TContext>;
-            if (middleware == null)
+            if (_serviceProvider.GetService(type) is not IPipe<TContext> middleware)
             {
-                throw new NotImplementedException("中间件类" + type.Name + "未实现,请检查.");
+                throw new NotImplementedException("中间件类未注入到DI容器" + type.Name + "请检查.");
             }
 
-            var lastMiddleware = line.LastOrDefault();
+            var lastMiddleware = defaultActuator.LastOrDefault();
             if (lastMiddleware is not null)
             {
-                lastMiddleware.NextMiddleware = middleware;
+                lastMiddleware.NextPipe = middleware;
             }
 
-            line.Add(middleware);
+            defaultActuator.Add(middleware);
         }
 
-        return line;
+        return defaultActuator;
     }
 }

@@ -18,9 +18,9 @@ public class PipelineFactory : IPipelineFactory
         return pipelineBuilder;
     }
     
-    public IPipelineDelegateBuilder<TContext> CreatePipelineDelegateBuilder<TContext>() where TContext : IContext
+    public IDelegatePipelineBuilder<TContext> CreateDelegatePipelineBuilder<TContext>() where TContext : IContext
     {
-        var pipelineBuilder = new PipelineDelegateBuilder<TContext>(_serviceProvider);
+        var pipelineBuilder = new DelegatePipelineBuilder<TContext>(_serviceProvider);
         return pipelineBuilder;
     }
 }

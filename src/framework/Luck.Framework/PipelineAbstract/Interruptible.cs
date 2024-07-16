@@ -16,4 +16,9 @@ public enum Interruptible
     /// 终止, 进入监控,不自动补偿.
     /// </summary>
     Observe = 2002,
+    
+    /// <summary>
+    /// 跳过执行当前Pipe
+    /// </summary>
+    Skip = 3002,
 }

@@ -4,7 +4,7 @@ namespace Luck.Pipeline;
 
 public abstract class DefaultPipe<TContext> : IPipe<TContext> where TContext : IContext
 {
-    public IPipe<TContext>? NextMiddleware { get; set; } = null;
+    public IPipe<TContext>? NextPipe { get; set; } = null;
 
     public async ValueTask ExecuteAsync(TContext context)
     {
@@ -28,9 +28,9 @@ public abstract class DefaultPipe<TContext> : IPipe<TContext> where TContext : I
                 return;
             }
 
-            if (NextMiddleware is not null)
+            if (NextPipe is not null)
             {
-                await NextMiddleware.ExecuteAsync(context);
+                await NextPipe.ExecuteAsync(context);
             }
 
 
@@ -70,5 +70,57 @@ public abstract class DefaultPipe<TContext> : IPipe<TContext> where TContext : I
         }
 
         return ValueTask.CompletedTask;
+    }
+
+    public async ValueTask ExecuteAsync(TContext context, IPipe<TContext> next)
+    {
+        try
+        {
+            var runThis = await BeforeInvokeAsync(context);
+            if (context.IsInterruptible)
+            {
+                await OnCancelled(context);
+                return;
+            }
+
+            if (runThis)
+            {
+                await Invoke(context);
+            }
+
+            if (context.IsInterruptible)
+            {
+                await OnCancelled(context);
+                return;
+            }
+
+            if (NextPipe is not null)
+            {
+                await NextPipe.ExecuteAsync(context);
+            }
+
+
+            if (context.IsInterruptible)
+            {
+                await OnCancelled(context);
+                return;
+            }
+
+            if (runThis)
+            {
+                await AfterInvokeAsync(context);
+            }
+
+            if (context.IsInterruptible)
+            {
+                await OnCancelled(context);
+            }
+        }
+        catch (Exception ex)
+        {
+            await OnCancelled(context, ex);
+        }
+        
+        throw new NotImplementedException();
     }
 }
