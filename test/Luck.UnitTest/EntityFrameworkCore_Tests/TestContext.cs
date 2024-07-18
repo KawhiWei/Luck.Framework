@@ -7,7 +7,7 @@ namespace Luck.UnitTest.EntityFrameworkCore_Tests;
 
 public class TestContext : LuckDbContextBase
 {
-    public TestContext(DbContextOptions options, IServiceProvider serviceProvider) : base(options, serviceProvider)
+    public TestContext(DbContextOptions options) : base(options)
     {
     }
 

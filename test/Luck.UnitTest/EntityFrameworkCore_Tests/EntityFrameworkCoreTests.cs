@@ -42,8 +42,13 @@ public class EntityFrameworkCoreTests
     {
         try
         {
-            _orderAggregateRootRepository.Add(new Order("Pual", "Los"));
+            var order = new Order("Pual", "Los");
+            _orderAggregateRootRepository.Add(order);
             await _unitOfWork.CommitAsync();
+
+            var result = await _orderAggregateRootRepository.FindAsync(x => x.Name == "Pual");
+            Assert.NotNull(result);
+            Assert.True(result.Name == order.Name);
         }
         catch (Exception e)
         {

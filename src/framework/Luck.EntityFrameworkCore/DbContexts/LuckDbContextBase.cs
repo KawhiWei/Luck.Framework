@@ -8,12 +8,9 @@ namespace Luck.EntityFrameworkCore.DbContexts
     /// <summary>
     /// 类类上下文
     /// </summary>
-    public abstract class LuckDbContextBase(DbContextOptions options, IServiceProvider serviceProvider)
+    public abstract class LuckDbContextBase(DbContextOptions options)
         : DbContext(options),ILuckDbContext
     {
-        protected IServiceProvider ServiceProvider { get; set; } =
-            Check.NotNull(serviceProvider, nameof(serviceProvider));
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

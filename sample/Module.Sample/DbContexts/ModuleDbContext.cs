@@ -6,7 +6,7 @@ namespace Module.Sample.DbContexts
 {
     public class ModuleDbContext : LuckDbContextBase
     {
-        public ModuleDbContext(DbContextOptions options, IServiceProvider serviceProvider) : base(options, serviceProvider)
+        public ModuleDbContext(DbContextOptions options, IServiceProvider serviceProvider) : base(options)
         {
         }
         public DbSet<Order> Orders => Set<Order>();

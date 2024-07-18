@@ -13,57 +13,53 @@ namespace Luck.EntityFrameworkCore.Repositories
         where TKey : IEquatable<TKey>
     {
         private readonly IDbContextFactory<LuckDbContextBase> _dbContextFactory;
-        protected LuckDbContextBase DbContext { get; }
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly LuckDbContextBase _luckDbContextBase;
+        protected LuckDbContextBase DbContext => _luckDbContextBase;
 
         public EfCoreAggregateRootRepository(IUnitOfWork unitOfWork)
         {
-            _unitOfWork = unitOfWork;
-            DbContext = unitOfWork as LuckDbContextBase ?? throw new ArgumentNullException(nameof(ILuckDbContext));
+            _luckDbContextBase = unitOfWork.GetLuckDbContext() as LuckDbContextBase ??
+                                 throw new ArgumentNullException(nameof(ILuckDbContext));
         }
 
         public override void Add(TEntity entity)
         {
-            DbContext.Add(entity);
+            _luckDbContextBase.Add(entity);
         }
-
 
         public override void Attach(TEntity entity)
         {
-            DbContext.Attach(entity);
+            _luckDbContextBase.Attach(entity);
         }
-
 
         public override void Update(TEntity entity)
         {
-            DbContext.Update(entity);
+            _luckDbContextBase.Update(entity);
         }
-
 
         public override void Remove(TEntity entity)
         {
-            DbContext.Remove(entity);
+            _luckDbContextBase.Remove(entity);
         }
-
 
         public override TEntity? Find(TKey primaryKey)
         {
-            return DbContext.Find<TEntity>(primaryKey);
+            return _luckDbContextBase.Find<TEntity>(primaryKey);
         }
 
         public override ValueTask<TEntity?> FindAsync(TKey primaryKey)
         {
-            return DbContext.FindAsync<TEntity>(primaryKey);
+            return _luckDbContextBase.FindAsync<TEntity>(primaryKey);
         }
 
         public override Task<TEntity?> FindAsync(Expression<Func<TEntity, bool>> predicate)
         {
-            return DbContext.Set<TEntity>().FirstOrDefaultAsync(predicate);
+            return _luckDbContextBase.Set<TEntity>().FirstOrDefaultAsync(predicate);
         }
 
         protected override IQueryable<TEntity> FindQueryable()
         {
-            return DbContext.Set<TEntity>();
+            return _luckDbContextBase.Set<TEntity>();
         }
     }
 }
