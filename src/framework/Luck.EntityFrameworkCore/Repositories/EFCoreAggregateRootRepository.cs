@@ -12,9 +12,7 @@ namespace Luck.EntityFrameworkCore.Repositories
         where TEntity : class, IAggregateRootBase
         where TKey : IEquatable<TKey>
     {
-        private readonly IDbContextFactory<LuckDbContextBase> _dbContextFactory;
         private readonly LuckDbContextBase _luckDbContextBase;
-        protected LuckDbContextBase DbContext => _luckDbContextBase;
 
         public EfCoreAggregateRootRepository(IUnitOfWork unitOfWork)
         {

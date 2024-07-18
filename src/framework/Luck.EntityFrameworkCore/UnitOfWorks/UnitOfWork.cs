@@ -17,8 +17,8 @@ namespace Luck.EntityFrameworkCore.UnitOfWorks
 
         public UnitOfWork(ILogger<UnitOfWork> logger, LuckDbContextBase luckDbContextBase)
         {
-            _luckDbContextBase = luckDbContextBase ?? throw new ArgumentNullException(nameof(ILuckDbContext));
-            _logger = logger ?? throw new ArgumentNullException(nameof(ILogger));
+            _luckDbContextBase = luckDbContextBase ?? throw new ArgumentNullException(nameof(luckDbContextBase));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public async Task<int> CommitAsync(CancellationToken cancellationToken = default)
