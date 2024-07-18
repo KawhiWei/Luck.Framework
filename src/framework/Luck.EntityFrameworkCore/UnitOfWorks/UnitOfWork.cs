@@ -1,4 +1,5 @@
 ﻿using Luck.EntityFrameworkCore.DbContexts;
+using Luck.Framework.Exceptions;
 using Luck.Framework.UnitOfWorks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -7,16 +8,15 @@ namespace Luck.EntityFrameworkCore.UnitOfWorks
 {
     public class UnitOfWork : IUnitOfWork
     {
-        private readonly IDbContextFactory<LuckDbContextBase> _dbContextFactory;
+        //private readonly IDbContextFactory<ILuckDbContext> _dbContextFactory;
         protected LuckDbContextBase DbContext { get; }
 
         private readonly ILogger<UnitOfWork> _logger;
 
-        public UnitOfWork(ILogger<UnitOfWork> logger, IDbContextFactory<LuckDbContextBase> dbContextFactory)
+        public UnitOfWork(ILogger<UnitOfWork> logger, ILuckDbContext dbContext)
         {
-            _dbContextFactory = dbContextFactory;
-            DbContext = dbContextFactory.CreateDbContext();
-            _logger = logger ?? throw new NotSupportedException();
+            DbContext = dbContext as LuckDbContextBase ?? throw new ArgumentNullException(nameof(ILuckDbContext));
+            _logger = logger ?? throw new ArgumentNullException(nameof(ILogger));
         }
 
         public async Task<int> CommitAsync(CancellationToken cancellationToken = default)
@@ -36,6 +36,11 @@ namespace Luck.EntityFrameworkCore.UnitOfWorks
 
                 throw;
             }
+        }
+        
+        public ILuckDbContext GetLuckDbContext()
+        {
+            return DbContext;
         }
     }
 }

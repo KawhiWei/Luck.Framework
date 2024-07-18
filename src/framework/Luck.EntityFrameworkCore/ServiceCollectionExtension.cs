@@ -7,6 +7,7 @@ using Luck.EntityFrameworkCore.UnitOfWorks;
 using Luck.Framework.Exceptions;
 using Luck.Framework.UnitOfWorks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -36,7 +37,37 @@ namespace Microsoft.Extensions.DependencyInjection
             if (efDbContextAction == null)
                 throw new LuckException(nameof(efDbContextAction));
 
+            // var serviceDescriptor = services.FirstOrDefault<ServiceDescriptor>((Func<ServiceDescriptor, bool>) (d => d.ServiceType == typeof (TContextImplementation)));
+            
+            services.AddDbContextPool<LuckDbContextBase, TDbContext>((provider, dbContextBuilder) =>
+            {
+                var config = new EfDbContextConfig();
+                efDbContextAction.Invoke(config);
+                var dbType = config.Type;
+                var drivenProvider = provider.GetServices<IDbContextDrivenProvider>()
+                    .FirstOrDefault(x => x.Type.Equals(dbType));
+
+                if (drivenProvider == null)
+                    throw new LuckException($"{nameof(drivenProvider)}没有对应的{dbType}的实现！");
+                var builder = drivenProvider.Builder(dbContextBuilder, config.ConnectionString,
+                    config.QuerySplittingBehavior);
+                optionsAction?.Invoke(provider, builder);
+            });
+
+            return services;
+        }
+
+        public static IServiceCollection AddPooledLuckDbContextFactory<TDbContext>(this IServiceCollection services,
+            Action<EfDbContextConfig> efDbContextAction,
+            Action<IServiceProvider, DbContextOptionsBuilder>? optionsAction = null)
+            where TDbContext : LuckDbContextBase
+        {
+            if (efDbContextAction == null)
+                throw new LuckException(nameof(efDbContextAction));
+
             //services.AddDbContext<ILuckDbContext, TDbContext>()
+            services.TryAdd(new ServiceDescriptor(typeof(ILuckDbContext), typeof(TDbContext),
+                ServiceLifetime.Scoped));
             services.AddPooledDbContextFactory<TDbContext>((provider, dbContextBuilder) =>
             {
                 var config = new EfDbContextConfig();
@@ -54,6 +85,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
             return services;
         }
+
 
         public static IServiceCollection AddUnitOfWork(this IServiceCollection services)
         {

@@ -4,6 +4,7 @@ using Luck.EntityFrameworkCore.DbContexts;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 using Luck.DDD.Domain.Domain.AggregateRoots;
+using Luck.Framework.UnitOfWorks;
 
 namespace Luck.EntityFrameworkCore.Repositories
 {
@@ -13,12 +14,12 @@ namespace Luck.EntityFrameworkCore.Repositories
     {
         private readonly IDbContextFactory<LuckDbContextBase> _dbContextFactory;
         protected LuckDbContextBase DbContext { get; }
+        private readonly IUnitOfWork _unitOfWork;
 
-        public EfCoreAggregateRootRepository(
-            IDbContextFactory<LuckDbContextBase> dbContextFactory)
+        public EfCoreAggregateRootRepository(IUnitOfWork unitOfWork)
         {
-            _dbContextFactory = dbContextFactory;
-            DbContext = dbContextFactory.CreateDbContext();
+            _unitOfWork = unitOfWork;
+            DbContext = unitOfWork as LuckDbContextBase ?? throw new ArgumentNullException(nameof(ILuckDbContext));
         }
 
         public override void Add(TEntity entity)

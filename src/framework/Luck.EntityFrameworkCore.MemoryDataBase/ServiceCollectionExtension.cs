@@ -3,9 +3,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Luck.EntityFrameworkCore.MemoryDatabase;
 
-public class ServiceCollectionExtension
+public static class ServiceCollectionExtension
 {
-    public virtual IServiceCollection AddMemoryDriven(IServiceCollection services)
+    public static IServiceCollection AddMemoryDriven(this IServiceCollection services)
     {
         services.AddSingleton<IDbContextDrivenProvider, MemoryDrivenProvider>();
         return services;

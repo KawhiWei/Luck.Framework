@@ -1,4 +1,0 @@
-﻿namespace Luck.EntityFrameworkCore.DbContexts
-{
-    
-}

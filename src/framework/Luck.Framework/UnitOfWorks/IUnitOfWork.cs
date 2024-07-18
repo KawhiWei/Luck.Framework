@@ -11,6 +11,8 @@
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         Task<int> CommitAsync(CancellationToken cancellationToken = default);
+
+        ILuckDbContext GetLuckDbContext();
     }
 }
     

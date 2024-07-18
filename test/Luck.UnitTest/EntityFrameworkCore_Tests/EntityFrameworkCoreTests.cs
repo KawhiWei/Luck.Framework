@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Luck.DDD.Domain.Repositories;
 using Luck.EntityFrameworkCore.DbContextDrivenProvides;
+using Luck.EntityFrameworkCore.MemoryDatabase;
 using Luck.Framework.UnitOfWorks;
 using Luck.UnitTest.Models;
 using Microsoft.Extensions.DependencyInjection;
@@ -26,8 +27,10 @@ public class EntityFrameworkCoreTests
             {
                 x.ConnectionString = _connectionString;
                 x.Type = DataBaseType.MemoryDataBase;
-            }).AddLogging()
+            })
+            .AddLogging()
             .AddUnitOfWork()
+            .AddMemoryDriven()
             .AddDefaultRepository();
         _serviceProvider = services.BuildServiceProvider();
         _unitOfWork = _serviceProvider.GetRequiredService<IUnitOfWork>();
