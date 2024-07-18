@@ -8,7 +8,7 @@ namespace Luck.EntityFrameworkCore.DbContexts
     /// <summary>
     /// 类类上下文
     /// </summary>
-    public class LuckDbContextBase(DbContextOptions options, IServiceProvider serviceProvider)
+    public abstract class LuckDbContextBase(DbContextOptions options, IServiceProvider serviceProvider)
         : DbContext(options),ILuckDbContext
     {
         protected IServiceProvider ServiceProvider { get; set; } =

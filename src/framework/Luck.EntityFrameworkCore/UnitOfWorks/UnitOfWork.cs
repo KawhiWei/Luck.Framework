@@ -9,13 +9,15 @@ namespace Luck.EntityFrameworkCore.UnitOfWorks
     public class UnitOfWork : IUnitOfWork
     {
         //private readonly IDbContextFactory<ILuckDbContext> _dbContextFactory;
-        protected LuckDbContextBase DbContext { get; }
+        protected LuckDbContextBase DbContext => _luckDbContextBase;
 
+        private readonly LuckDbContextBase _luckDbContextBase;
+        
         private readonly ILogger<UnitOfWork> _logger;
 
-        public UnitOfWork(ILogger<UnitOfWork> logger, ILuckDbContext dbContext)
+        public UnitOfWork(ILogger<UnitOfWork> logger, LuckDbContextBase luckDbContextBase)
         {
-            DbContext = dbContext as LuckDbContextBase ?? throw new ArgumentNullException(nameof(ILuckDbContext));
+            _luckDbContextBase = luckDbContextBase ?? throw new ArgumentNullException(nameof(ILuckDbContext));
             _logger = logger ?? throw new ArgumentNullException(nameof(ILogger));
         }
 
@@ -40,7 +42,7 @@ namespace Luck.EntityFrameworkCore.UnitOfWorks
         
         public ILuckDbContext GetLuckDbContext()
         {
-            return DbContext;
+            return _luckDbContextBase;
         }
     }
 }
