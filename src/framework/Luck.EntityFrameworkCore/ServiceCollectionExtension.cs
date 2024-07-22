@@ -39,6 +39,33 @@ namespace Microsoft.Extensions.DependencyInjection
 
             // var serviceDescriptor = services.FirstOrDefault<ServiceDescriptor>((Func<ServiceDescriptor, bool>) (d => d.ServiceType == typeof (TContextImplementation)));
             
+            services.AddDbContext<LuckDbContextBase, TDbContext>((provider, dbContextBuilder) =>
+            {
+                var config = new EfDbContextConfig();
+                efDbContextAction.Invoke(config);
+                var dbType = config.Type;
+                var drivenProvider = provider.GetServices<IDbContextDrivenProvider>()
+                    .FirstOrDefault(x => x.Type.Equals(dbType));
+
+                if (drivenProvider == null)
+                    throw new LuckException($"{nameof(drivenProvider)}没有对应的{dbType}的实现！");
+                var builder = drivenProvider.Builder(dbContextBuilder, config.ConnectionString,
+                    config.QuerySplittingBehavior);
+                optionsAction?.Invoke(provider, builder);
+            });
+
+            return services;
+        }
+        public static IServiceCollection AddLuckDbContextPool<TDbContext>(this IServiceCollection services,
+            Action<EfDbContextConfig> efDbContextAction,
+            Action<IServiceProvider, DbContextOptionsBuilder>? optionsAction = null)
+            where TDbContext : LuckDbContextBase
+        {
+            if (efDbContextAction == null)
+                throw new LuckException(nameof(efDbContextAction));
+
+            // var serviceDescriptor = services.FirstOrDefault<ServiceDescriptor>((Func<ServiceDescriptor, bool>) (d => d.ServiceType == typeof (TContextImplementation)));
+            
             services.AddDbContextPool<LuckDbContextBase, TDbContext>((provider, dbContextBuilder) =>
             {
                 var config = new EfDbContextConfig();
@@ -56,7 +83,9 @@ namespace Microsoft.Extensions.DependencyInjection
 
             return services;
         }
+        
 
+        [Obsolete("存在部分问题未解决")]
         public static IServiceCollection AddPooledLuckDbContextFactory<TDbContext>(this IServiceCollection services,
             Action<EfDbContextConfig> efDbContextAction,
             Action<IServiceProvider, DbContextOptionsBuilder>? optionsAction = null)
