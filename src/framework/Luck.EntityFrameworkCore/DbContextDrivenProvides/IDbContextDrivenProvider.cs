@@ -18,8 +18,8 @@ namespace Luck.EntityFrameworkCore.DbContextDrivenProvides
         /// <param name="builder"></param>
         /// <param name="connectionString"></param>
         /// <param name="querySplittingBehavior"></param>
-        /// <typeparam name="TDbContext"></typeparam>
         /// <returns></returns>
-        DbContextOptionsBuilder Builder<TDbContext>(DbContextOptionsBuilder builder, string connectionString,QuerySplittingBehavior querySplittingBehavior=QuerySplittingBehavior.SplitQuery) where TDbContext : ILuckDbContext;
+        DbContextOptionsBuilder Builder(DbContextOptionsBuilder builder, string connectionString,
+            QuerySplittingBehavior querySplittingBehavior = QuerySplittingBehavior.SplitQuery);
     }
 }

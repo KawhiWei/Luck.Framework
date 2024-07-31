@@ -34,6 +34,8 @@ namespace Luck.AutoDependencyInjection.PropertyInjection
         public object GetRequiredService(Type serviceType)
         {
             var service = GetService(serviceType);
+            if (service is null)
+                throw new ArgumentNullException($"{nameof(service)}");
             return service;
         }
     }

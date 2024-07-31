@@ -17,11 +17,17 @@ namespace Microsoft.Extensions.DependencyInjection
         /// 获取指定类型的日志对象
         /// </summary>
         /// <typeparam name="T">非静态强类型</typeparam>
+        /// <exception cref="ArgumentNullException"></exception>
         /// <returns>日志对象</returns>
         public static ILogger<T> GetLogger<T>(this IServiceProvider provider)
         {
-            ILoggerFactory? factory = provider.GetService<ILoggerFactory>();
-            return factory?.CreateLogger<T>();
+            var factory = provider.GetService<ILoggerFactory>();
+            if (factory is null)
+            {
+                throw new ArgumentNullException($"ILoggerFactory日志工厂对象为空");
+            }
+
+            return factory.CreateLogger<T>();
         }
 
         /// <summary>

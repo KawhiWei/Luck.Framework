@@ -51,7 +51,7 @@ namespace Luck.AspNetCore.ApiResults
                 }
                 else
                 {
-                    var hostEnvironmenet = context.HttpContext.RequestServices.GetService<IHostEnvironment>();
+                    var hostEnvironment = context.HttpContext.RequestServices.GetService<IHostEnvironment>();
                     var logger = context.HttpContext.RequestServices.GetService<ILoggerFactory>()?
                                         .CreateLogger(context.Controller.GetType());
 
@@ -73,14 +73,14 @@ namespace Luck.AspNetCore.ApiResults
 
                     context.Exception = null;
                     //if production do not response stacktrace.
-                    if (hostEnvironmenet.IsProduction())
+                    if (hostEnvironment is not null && hostEnvironment.IsProduction())
                     {
                         context.Result = new JsonResult(new ApiResult(errorCode, "服务器内部错误"));
                     }
                     else
                     {
-                        var inex = ex.GetBaseException() ?? ex;
-                        context.Result = new JsonResult(new ApiResultWithStackTrace(errorCode, inex.Message, inex.StackTrace));
+                        var exception = ex.GetBaseException() ?? ex;
+                        context.Result = new JsonResult(new ApiResultWithStackTrace(errorCode, exception.Message, exception.StackTrace));
                     }
                 }
             }
@@ -101,7 +101,7 @@ namespace Luck.AspNetCore.ApiResults
             }
         }
 
-        public static object? GetValue(IActionResult actionResult)
+        private static object? GetValue(IActionResult? actionResult)
         {
             return (actionResult as JsonResult)?.Value ?? (actionResult as ObjectResult)?.Value;
         }

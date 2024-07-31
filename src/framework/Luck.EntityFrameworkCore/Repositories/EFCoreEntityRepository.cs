@@ -4,29 +4,29 @@ using Luck.EntityFrameworkCore.DbContexts;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 using Luck.DDD.Domain.Domain.Entities;
+using Luck.Framework.UnitOfWorks;
 
 namespace Luck.EntityFrameworkCore.Repositories
 {
-    public class EfCoreEntityRepository<TEntity, TKey> : IEntityRepository<TEntity, TKey> where TEntity : class, IEntityWithIdentity where TKey : IEquatable<TKey>
+    public class EfCoreEntityRepository<TEntity, TKey> : IEntityRepository<TEntity, TKey>
+        where TEntity : class, IEntityWithIdentity where TKey : IEquatable<TKey>
     {
+        private readonly LuckDbContextBase _luckDbContextBase;
 
-        private readonly LuckDbContextBase _dbContext;
-
-        public LuckDbContextBase DbContext => _dbContext;
-
-        public EfCoreEntityRepository(ILuckDbContext dbContext)
+        public EfCoreEntityRepository(IUnitOfWork unitOfWork)
         {
-            _dbContext = dbContext as LuckDbContextBase ?? throw new NotSupportedException();
+            _luckDbContextBase = unitOfWork.GetLuckDbContext() as LuckDbContextBase ??
+                                 throw new ArgumentNullException(nameof(ILuckDbContext));
         }
 
         public TEntity? Find(TKey primaryKey)
         {
-            return _dbContext.Find<TEntity>(primaryKey);
+            return _luckDbContextBase.Find<TEntity>(primaryKey);
         }
 
         public IQueryable<TEntity> FindAll()
         {
-            return _dbContext.Set<TEntity>();
+            return _luckDbContextBase.Set<TEntity>();
         }
 
         public IQueryable<TEntity> FindAll(Expression<Func<TEntity, bool>> predicate)
@@ -34,14 +34,14 @@ namespace Luck.EntityFrameworkCore.Repositories
             return FindAll().Where(predicate);
         }
 
-        public  ValueTask<TEntity?> FindAsync(TKey primaryKey)
+        public ValueTask<TEntity?> FindAsync(TKey primaryKey)
         {
-            return  _dbContext.FindAsync<TEntity>(primaryKey);
+            return _luckDbContextBase.FindAsync<TEntity>(primaryKey);
         }
 
-        public  Task<TEntity?> FindAsync(Expression<Func<TEntity, bool>> predicate)
+        public Task<TEntity?> FindAsync(Expression<Func<TEntity, bool>> predicate)
         {
-            return  _dbContext.Set<TEntity>().FirstOrDefaultAsync(predicate);
+            return _luckDbContextBase.Set<TEntity>().FirstOrDefaultAsync(predicate);
         }
     }
 }

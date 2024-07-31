@@ -41,6 +41,10 @@ namespace Luck.AppModule
         /// <param name="service"></param>
         public void Initialize(IServiceProvider service)
         {
+            if (ServiceProvider is null)
+            {
+                throw new ArgumentNullException($"{ServiceProvider} is null");
+            }
             IocManage.Instance.SetApplicationServiceProvider(service);
             SetServiceProvider(service);
             using var scope = ServiceProvider.CreateScope();

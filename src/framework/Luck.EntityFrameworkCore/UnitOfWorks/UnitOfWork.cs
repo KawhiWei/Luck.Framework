@@ -1,35 +1,35 @@
 ﻿using Luck.EntityFrameworkCore.DbContexts;
+using Luck.Framework.Exceptions;
 using Luck.Framework.UnitOfWorks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace Luck.EntityFrameworkCore.UnitOfWorks
 {
-    public class UnitOfWork: IUnitOfWork
+    public class UnitOfWork : IUnitOfWork
     {
+        //private readonly IDbContextFactory<ILuckDbContext> _dbContextFactory;
+        protected LuckDbContextBase DbContext => _luckDbContextBase;
 
-        private readonly LuckDbContextBase _dbContext;
-
+        private readonly LuckDbContextBase _luckDbContextBase;
+        
         private readonly ILogger<UnitOfWork> _logger;
 
-        public UnitOfWork(ILuckDbContext dbContext, ILogger<UnitOfWork> logger)
+        public UnitOfWork(ILogger<UnitOfWork> logger, LuckDbContextBase luckDbContextBase)
         {
-            _dbContext = dbContext as LuckDbContextBase ?? throw new NotSupportedException();
-            _logger = logger ?? throw new NotSupportedException();
-
-
+            _luckDbContextBase = luckDbContextBase ?? throw new ArgumentNullException(nameof(luckDbContextBase));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public  async Task<int> CommitAsync(CancellationToken cancellationToken = default)
+        public async Task<int> CommitAsync(CancellationToken cancellationToken = default)
         {
             try
             {
-             
-                return  await _dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+                return await DbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
             }
             catch (Exception exception)
             {
-                _dbContext.Rollback();
+                DbContext.Rollback();
 
                 if (exception is DbUpdateConcurrencyException)
                 {
@@ -38,7 +38,11 @@ namespace Luck.EntityFrameworkCore.UnitOfWorks
 
                 throw;
             }
-
+        }
+        
+        public ILuckDbContext GetLuckDbContext()
+        {
+            return _luckDbContextBase;
         }
     }
 }

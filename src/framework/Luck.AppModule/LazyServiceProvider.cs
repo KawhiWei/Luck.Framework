@@ -65,11 +65,21 @@ namespace Luck.AppModule
         /// <returns></returns>
         public object LazyGetService(Type? service)
         {
+            if (CacheServices is null)
+            {
+                throw new ArgumentNullException(nameof(CacheServices));
+            }
+            
             return CacheServices!.GetOrAdd(service, serviceType =>
             {
-                if (serviceType == null) throw new ArgumentNullException(nameof(serviceType));
-                return ServiceProvider.GetService(serviceType);
+                if (serviceType == null)
+                {
+                    throw new ArgumentNullException(nameof(serviceType));
+                }
+
+                return ServiceProvider.GetService(serviceType) ?? throw new ArgumentNullException(nameof(serviceType));
             });
+
         }
 
         /// <summary>
@@ -91,7 +101,7 @@ namespace Luck.AppModule
         /// <returns></returns>
         public object LazyGetService(Type service, object? defaultValue)
         {
-            return LazyGetService(service) ?? defaultValue;
+            return LazyGetService(service)?? throw new ArgumentNullException(nameof(service));
         }
 
         /// <summary>

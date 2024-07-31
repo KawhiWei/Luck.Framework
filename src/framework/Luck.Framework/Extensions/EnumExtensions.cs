@@ -20,13 +20,8 @@ namespace Luck.Framework.Extensions
         public static string ToDescription(this Enum value)
         {
             var type = value.GetType();
-   
-            MemberInfo? member = type.GetMember(value.ToString()).FirstOrDefault();
-     
-            return member?.ToDescription();
+            var member = type.GetMember(value.ToString()).FirstOrDefault();
+            return  member is not null? member.ToDescription():"";
         }
-
-
-   
     }
 }

@@ -1,4 +1,4 @@
-﻿using System.ComponentModel;
+﻿using Luck.EventBus.RabbitMQ.Enums;
 using Luck.Framework.Extensions;
 
 namespace Luck.EventBus.RabbitMQ.Attributes
@@ -7,15 +7,17 @@ namespace Luck.EventBus.RabbitMQ.Attributes
     /// 
     /// </summary>
     [AttributeUsage(AttributeTargets.Class)]
-    public class RabbitMqAttribute : Attribute
+    public sealed class RabbitMqAttribute : Attribute
     {
-        public RabbitMqAttribute(string exchange, ExchangeType exchangeType, string routingKey, string? queue = null)
+        public RabbitMqAttribute(EWorkModel workModel, string exchange, ExchangeType exchangeType, string routingKey, string queue = "")
         {
+            WorkModel = workModel;
             Exchange = exchange;
             Type = exchangeType.ToDescription() ?? "direct";
             RoutingKey = routingKey;
             Queue = queue;
         }
+        public EWorkModel WorkModel { get; }
 
         /// <summary>
         /// 交换机
@@ -35,25 +37,6 @@ namespace Luck.EventBus.RabbitMQ.Attributes
         /// <summary>
         /// 队列名称《队列名称和路由键配合使用》
         /// </summary>
-        public string? Queue { get; set; }
-    }
-
-
-    public enum ExchangeType
-    {
-        /// <summary>
-        /// 路由模式
-        /// </summary>
-        [Description("direct")] Routing = 1,
-
-        ///// <summary>
-        ///// 主题模式
-        ///// </summary>
-        //[Description("topic")]
-        //Topic = 2,
-        /// <summary>
-        /// 订阅模式
-        /// </summary>
-        [Description("fanout")] FanOut = 3,
+        public string Queue { get; set; }
     }
 }

@@ -12,12 +12,12 @@ namespace Luck.AppModule
         /// <summary>
         /// 服务提供者
         /// </summary>
-        private IServiceProvider _provider;
+        private IServiceProvider _provider=default!;
 
         /// <summary>
         /// 服务集合
         /// </summary>
-        private IServiceCollection _services;
+        private IServiceCollection _services=default!;
 
         /// <summary>
         /// 创建懒加载Ioc管理实例

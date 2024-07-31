@@ -8,7 +8,6 @@ namespace Luck.AutoDependencyInjection.PropertyInjection
     /// <summary>
     /// 属性注入注射器类
     /// </summary>
-    /// <param name="provider"></param>
     internal sealed class PropertyInjector : IPropertyInjector
 
     {

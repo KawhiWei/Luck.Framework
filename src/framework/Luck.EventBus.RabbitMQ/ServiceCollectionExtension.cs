@@ -1,4 +1,6 @@
 ﻿using Luck.EventBus.RabbitMQ;
+using Luck.EventBus.RabbitMQ.Abstraction;
+using Luck.EventBus.RabbitMQ.Manager;
 using Luck.Framework.Event;
 using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
@@ -13,8 +15,8 @@ namespace Microsoft.Extensions.DependencyInjection
             action.Invoke(config);
             
             service.AddRabbitMqPersistentConnection(config)
-                .AddSingleton<IIntegrationEventBus, IntegrationEventBusRabbitMq>(serviceProvider
-                => new IntegrationEventBusRabbitMq(config.RetryCount, serviceProvider)
+                .AddSingleton<IIntegrationEventBus, RabbitMqEventBus>(serviceProvider
+                => new RabbitMqEventBus(config.RetryCount, serviceProvider)
             );
             service.AddSingleton<IIntegrationEventBusSubscriptionsManager, RabbitMqEventBusSubscriptionsManager>();
             service.AddHostedService<RabbitMqSubscribeService>();

@@ -1,7 +1,7 @@
-﻿namespace Luck.EntityFrameworkCore.DbContexts
+﻿namespace Luck.Framework.UnitOfWorks
 {
     public interface ILuckDbContext
     {
-
+        
     }
 }

@@ -1,10 +1,11 @@
 ﻿using Luck.EventBus.RabbitMQ.Attributes;
 using Luck.Framework.Event;
 using Luck.AutoDependencyInjection;
+using Luck.EventBus.RabbitMQ.Enums;
 
 namespace Module.Sample.EventHandlers;
 
-[RabbitMq("fanout_test_exchange", ExchangeType.FanOut, "", "fanout_test_queue_001")]
+[RabbitMq(EWorkModel.None, "fanout_test_exchange", ExchangeType.FanOut, "", "fanout_test_queue_001")]
 public class TestIntegrationFanOutOrderEvent : IntegrationEvent
 {
     public string Name { get; set; } = default!;
