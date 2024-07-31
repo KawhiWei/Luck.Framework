@@ -1,4 +1,11 @@
 # Luck.Framework
++ ## change 2.0.5 version
+    + ### add
+        + **1、添加Luck.Pipeline，管道执行器**
+    + ### update
+        + **1、添加EF注入池化上下文;**
+        + **2、优化RabbitMQ消息总线性能;**
+---
 + ## change 2.0.4 version 
   + ### add
     + **1、Luck.EntityFrameworkCore.MemoryDataBase**
@@ -38,6 +45,7 @@
         </ItemGroup>
       ```
     + **13、Luck.Redis.StackExchange支持Net7.0和8.0；升级6.0的nuget包版本**
+---
 + ## change 2.0.3 version
   + ### update
     + **1、Luck.Framework内的System.Text.Json自定义序列化删除，迁移到Luck.AspNetCore**
@@ -56,6 +64,7 @@
                 c.JsonSerializerOptions.Converters.Add(new SystemTextJsonConvert.DateTimeOffsetNullConverter());
                 });
       ```
+---
 + ## change 2.0.2 version
   + ### Add
     + **1、Luck.Framework**
@@ -74,7 +83,7 @@
                 c.JsonSerializerOptions.Converters.Add(new SystemTextJsonConvert.DateTimeOffsetNullConverter());
                 });
       ```
-    
+---
 + ## change 2.0.1 version
   + ### Update
     + **1、Luck.DDD.Domain**
@@ -84,6 +93,7 @@
       + 删除EntityFrameworkCore层中使用的MediatR实现的领域事件，由业务控制，不在基础框架内封装；
     + **2、Luck.DDD.Domain**
       + 删除MediatR实现的领域事件通知；
+---
 + ## change 2.0.0 version
   + ### Add 
     + **1、Luck.AppModule**
@@ -95,6 +105,7 @@
     + **1、Luck.Framework**
       + 删除Luck.Framework中的模块化实现的代码，Luck.Framework仅保留接口，不在有任何实现；
       + 删除Luck.Framework中的自动注册到DI容器内的代码；
+---
 + ## change 1.0.7 version
   + **1、修改Dapper映射特性表名和列名到Luck.Framework类库**
     + 1.1 修改Dapper的LuckTable和LuckColumn特性到Luck.Framework类库
