@@ -1,34 +1,33 @@
-<Project Sdk="Microsoft.NET.Sdk">
-    <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
-        <Nullable>enable</Nullable>
-        <IsPackable>false</IsPackable>
-    </PropertyGroup>
-    <ItemGroup>
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<IsPackable>false</IsPackable>
+	</PropertyGroup>
+	<ItemGroup>
 
-        <PackageReference Include="Confluent.Kafka" Version="2.2.0"/>
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2"/>
-        <PackageReference Include="Mongo2Go" Version="3.1.3"/>
-        <PackageReference Include="xunit" Version="2.4.2"/>
-        <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-            <PrivateAssets>all</PrivateAssets>
-        </PackageReference>
-        <PackageReference Include="coverlet.collector" Version="3.1.2">
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-            <PrivateAssets>all</PrivateAssets>
-        </PackageReference>
-    </ItemGroup>
-    <ItemGroup>
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2"/>
-        <PackageReference Include="MongoDB.Driver" Version="2.22.0"/>
-        <ProjectReference Include="..\..\src\framework\Luck.EntityFrameworkCore.MemoryDataBase\Luck.EntityFrameworkCore.MemoryDataBase.csproj"/>
-        <ProjectReference Include="..\..\src\framework\Luck.EntityFrameworkCore.MySQL\Luck.EntityFrameworkCore.MySQL.csproj"/>
-        <ProjectReference Include="..\..\src\framework\Luck.EntityFrameworkCore.PostgreSQL\Luck.EntityFrameworkCore.PostgreSQL.csproj"/>
-        <ProjectReference Include="..\..\src\framework\Luck.EntityFrameworkCore\Luck.EntityFrameworkCore.csproj"/>
-        <ProjectReference Include="..\..\src\framework\Luck.MongoDB\Luck.MongoDB.csproj"/>
-        <ProjectReference Include="..\..\src\framework\Luck.Pipeline\Luck.Pipeline.csproj"/>
-        <ProjectReference Include="..\..\src\framework\Luck.TestBase\Luck.TestBase.csproj"/>
-    </ItemGroup>
+		<PackageReference Include="Confluent.Kafka" Version="2.2.0"/>
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2"/>
+		<PackageReference Include="Mongo2Go" Version="3.1.3"/>
+		<PackageReference Include="xunit" Version="2.4.2"/>
+		<PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+			<PrivateAssets>all</PrivateAssets>
+		</PackageReference>
+		<PackageReference Include="coverlet.collector" Version="3.1.2">
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+			<PrivateAssets>all</PrivateAssets>
+		</PackageReference>
+	</ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2"/>
+		<ProjectReference Include="..\..\src\framework\Luck.EntityFrameworkCore.MemoryDataBase\Luck.EntityFrameworkCore.MemoryDataBase.csproj"/>
+		<ProjectReference Include="..\..\src\framework\Luck.EntityFrameworkCore.MySQL\Luck.EntityFrameworkCore.MySQL.csproj"/>
+		<ProjectReference Include="..\..\src\framework\Luck.EntityFrameworkCore.PostgreSQL\Luck.EntityFrameworkCore.PostgreSQL.csproj"/>
+		<ProjectReference Include="..\..\src\framework\Luck.EntityFrameworkCore\Luck.EntityFrameworkCore.csproj"/>
+		<ProjectReference Include="..\..\src\framework\Luck.MongoDB\Luck.MongoDB.csproj"/>
+		<ProjectReference Include="..\..\src\framework\Luck.Pipeline\Luck.Pipeline.csproj"/>
+		<ProjectReference Include="..\..\src\framework\Luck.TestBase\Luck.TestBase.csproj"/>
+	</ItemGroup>
 
 </Project>
