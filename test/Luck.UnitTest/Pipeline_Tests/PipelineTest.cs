@@ -32,7 +32,9 @@ public class PipelineTest
     public void CreateDelegatePipelineFactory()
     {
         IServiceCollection services = new ServiceCollection();
-        services.AddScoped<IPipelineFactory, PipelineFactory>()
+        services
+            .AddLogging()
+            .AddScoped<IPipelineFactory, PipelineFactory>()
             .AddScoped<FetchOrderDetailDelegatePipePipe>()
             .AddScoped<CreateCustomerDelegatePipe>()
             .AddScoped<CancelDelegatePipe>();
