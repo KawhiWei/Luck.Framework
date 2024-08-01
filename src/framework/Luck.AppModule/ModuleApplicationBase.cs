@@ -40,18 +40,41 @@ namespace Luck.AppModule
                 {
                     throw new Exception($"类型为“{StartupModuleType.FullName}”的模块实例无法找到");
                 }
-
                 modules.Add(module);
                 var dependedTypes = module.GetDependedTypes();
                 foreach (var dependType in dependedTypes.Where(LuckAppModule.IsAppModule))
                 {
-                    var dependModule = Source.FirstOrDefault(o => o.GetType() == StartupModuleType) ?? throw new($"加载模块{module.GetType().FullName}时无法找到依赖模块{dependType.FullName}");
+                    var dependModule = Source.FirstOrDefault(o => o.GetType() == dependType) ??
+                                       throw new($"加载模块{module.GetType().FullName}时无法找到依赖模块{dependType.FullName}");
                     modules.AddIfNotContains(dependModule);
                 }
 
                 return modules;
             }
         }
+        
+        // protected virtual IReadOnlyList<IAppModule> LoadModules()
+        // {
+        //     List<IAppModule> modules = new List<IAppModule>();
+        //
+        //     var module = Source.FirstOrDefault(o => o.GetType() == StartupModuleType);
+        //     if (module == null)
+        //     {
+        //         throw new Exception($"类型为“{StartupModuleType.FullName}”的模块实例无法找到");
+        //     }
+        //     modules.Add(module);
+        //     var dependeds = module.GetDependedTypes();
+        //     foreach (var dependType in dependeds.Where(o => LuckAppModule.IsAppModule(o)))
+        //     {
+        //         var dependModule = Source.Find(m => m.GetType() == dependType);
+        //         if (dependModule == null)
+        //         {
+        //             throw new Exception($"加载模块{module.GetType().FullName}时无法找到依赖模块{dependType.FullName}");
+        //         }
+        //         modules.AddIfNotContains(dependModule);
+        //     }
+        //     return modules;
+        // }
 
         /// <summary>
         /// 
