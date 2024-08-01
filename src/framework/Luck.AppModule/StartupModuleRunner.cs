@@ -43,11 +43,10 @@ namespace Luck.AppModule
         {
             if (ServiceProvider is null)
             {
-                throw new ArgumentNullException($"{ServiceProvider} is null");
+                IocManage.Instance.SetApplicationServiceProvider(service);
+                SetServiceProvider(service);
             }
-            IocManage.Instance.SetApplicationServiceProvider(service);
-            SetServiceProvider(service);
-            using var scope = ServiceProvider.CreateScope();
+            using var scope = ServiceProvider!.CreateScope();
             //using var scope = service.CreateScope();
             var ctx = new ApplicationContext(scope.ServiceProvider);
             foreach (var cfg in Modules)

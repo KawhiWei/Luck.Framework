@@ -1,4 +1,8 @@
 # Luck.Framework
++ ## change 2.0.6 version
+    + ### Fixed
+      + **1、修复app.InitializeApplication()初始化是报空判断问题**
+---
 + ## change 2.0.5 version
     + ### add
         + **1、添加Luck.Pipeline，管道执行器**
