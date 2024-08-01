@@ -9,7 +9,6 @@ namespace Module.Sample.AppModules
 
         public override void ApplicationInitialization(ApplicationContext context)
         {
-
             var moduleDbContext = context.ServiceProvider.GetService<ModuleDbContext>();
             moduleDbContext?.Database.EnsureCreated();
         }
