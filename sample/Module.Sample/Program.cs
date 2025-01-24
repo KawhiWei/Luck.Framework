@@ -1,4 +1,3 @@
-using Luck.AppModule;
 using Luck.AutoDependencyInjection.PropertyInjection;
 using Module.Sample;
 using System.Diagnostics;

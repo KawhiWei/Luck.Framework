@@ -1,5 +1,4 @@
 ﻿using Luck.EntityFrameworkCore.DbContextDrivenProvides;
-using Luck.EntityFrameworkCore.DbContexts;
 using Microsoft.EntityFrameworkCore;
 
 namespace Luck.EntityFrameworkCore.MemoryDatabase;

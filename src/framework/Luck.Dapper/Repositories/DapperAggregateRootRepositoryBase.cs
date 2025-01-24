@@ -1,6 +1,5 @@
 using System.Data;
 using Luck.Dapper.DbConnectionFactories;
-using Luck.DDD.Domain;
 using Luck.DDD.Domain.Domain.AggregateRoots;
 using Luck.DDD.Domain.SqlRepositories;
 
