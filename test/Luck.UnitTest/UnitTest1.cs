@@ -1,3 +1,4 @@
+using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
 namespace Luck.UnitTest
@@ -7,6 +8,8 @@ namespace Luck.UnitTest
         [Fact]
         public void Test1()
         {
+            //TestBase.SourceGenerators.ServiceInfoServiceCollectionExtensions.AddBusinessServices()
+
 
         }
     }

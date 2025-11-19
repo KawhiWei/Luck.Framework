@@ -3,7 +3,6 @@ using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Luck.SourceGenerator.SourceGenerator;
 
@@ -13,7 +12,7 @@ public class ServiceRegistrationGenerator : IIncrementalGenerator
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
 #if DEBUG
-        System.Diagnostics.Debugger.Launch();
+        //System.Diagnostics.Debugger.Launch();
 #endif
 
         var classDeclarations = context.SyntaxProvider
@@ -45,7 +44,7 @@ public class ServiceRegistrationGenerator : IIncrementalGenerator
                 INamedTypeSymbol attributeContainingTypeSymbol = attributeSymbol.ContainingType;
                 string fullName = attributeContainingTypeSymbol.ToDisplayString();
 
-                if (fullName == "Luck.TestBase.SourceGenerators.BusinessServiceKeyAttribute")
+                if (fullName == "Luck.UnitTest.SourceGeneratorTest.BusinessServiceKeyAttribute")
                     return classDeclarationSyntax;
             }
         }
@@ -72,7 +71,7 @@ public class ServiceRegistrationGenerator : IIncrementalGenerator
 
             var attributes = classSymbol.GetAttributes()
                 .Where(a => a.AttributeClass?.ToDisplayString() ==
-                            "Luck.TestBase.SourceGenerators.BusinessServiceKeyAttribute");
+                            "Luck.UnitTest.SourceGeneratorTest.BusinessServiceKeyAttribute");
 
             foreach (var attribute in attributes)
             {
@@ -118,16 +117,16 @@ public class ServiceRegistrationGenerator : IIncrementalGenerator
         return string.Empty;
     }
 
-    static ServiceLifetime GetLifetime(AttributeData attribute)
+    static int GetLifetime(AttributeData attribute)
     {
         if (attribute.ConstructorArguments.Length > 2)
         {
             var lifetimeValue = attribute.ConstructorArguments[2].Value;
             if (lifetimeValue is int enumValue)
-                return (ServiceLifetime)enumValue;
+                return enumValue;
         }
 
-        return ServiceLifetime.Scoped;
+        return 1;//scoped
     }
 
     static string GenerateExtensionMethod(List<ServiceInfo> serviceInfos)
@@ -139,7 +138,7 @@ public class ServiceRegistrationGenerator : IIncrementalGenerator
         sb.AppendLine();
         sb.AppendLine("namespace Luck.TestBase.SourceGenerators;");
         sb.AppendLine();
-        sb.AppendLine("public static class ServiceCollectionExtensions");
+        sb.AppendLine("public static class ServiceInfoServiceCollectionExtensions");
         sb.AppendLine("{");
         sb.AppendLine("    public static IServiceCollection AddBusinessServices(this IServiceCollection services)");
         sb.AppendLine("    {");
@@ -147,7 +146,7 @@ public class ServiceRegistrationGenerator : IIncrementalGenerator
         foreach (var service in serviceInfos)
         {
             sb.AppendLine(
-                $"        services.Add(new ServiceDescriptor(typeof({service.ServiceType}), \"{service.ServiceKey}\", typeof({service.ImplementationType}), ServiceLifetime.{service.Lifetime}));");
+                $"        services.Add(new ServiceDescriptor(typeof({service.ServiceType}), \"{service.ServiceKey}\", typeof({service.ImplementationType}), ServiceLifetime.{GetLifetimeScope(service.Lifetime)}));");
         }
 
         sb.AppendLine("        return services;");
@@ -157,5 +156,12 @@ public class ServiceRegistrationGenerator : IIncrementalGenerator
         return sb.ToString();
     }
 
-    record ServiceInfo(string ImplementationType, string ServiceType, string ServiceKey, ServiceLifetime Lifetime);
+    private static string GetLifetimeScope(int lifetime) => lifetime switch
+    {
+        2 => "Transient",
+        1 => "Scoped",
+        _ => "Singleton"
+    };
+
+    record ServiceInfo(string ImplementationType, string ServiceType, string ServiceKey, int Lifetime);
 }
