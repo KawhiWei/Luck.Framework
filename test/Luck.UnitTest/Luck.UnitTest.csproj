@@ -7,6 +7,10 @@
 	<ItemGroup>
 
 		<PackageReference Include="Confluent.Kafka" Version="2.5.0" />
+
+		<PackageReference Include="Microsoft.CodeAnalysis.Common" Version="5.0.0" />
+
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="5.0.0" />
 		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.10.0" />
 		<PackageReference Include="Mongo2Go" Version="3.1.3"/>
 		<PackageReference Include="RulesEngine" Version="5.0.6" />
@@ -28,6 +32,7 @@
 		<ProjectReference Include="..\..\src\framework\Luck.EntityFrameworkCore\Luck.EntityFrameworkCore.csproj"/>
 		<ProjectReference Include="..\..\src\framework\Luck.MongoDB\Luck.MongoDB.csproj"/>
 		<ProjectReference Include="..\..\src\framework\Luck.Pipeline\Luck.Pipeline.csproj"/>
+		<ProjectReference Include="..\..\src\framework\Luck.SourceGenerator\Luck.SourceGenerator.csproj"   OutputItemType="Analyzer" ReferenceOutputAssembly="false"/>
 		<ProjectReference Include="..\..\src\framework\Luck.TestBase\Luck.TestBase.csproj"/>
 	</ItemGroup>
 

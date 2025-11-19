@@ -76,6 +76,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Luck.EntityFrameworkCore.Me
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Luck.Pineline", "src\framework\Luck.Pipeline\Luck.Pipeline.csproj", "{BAFB38F6-158C-44FF-8FBC-627B652C649C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Luck.SourceGenerator", "src\framework\Luck.SourceGenerator\Luck.SourceGenerator.csproj", "{92B9B187-AAC0-4018-AD6A-EA76C04940F1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -166,6 +168,10 @@ Global
 		{BAFB38F6-158C-44FF-8FBC-627B652C649C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BAFB38F6-158C-44FF-8FBC-627B652C649C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BAFB38F6-158C-44FF-8FBC-627B652C649C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{92B9B187-AAC0-4018-AD6A-EA76C04940F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{92B9B187-AAC0-4018-AD6A-EA76C04940F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{92B9B187-AAC0-4018-AD6A-EA76C04940F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{92B9B187-AAC0-4018-AD6A-EA76C04940F1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -200,6 +206,7 @@ Global
 		{9876D845-5C04-4B04-84A0-A57148253666} = {5779CF18-7FD7-434D-B47A-1C8A50A3E5A4}
 		{F9E8F6FF-B571-4EFB-A06D-2201236D9B07} = {91CD3C81-AA29-47C7-B654-901872880B63}
 		{BAFB38F6-158C-44FF-8FBC-627B652C649C} = {DE49CCE6-B41E-493A-ADCC-EA6075DD0038}
+		{92B9B187-AAC0-4018-AD6A-EA76C04940F1} = {DE49CCE6-B41E-493A-ADCC-EA6075DD0038}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4719568B-E10A-4815-AAAA-8C6D6CEE798F}
