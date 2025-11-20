@@ -15,11 +15,3 @@ public class CarAncillaryPaySuccessWithAncillaryScopeProvider : IAncillaryPaySuc
         return (true, "非单售辅营暂不处理");
     }
 }
-
-public class BusinessServiceKeyAttribute : Attribute
-{
-    public BusinessServiceKeyAttribute(Type type, string s, ServiceLifetime scoped)
-    {
-        throw new NotImplementedException();
-    }
-}

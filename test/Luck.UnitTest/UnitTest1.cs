@@ -12,9 +12,11 @@ namespace Luck.UnitTest
         {
             IServiceCollection services = new ServiceCollection();
 
-            TestBase.SourceGenerators.ServiceInfoServiceCollectionExtensions.AddBusinessServices(services);
+            //TestBase.SourceGenerators.ServiceInfoServiceCollectionExtensions.AddBusinessServices(services);
 
             var serviceProvider = services.BuildServiceProvider();
+            //TestBase.SourceGenerators.ServiceInfoServiceCollectionExtensions.AddBusinessServices()
+            //Luck.SourceGenerators.ServiceCollectionExtension.ServiceInfoServiceCollectionExtensions.AddBusinessServices()
 
             var test = serviceProvider.GetKeyedService<IAncillaryPaySuccessWithAncillaryScopeProvider>("70");
             
