@@ -12,6 +12,7 @@ public class CarAncillaryPaySuccessWithAncillaryScopeProvider : IAncillaryPaySuc
     public async Task<(bool, string)> AncillaryPaySuccessProviderAsync(string request,
         string originMessage)
     {
+        await Task.CompletedTask;
         return (true, "非单售辅营暂不处理");
     }
 }

@@ -11,6 +11,7 @@ public class BusExpressAncillaryPaySuccessWithAncillaryScopeProvider : IAncillar
     public async Task<(bool, string)> AncillaryPaySuccessProviderAsync(string request,
         string originMessage)
     {
-        return (true, "非单售辅营暂不处理");
+        await Task.CompletedTask;
+        return  (true, "非单售辅营暂不处理");
     }
 }
