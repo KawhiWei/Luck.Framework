@@ -13,17 +13,14 @@ namespace Luck.UnitTest
             IServiceCollection services = new ServiceCollection();
 
             //TestBase.SourceGenerators.ServiceInfoServiceCollectionExtensions.AddBusinessServices(services);
-
+            services.AddBusinessServices();
             var serviceProvider = services.BuildServiceProvider();
             //TestBase.SourceGenerators.ServiceInfoServiceCollectionExtensions.AddBusinessServices()
             //Luck.SourceGenerators.ServiceCollectionExtension.ServiceInfoServiceCollectionExtensions.AddBusinessServices()
 
             var test = serviceProvider.GetKeyedService<IAncillaryPaySuccessWithAncillaryScopeProvider>("70");
             
-            if(test is null)
-            {
-                throw new ArgumentNullException();
-            }
+            Assert.NotNull(test);
         }
     }
 }
