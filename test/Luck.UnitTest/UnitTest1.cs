@@ -1,6 +1,5 @@
 using System;
 using Luck.Framework;
-using Luck.TestBase.SourceGenerators;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
@@ -13,8 +12,8 @@ namespace Luck.UnitTest
         {
             IServiceCollection services = new ServiceCollection();
 
-            services.AddBusinessServices();
-            
+            TestBase.SourceGenerators.ServiceInfoServiceCollectionExtensions.AddBusinessServices(services);
+
             var serviceProvider = services.BuildServiceProvider();
 
             var test = serviceProvider.GetKeyedService<IAncillaryPaySuccessWithAncillaryScopeProvider>("70");
