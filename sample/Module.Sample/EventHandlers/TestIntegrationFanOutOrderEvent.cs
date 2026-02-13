@@ -24,7 +24,6 @@ public class TestIntegrationFanOutOrderEventHandler : IIntegrationEventHandler<T
 
     public Task HandleAsync(TestIntegrationFanOutOrderEvent @event)
     {
-        _logger.DoveLogInformation($"{@event.Name}---A2---{DateTime.Now}");
         return Task.CompletedTask;
     }
 }

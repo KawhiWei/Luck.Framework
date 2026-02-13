@@ -1,13 +1,13 @@
-﻿<Project>
+<Project>
 	<PropertyGroup>
 		<LangVersion>latest</LangVersion>
-		<Version>2.0.7</Version>
+		<Version>2.0.8</Version>
 		<NoWarn>$(NoWarn);CS1591;CS0436;NU5104</NoWarn>
 		<PackageLicenseExpression>LGPL-3.0-only</PackageLicenseExpression>
 		<RepositoryType>git</RepositoryType>
 		<Authors>KawhiWei</Authors>
 		<Product>KawhiWei</Product>
-		<PackageProjectUrl>https://github.com/KawhiWei/Luck.Framework</PackageProjectUrl>
+		<PackageProjectUrl>https://gthub.com/KawhiWei/Luck.Framework</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/KawhiWei/Luck.Framework</RepositoryUrl>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<IsPackable>true</IsPackable>
@@ -17,7 +17,7 @@
 	</PropertyGroup>
 	
 	<PropertyGroup>
-		<TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
+		<TargetFrameworks>net6.0;net7.0;net8.0;net9.0;net10.0</TargetFrameworks>
 		<LangVersion>preview</LangVersion>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
