@@ -1,4 +1,4 @@
-﻿using Luck.EventBus.RabbitMQ;
+using Luck.EventBus.RabbitMQ;
 using Luck.EventBus.RabbitMQ.Abstraction;
 using Luck.EventBus.RabbitMQ.Manager;
 using Luck.Framework.Event;
@@ -13,6 +13,9 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             var config = new RabbitMqConfig();
             action.Invoke(config);
+            
+            // 注册配置
+            service.AddSingleton(config);
             
             service.AddRabbitMqPersistentConnection(config)
                 .AddSingleton<IIntegrationEventBus, RabbitMqEventBus>(serviceProvider
