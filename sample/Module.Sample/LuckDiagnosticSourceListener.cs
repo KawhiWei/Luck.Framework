@@ -1,7 +1,3 @@
-using System.Diagnostics;
-using Luck.EventBus.RabbitMQ.Diagnostics;
-using Luck.Framework.Extensions;
-
 namespace Module.Sample;
 
 /// <summary>

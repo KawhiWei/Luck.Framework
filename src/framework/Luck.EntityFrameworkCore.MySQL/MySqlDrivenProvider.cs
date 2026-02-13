@@ -1,6 +1,4 @@
 ﻿using Luck.EntityFrameworkCore.DbContextDrivenProvides;
-using Luck.EntityFrameworkCore.DbContexts;
-using Luck.Framework.Extensions;
 using Microsoft.EntityFrameworkCore;
 
 namespace Luck.EntityFrameworkCore.MySQL

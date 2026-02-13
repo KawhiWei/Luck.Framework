@@ -19,6 +19,7 @@ namespace Luck.UnitTest
         public MongoDbTest()
         {
             IServiceCollection services = new ServiceCollection();
+            //services.AddBusinessServices();
             services.AddMongoDbContext<TestMongoDbContext>(options =>
             {
 

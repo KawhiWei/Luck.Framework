@@ -26,7 +26,6 @@ namespace Module.Sample.EventHandlers
 
         public Task HandleAsync(TestIntegrationEvent @event)
         {
-            _logger.DoveLogInformation($"{@event.Name}------{DateTime.Now}");
             return Task.CompletedTask;
         }
     }

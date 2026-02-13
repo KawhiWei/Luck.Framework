@@ -23,7 +23,6 @@ public class TestIntegrationFanOutPayEventHandler : IIntegrationEventHandler<Tes
 
     public Task HandleAsync(TestIntegrationFanOutPayEvent @event)
     {
-        _logger.DoveLogInformation($"{@event.Name}---A1---{DateTime.Now}");
         return Task.CompletedTask;
     }
 }

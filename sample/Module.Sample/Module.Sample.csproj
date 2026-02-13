@@ -1,7 +1,7 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
 	<PropertyGroup>
-		<TargetFramework>net6.0</TargetFramework>
+		<TargetFramework>net10.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
@@ -22,7 +22,6 @@
 		<ProjectReference Include="..\..\src\framework\Luck.EventBus.RabbitMQ\Luck.EventBus.RabbitMQ.csproj" />
 		<ProjectReference Include="..\..\src\framework\Luck.Framework\Luck.Framework.csproj" />
 		<ProjectReference Include="..\..\src\framework\Luck.Redis.StackExchange\Luck.Redis.StackExchange.csproj" />
-		<ProjectReference Include="..\..\src\Luck.Dove.Logging\Luck.Dove.Logging.csproj" />
 	</ItemGroup>
 
 </Project>

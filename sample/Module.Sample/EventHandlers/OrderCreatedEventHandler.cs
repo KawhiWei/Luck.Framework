@@ -13,7 +13,6 @@ namespace Module.Sample.EventHandlers
         }
         public Task Handle(OrderCreatedEto notification, CancellationToken cancellationToken)
         {
-            _logger.DoveLogInformation($"创建订单成功,订单Id={notification.Id},Name={notification.Name},创建时间：{DateTime.Now}");
             return Task.CompletedTask;
         }
     }

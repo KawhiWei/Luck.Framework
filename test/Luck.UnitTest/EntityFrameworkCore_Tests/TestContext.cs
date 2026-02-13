@@ -1,5 +1,4 @@
-﻿using System;
-using Luck.EntityFrameworkCore.DbContexts;
+﻿using Luck.EntityFrameworkCore.DbContexts;
 using Luck.UnitTest.Models;
 using Microsoft.EntityFrameworkCore;
 

@@ -25,7 +25,6 @@ namespace Module.Sample.EventHandlers
         public Task HandleAsync(CreateOrderIntegrationEvent @event)
         {
             // _logger.LogInformation($"{@event.Serialize()}");
-            _logger.DoveLogInformation($"{@event.Serialize()}");
             return Task.CompletedTask;
         }
 

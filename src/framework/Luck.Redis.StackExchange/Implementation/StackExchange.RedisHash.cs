@@ -1,5 +1,4 @@
 ﻿using Luck.Framework.Extensions;
-using Luck.Framework.Infrastructure.Caching;
 using StackExchange.Redis;
 using System.Net;
 using IRedisHash = Luck.Framework.Infrastructure.Caching.Interface.IRedisHash;
