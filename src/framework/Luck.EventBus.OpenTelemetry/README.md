@@ -1,11 +1,11 @@
-# OpenTelemetry.Luck.EventBus
+# Luck.EventBus.OpenTelemetry
 
 Luck.EventBus 的 OpenTelemetry 集成包，支持分布式链路追踪。
 
 ## 安装
 
 ```bash
-dotnet add package OpenTelemetry.Luck.EventBus
+dotnet add package Luck.EventBus.OpenTelemetry
 ```
 
 ## 快速开始
@@ -13,7 +13,7 @@ dotnet add package OpenTelemetry.Luck.EventBus
 ### 1. 基础配置
 
 ```csharp
-using OpenTelemetry.Luck.EventBus;
+using Luck.EventBus.OpenTelemetry;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 
@@ -149,7 +149,7 @@ docker run -d --name jaeger \
 ```csharp
 using Luck.EventBus.RabbitMQ;
 using Luck.Framework.Event;
-using OpenTelemetry.Luck.EventBus;
+using Luck.EventBus.OpenTelemetry;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 

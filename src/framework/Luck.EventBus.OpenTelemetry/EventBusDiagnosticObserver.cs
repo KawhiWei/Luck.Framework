@@ -1,4 +1,4 @@
-namespace OpenTelemetry.Luck.EventBus;
+namespace Luck.EventBus.OpenTelemetry;
 
 /// <summary>
 /// 用于订阅单个 DiagnosticListener 事件的观察者

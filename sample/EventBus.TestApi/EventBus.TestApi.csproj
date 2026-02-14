@@ -19,6 +19,6 @@
     <ProjectReference Include="..\..\src\framework\Luck.AutoDependencyInjection\Luck.AutoDependencyInjection.csproj" />
     <ProjectReference Include="..\..\src\framework\Luck.EventBus.RabbitMQ\Luck.EventBus.RabbitMQ.csproj" />
     <ProjectReference Include="..\..\src\framework\Luck.Framework\Luck.Framework.csproj" />
-    <ProjectReference Include="..\..\src\framework\OpenTelemetry.Luck.EventBus\OpenTelemetry.Luck.EventBus.csproj" />
+    <ProjectReference Include="..\..\src\framework\Luck.EventBus.OpenTelemetry\Luck.EventBus.OpenTelemetry.csproj" />
   </ItemGroup>
 </Project>

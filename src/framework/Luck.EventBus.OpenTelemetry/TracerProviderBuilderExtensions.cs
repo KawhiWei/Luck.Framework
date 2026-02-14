@@ -1,6 +1,6 @@
 using OpenTelemetry.Trace;
 
-namespace OpenTelemetry.Luck.EventBus;
+namespace Luck.EventBus.OpenTelemetry;
 
 /// <summary>
 /// RabbitMQ EventBus OpenTelemetry 扩展方法

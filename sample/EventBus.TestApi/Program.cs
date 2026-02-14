@@ -4,7 +4,7 @@ using Luck.AutoDependencyInjection;
 using Luck.AutoDependencyInjection.PropertyInjection;
 using Luck.EventBus.RabbitMQ;
 using Luck.Framework.Event;
-using OpenTelemetry.Luck.EventBus;
+using Luck.EventBus.OpenTelemetry;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using EventBus.TestApi.Events;

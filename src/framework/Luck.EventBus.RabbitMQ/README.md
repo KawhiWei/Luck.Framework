@@ -160,14 +160,14 @@ public enum EWorkModel
 ### 1. 安装 OpenTelemetry 包
 
 ```bash
-dotnet add package OpenTelemetry.Luck.EventBus
+dotnet add package Luck.EventBus.OpenTelemetry
 dotnet add package OpenTelemetry.Exporter.OpenTelemetryProtocol
 ```
 
 ### 2. 配置 OpenTelemetry
 
 ```csharp
-using OpenTelemetry.Luck.EventBus;
+using Luck.EventBus.OpenTelemetry;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 

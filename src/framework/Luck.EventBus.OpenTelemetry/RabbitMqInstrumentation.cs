@@ -1,7 +1,7 @@
 using System.Diagnostics;
 using Luck.Framework.Event;
 
-namespace OpenTelemetry.Luck.EventBus;
+namespace Luck.EventBus.OpenTelemetry;
 
 /// <summary>
 /// EventBus OpenTelemetry 仪表化

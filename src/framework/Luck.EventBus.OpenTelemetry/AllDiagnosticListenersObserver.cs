@@ -1,6 +1,6 @@
 using System.Diagnostics;
 
-namespace OpenTelemetry.Luck.EventBus;
+namespace Luck.EventBus.OpenTelemetry;
 
 /// <summary>
 /// 用于订阅所有 DiagnosticListener 的观察者
