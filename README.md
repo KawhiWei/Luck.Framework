@@ -63,6 +63,7 @@ Luck.Framework 是一个基于模块化设计理念的 .NET 开发框架，旨�
 |------|------|-------|
 | **Luck.EventBus.RabbitMQ** | RabbitMQ 事件总线 | [![NuGet](https://img.shields.io/nuget/v/Luck.EventBus.RabbitMQ.svg)](https://www.nuget.org/packages/Luck.EventBus.RabbitMQ/) |
 | **Luck.EventBus.Kafka** | Kafka 事件总线 | [![NuGet](https://img.shields.io/nuget/v/Luck.EventBus.Kafka.svg)](https://www.nuget.org/packages/Luck.EventBus.Kafka/) |
+| **Luck.EventBus.OpenTelemetry** | OpenTelemetry 链路追踪集成 | [![NuGet](https://img.shields.io/nuget/v/Luck.EventBus.OpenTelemetry.svg)](https://www.nuget.org/packages/Luck.EventBus.OpenTelemetry/) |
 
 ### 缓存模块
 
@@ -216,28 +217,45 @@ services.AddLuckDbContext<AppDbContext>(options =>
 
 ### Luck.EventBus - 事件总线
 
-支持 RabbitMQ 和 Kafka 两种消息队列。
+支持 RabbitMQ 和 Kafka 两种消息队列，完全异步架构，内置诊断事件系统。
 
 ```csharp
 // RabbitMQ 配置
-services.AddRabbitMQEventBus(options =>
+services.AddLuckEventBusRabbitMq(options =>
 {
-    options.HostName = "localhost";
+    options.Host = "localhost";
     options.UserName = "guest";
     options.Password = "guest";
 });
 
-// 发布事件
+// 发布事件（异步）
 await eventBus.PublishAsync(new OrderCreatedEvent { OrderId = 1 });
 
 // 订阅事件
-public class OrderCreatedHandler : IEventHandler<OrderCreatedEvent>
+public class OrderCreatedHandler : IIntegrationEventHandler<OrderCreatedEvent>
 {
     public Task HandleAsync(OrderCreatedEvent eventData)
     {
         // 处理逻辑
     }
 }
+```
+
+#### OpenTelemetry 集成
+
+```csharp
+// 添加 OpenTelemetry 链路追踪
+services.AddOpenTelemetry()
+    .WithTracing(tracing =>
+    {
+        tracing
+            .AddLuckEventBusInstrumentation()
+            .AddOtlpExporter(options =>
+            {
+                options.Endpoint = new Uri("http://localhost:5081");
+                options.Protocol = OtlpExportProtocol.Grpc;
+            });
+    });
 ```
 
 ### Luck.Redis.StackExchange - 缓存
@@ -275,18 +293,20 @@ public class MyService
 
 所有版本更新记录请查看 `change/` 目录：
 
-### 最新版本 (2.0.8)
+### 最新版本 (2.0.9)
 
-- ✅ 添加对 .NET 9.0 和 .NET 10.0 的支持
-- ✅ 升级所有依赖包到最新版本
-- ✅ StackExchange.Redis: 2.8.0 → 2.11.0
-- ✅ Dapper: 2.1.35 → 2.1.66
-- ✅ Confluent.Kafka: 2.5.0 → 2.13.0
+- ✅ RabbitMQ EventBus 完全异步架构重构
+- ✅ 发布/消费通道完全隔离，提升性能和稳定性
+- ✅ 添加诊断事件系统，支持全流程追踪
+- ✅ 新增 Luck.EventBus.OpenTelemetry 包，支持分布式链路追踪
+- ✅ RabbitMQ.Client 升级至 7.2.0，支持完全异步 API
+- ✅ 方法重命名：`AddEventBusRabbitMq` → `AddLuckEventBusRabbitMq`
 
 ### 历史版本
 
 | 版本 | 文件 |
 |------|------|
+| 2.0.9 | [change/2.0.9.md](change/2.0.9.md) |
 | 2.0.8 | [change/2.0.8.md](change/2.0.8.md) |
 | 2.0.6 | [change/2.0.6.md](change/2.0.6.md) |
 | 2.0.5 | [change/2.0.5.md](change/2.0.5.md) |

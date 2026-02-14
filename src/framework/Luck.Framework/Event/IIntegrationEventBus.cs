@@ -1,22 +1,19 @@
-﻿namespace Luck.Framework.Event
+namespace Luck.Framework.Event
 {
     /// <summary>
-    /// 发送事件接口定义
+    /// 发送事件接口定义（纯异步）
     /// </summary>
     public interface IIntegrationEventBus
     {
         /// <summary>
-        /// 发布事件
+        /// 发布事件（异步）
         /// </summary>
-        /// <param name="event"></param>
-        /// <param name="priority"></param>
-        /// <typeparam name="TEvent"></typeparam>
-        void Publish<TEvent>(TEvent @event, byte? priority = 1) where TEvent : IIntegrationEvent;
-
+        Task PublishAsync<TEvent>(TEvent @event, byte? priority = 1, CancellationToken cancellationToken = default) 
+            where TEvent : IIntegrationEvent;
 
         /// <summary>
-        /// 订阅者开启
+        /// 订阅者开启（异步）
         /// </summary>
-        void Subscribe();
+        Task SubscribeAsync(CancellationToken cancellationToken = default);
     }
 }

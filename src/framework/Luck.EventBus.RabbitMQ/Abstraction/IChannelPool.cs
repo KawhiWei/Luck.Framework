@@ -2,17 +2,18 @@ using RabbitMQ.Client;
 
 namespace Luck.EventBus.RabbitMQ.Abstraction;
 
-public interface IChannelPool: IDisposable
+/// <summary>
+/// Channel 连接池接口（纯异步）
+/// </summary>
+public interface IChannelPool : IAsyncDisposable
 {
     /// <summary>
-    /// 从池中获取Channel
+    /// 从池中获取 Channel（异步）
     /// </summary>
-    /// <returns></returns>
-    IModel GetChannel();
+    Task<IChannel> GetChannelAsync(CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// 归还Channel到池或者释放
+    /// 归还 Channel 到池或者释放
     /// </summary>
-    /// <param name="channel"></param>
-    void ReturnChannel(IModel channel);
+    void ReturnChannel(IChannel channel);
 }

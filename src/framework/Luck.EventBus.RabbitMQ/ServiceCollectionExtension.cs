@@ -1,4 +1,4 @@
-﻿using Luck.EventBus.RabbitMQ;
+using Luck.EventBus.RabbitMQ;
 using Luck.EventBus.RabbitMQ.Abstraction;
 using Luck.EventBus.RabbitMQ.Manager;
 using Luck.Framework.Event;
@@ -9,10 +9,13 @@ namespace Microsoft.Extensions.DependencyInjection
 {
     public static class ServiceCollectionExtension
     {
-        public static IServiceCollection AddEventBusRabbitMq(this IServiceCollection service, Action<RabbitMqConfig> action)
+        public static IServiceCollection AddLuckEventBusRabbitMq(this IServiceCollection service, Action<RabbitMqConfig> action)
         {
             var config = new RabbitMqConfig();
             action.Invoke(config);
+            
+            // 注册配置
+            service.AddSingleton(config);
             
             service.AddRabbitMqPersistentConnection(config)
                 .AddSingleton<IIntegrationEventBus, RabbitMqEventBus>(serviceProvider
@@ -23,7 +26,6 @@ namespace Microsoft.Extensions.DependencyInjection
             return service;
         }
 
-
         private static IServiceCollection AddRabbitMqPersistentConnection(this IServiceCollection service, RabbitMqConfig config)
         {
             service.AddSingleton<IRabbitMqPersistentConnection>(sp =>
@@ -32,7 +34,6 @@ namespace Microsoft.Extensions.DependencyInjection
                 var factory = new ConnectionFactory()
                 {
                     HostName = config.Host,
-                    DispatchConsumersAsync = true,
                     UserName = config.UserName,
                     Password = config.PassWord,
                     Port = config.Port,

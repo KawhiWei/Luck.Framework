@@ -1,4 +1,4 @@
-﻿using Luck.Framework.Event;
+using Luck.Framework.Event;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -12,15 +12,15 @@ namespace Luck.EventBus.RabbitMQ
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             using var scope = serviceProvider.CreateScope();
-            var eventBus= scope.ServiceProvider.GetService<IIntegrationEventBus>();
+            var eventBus = scope.ServiceProvider.GetService<IIntegrationEventBus>();
             if (eventBus is null)
             {
                 throw new Exception("RabbitMQ集成事件总线没有注册");
             }
-            eventBus.Subscribe();
+            await eventBus.SubscribeAsync(stoppingToken);
             while (!stoppingToken.IsCancellationRequested)
             {
-                await  Task.Delay(5000, stoppingToken);
+                await Task.Delay(5000, stoppingToken);
             }
         }
     }

@@ -1,7 +1,7 @@
 <Project>
 	<PropertyGroup>
 		<LangVersion>latest</LangVersion>
-		<Version>2.0.8</Version>
+		<Version>2.0.9</Version>
 		<NoWarn>$(NoWarn);CS1591;CS0436;NU5104</NoWarn>
 		<PackageLicenseExpression>LGPL-3.0-only</PackageLicenseExpression>
 		<RepositoryType>git</RepositoryType>

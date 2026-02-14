@@ -4,33 +4,89 @@ using RabbitMQ.Client;
 
 namespace Luck.EventBus.RabbitMQ.Manager;
 
-internal sealed class ChannelPool(IConnection connection, uint maxSize) : IChannelPool
+/// <summary>
+/// Channel 连接池实现（纯异步版本）
+/// </summary>
+internal sealed class ChannelPool : IChannelPool
 {
-    private readonly ConcurrentBag<IModel> _channels = new();
+    private readonly IConnection _connection;
+    private readonly uint _maxSize;
+    private readonly ConcurrentBag<IChannel> _channels = new();
+    private readonly SemaphoreSlim _createLock = new(1, 1);
+    private bool _disposed;
 
-    public void Dispose()
+    public ChannelPool(IConnection connection, uint maxSize)
     {
-        foreach (var channel in _channels)
+        _connection = connection ?? throw new ArgumentNullException(nameof(connection));
+        _maxSize = maxSize;
+    }
+
+    public async Task<IChannel> GetChannelAsync(CancellationToken cancellationToken = default)
+    {
+        if (_disposed)
+        {
+            throw new ObjectDisposedException(nameof(ChannelPool));
+        }
+
+        // 尝试从池中获取
+        if (_channels.TryTake(out var channel) && channel.IsOpen)
+        {
+            return channel;
+        }
+
+        // 池中没有可用 channel，创建新的
+        await _createLock.WaitAsync(cancellationToken);
+        try
+        {
+            return await _connection.CreateChannelAsync(cancellationToken: cancellationToken);
+        }
+        finally
+        {
+            _createLock.Release();
+        }
+    }
+
+    public void ReturnChannel(IChannel channel)
+    {
+        if (_disposed || !channel.IsOpen)
+        {
+            channel.Dispose();
+            return;
+        }
+
+        if (_channels.Count < _maxSize)
+        {
+            _channels.Add(channel);
+        }
+        else
         {
             channel.Dispose();
         }
     }
 
-    /// <inheritdoc />
-    public IModel GetChannel()
+    public async ValueTask DisposeAsync()
     {
-        return _channels.TryTake(out var channel) ? channel : connection.CreateModel();
-    }
+        if (_disposed) return;
 
-    /// <inheritdoc />
-    public void ReturnChannel(IModel channel)
-    {
-        if (_channels.Count <= maxSize)
+        _disposed = true;
+
+        foreach (var channel in _channels)
         {
-            _channels.Add(channel);
-            return;
+            try
+            {
+                await channel.DisposeAsync();
+            }
+            catch
+            {
+                // 忽略释放时的错误
+            }
         }
 
-        channel.Dispose();
+        _createLock.Dispose();
+    }
+
+    public void Dispose()
+    {
+        DisposeAsync().AsTask().GetAwaiter().GetResult();
     }
 }

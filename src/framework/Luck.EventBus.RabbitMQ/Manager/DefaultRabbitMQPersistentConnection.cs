@@ -1,4 +1,4 @@
-﻿using System.Net.Sockets;
+using System.Net.Sockets;
 using Luck.EventBus.RabbitMQ.Abstraction;
 using Microsoft.Extensions.Logging;
 using Polly;
@@ -9,10 +9,9 @@ using RabbitMQ.Client.Exceptions;
 namespace Luck.EventBus.RabbitMQ.Manager
 {
     /// <summary>
-    /// 
+    /// RabbitMQ 持久化连接管理类（纯异步版本）
     /// </summary>
-    public class DefaultRabbitMqPersistentConnection
-        : IRabbitMqPersistentConnection
+    public class DefaultRabbitMqPersistentConnection : IRabbitMqPersistentConnection
     {
         private readonly IConnectionFactory _connectionFactory;
         private readonly ILogger<DefaultRabbitMqPersistentConnection> _logger;
@@ -20,15 +19,12 @@ namespace Luck.EventBus.RabbitMQ.Manager
         private readonly List<AmqpTcpEndpoint>? _tcpEndpoints;
         private readonly uint _maxPoolCount;
         private readonly int _retryCount;
-        private IChannelPool? _channelPool;
+        
+        // 发布通道池和消费通道池分离
+        private IChannelPool? _publishChannelPool;
+        private IChannelPool? _consumerChannelPool;
         private IConnection? _connection;
         private bool _disposed;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        private readonly object _syncRoot = new object();
-
 
         public DefaultRabbitMqPersistentConnection(
             IConnectionFactory connectionFactory,
@@ -42,46 +38,26 @@ namespace Luck.EventBus.RabbitMQ.Manager
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _retryCount = retryCount;
             _tcpEndpoints = tcpEndpoints;
-            _tcpEndpoints = tcpEndpoints;
             _maxPoolCount = maxChannelCount < 1 ? (uint)Environment.ProcessorCount : maxChannelCount;
         }
 
-
         public bool IsConnected => _connection is { IsOpen: true } && !_disposed;
 
-        public void ReturnChannel(IModel channel)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IModel GetChannel()
-        {
-            throw new NotImplementedException();
-        }
-
-        public IModel CreateModel()
-        {
-            if (!IsConnected)
-            {
-                throw new InvalidOperationException("RabbitMQ连接失败");
-            }
-
-            if (_connection is null)
-                throw new InvalidOperationException("RabbitMQ连接未创建");
-            return _connection.CreateModel();
-        }
-
-
-        public bool TryConnect()
+        public async Task<bool> TryConnectAsync(CancellationToken cancellationToken = default)
         {
             _logger.LogInformation("RabbitMQ客户端尝试连接");
-            _connectionLock.Wait();
+            await _connectionLock.WaitAsync(cancellationToken);
 
             try
             {
+                if (IsConnected)
+                {
+                    return true;
+                }
+
                 var policy = Policy.Handle<SocketException>()
                     .Or<BrokerUnreachableException>()
-                    .WaitAndRetry(_retryCount, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
+                    .WaitAndRetryAsync(_retryCount, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
                         (ex, time) =>
                         {
                             _logger.LogWarning(ex, "RabbitMQ客户端无法连接 {TimeOut}s ({ExceptionMessage})",
@@ -89,24 +65,29 @@ namespace Luck.EventBus.RabbitMQ.Manager
                         }
                     );
 
-                policy.Execute(() =>
+                await policy.ExecuteAsync(async ct =>
                 {
-                    _connection = _tcpEndpoints is not null &&
-                                  _tcpEndpoints.Count > 0
-                        ? _connectionFactory.CreateConnection(_tcpEndpoints)
-                        : _connectionFactory.CreateConnection();
-                });
+                    _connection = _tcpEndpoints is not null && _tcpEndpoints.Count > 0
+                        ? await _connectionFactory.CreateConnectionAsync(_tcpEndpoints, ct)
+                        : await _connectionFactory.CreateConnectionAsync(ct);
+                }, cancellationToken);
 
                 if (IsConnected && _connection is not null)
                 {
-                    _connection.ConnectionShutdown += OnConnectionShutdown;
-                    _connection.CallbackException += OnCallbackException;
-                    _connection.ConnectionBlocked += OnConnectionBlocked;
+                    _connection.ConnectionShutdownAsync += OnConnectionShutdownAsync;
+                    _connection.CallbackExceptionAsync += OnCallbackExceptionAsync;
+                    _connection.ConnectionBlockedAsync += OnConnectionBlockedAsync;
 
                     _logger.LogInformation("RabbitMQ Client获得了一个持久连接 '{HostName}' 并且订阅了故障事件",
                         _connection.Endpoint.HostName);
-                    _channelPool = new ChannelPool(_connection, _maxPoolCount);
-                    _logger.LogInformation("RabbitBus channel pool max count: {Count}", _maxPoolCount);
+                    
+                    // 创建独立的发布通道池和消费通道池
+                    _publishChannelPool = new ChannelPool(_connection, _maxPoolCount);
+                    _consumerChannelPool = new ChannelPool(_connection, _maxPoolCount);
+                    
+                    _logger.LogInformation("RabbitBus 发布通道池最大数量: {Count}", _maxPoolCount);
+                    _logger.LogInformation("RabbitBus 消费通道池最大数量: {Count}", _maxPoolCount);
+                    
                     _disposed = false;
                     return true;
                 }
@@ -118,81 +99,138 @@ namespace Luck.EventBus.RabbitMQ.Manager
             }
             finally
             {
-                _ = _connectionLock.Release();
+                _connectionLock.Release();
             }
         }
 
-
-        public void Dispose()
+        public async Task<IChannel> GetPublishChannelAsync(CancellationToken cancellationToken = default)
         {
-            if (!_disposed)
+            if (!IsConnected)
             {
-                if (_connection is not null)
+                await TryConnectAsync(cancellationToken);
+            }
+
+            if (_publishChannelPool is null)
+            {
+                throw new InvalidOperationException("发布通道池未初始化");
+            }
+
+            return await _publishChannelPool.GetChannelAsync(cancellationToken);
+        }
+
+        public async Task<IChannel> GetConsumerChannelAsync(CancellationToken cancellationToken = default)
+        {
+            if (!IsConnected)
+            {
+                await TryConnectAsync(cancellationToken);
+            }
+
+            if (_consumerChannelPool is null)
+            {
+                throw new InvalidOperationException("消费通道池未初始化");
+            }
+
+            return await _consumerChannelPool.GetChannelAsync(cancellationToken);
+        }
+
+        public async Task<IChannel> CreateChannelAsync(CancellationToken cancellationToken = default)
+        {
+            if (!IsConnected)
+            {
+                throw new InvalidOperationException("RabbitMQ连接失败");
+            }
+
+            if (_connection is null)
+                throw new InvalidOperationException("RabbitMQ连接未创建");
+            
+            return await _connection.CreateChannelAsync(cancellationToken: cancellationToken);
+        }
+
+        public void ReturnPublishChannel(IChannel channel)
+        {
+            if (_disposed || !channel.IsOpen)
+            {
+                channel.Dispose();
+                return;
+            }
+
+            _publishChannelPool?.ReturnChannel(channel);
+        }
+
+        public void ReturnConsumerChannel(IChannel channel)
+        {
+            if (_disposed || !channel.IsOpen)
+            {
+                channel.Dispose();
+                return;
+            }
+
+            _consumerChannelPool?.ReturnChannel(channel);
+        }
+
+        public async ValueTask DisposeAsync()
+        {
+            if (_disposed)
+                return;
+
+            _disposed = true;
+
+            if (_connection is not null)
+            {
+                try
                 {
-                    try
-                    {
-                        _connection.ConnectionShutdown -= OnConnectionShutdown;
-                        _connection.CallbackException -= OnCallbackException;
-                        _connection.ConnectionBlocked -= OnConnectionBlocked;
-                        _connection.Dispose();
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.LogCritical("{Message}", ex.Message);
-                    }
+                    _connection.ConnectionShutdownAsync -= OnConnectionShutdownAsync;
+                    _connection.CallbackExceptionAsync -= OnCallbackExceptionAsync;
+                    _connection.ConnectionBlockedAsync -= OnConnectionBlockedAsync;
+                    await _connection.DisposeAsync();
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogCritical("{Message}", ex.Message);
                 }
             }
 
-            if (_channelPool is null)
+            if (_publishChannelPool is not null)
             {
-                return;
+                await _publishChannelPool.DisposeAsync();
             }
-
-            try
+            if (_consumerChannelPool is not null)
             {
-                _channelPool.Dispose();
+                await _consumerChannelPool.DisposeAsync();
             }
-            catch (Exception ex)
-            {
-                _logger.LogCritical("{Message}", ex.Message);
-            }
-
-            _disposed = true;
+            _connectionLock.Dispose();
         }
 
-
-        private void OnConnectionBlocked(object? sender, ConnectionBlockedEventArgs e)
+        public void Dispose()
         {
-            if (_disposed)
-            {
-                return;
-            }
+            DisposeAsync().AsTask().GetAwaiter().GetResult();
+        }
+
+        private Task OnConnectionBlockedAsync(object? sender, ConnectionBlockedEventArgs e)
+        {
+            if (_disposed) return Task.CompletedTask;
 
             _logger.LogWarning("RabbitMQ连接关闭。正在尝试重新连接...");
-            _ = TryConnect();
+            _ = TryConnectAsync();
+            return Task.CompletedTask;
         }
 
-        void OnCallbackException(object? sender, CallbackExceptionEventArgs e)
+        private Task OnCallbackExceptionAsync(object? sender, CallbackExceptionEventArgs e)
         {
-            if (_disposed)
-            {
-                return;
-            }
+            if (_disposed) return Task.CompletedTask;
 
             _logger.LogWarning("RabbitMQ连接抛出异常。在重试...");
-            _ = TryConnect();
+            _ = TryConnectAsync();
+            return Task.CompletedTask;
         }
 
-        void OnConnectionShutdown(object? sender, ShutdownEventArgs reason)
+        private Task OnConnectionShutdownAsync(object? sender, ShutdownEventArgs reason)
         {
-            if (_disposed)
-            {
-                return;
-            }
+            if (_disposed) return Task.CompletedTask;
 
             _logger.LogWarning("RabbitMQ连接处于关闭状态。正在尝试重新连接...");
-
-            _ = TryConnect();
+            _ = TryConnectAsync();
+            return Task.CompletedTask;
         }
     }
 }
