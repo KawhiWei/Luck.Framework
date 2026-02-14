@@ -2,7 +2,7 @@ using Luck.AppModule;
 using Luck.AutoDependencyInjection;
 using Luck.Framework.Infrastructure;
 
-namespace Module.Sample
+namespace EventBus.TestApi
 {
     [DependsOn(
         typeof(AutoDependencyAppModule)

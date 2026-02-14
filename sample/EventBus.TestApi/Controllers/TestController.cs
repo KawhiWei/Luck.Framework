@@ -8,7 +8,7 @@ namespace EventBus.TestApi.Controllers;
 /// 测试事件控制器
 /// </summary>
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/test")]
 public class TestController : ControllerBase
 {
     private readonly IIntegrationEventBus _eventBus;
@@ -23,8 +23,8 @@ public class TestController : ControllerBase
     /// <summary>
     /// 发送测试事件
     /// </summary>
-    [HttpPost("send")]
-    public IActionResult SendEvent([FromBody] SendEventRequest request)
+    [HttpPost("send-event")]
+    public async Task<IActionResult> SendEvent([FromBody] SendEventRequest request)
     {
         var testEvent = new TestEvent
         {
@@ -34,7 +34,7 @@ public class TestController : ControllerBase
 
         _logger.LogInformation("正在发送测试事件: {EventId}", testEvent.EventId);
         
-        _eventBus.Publish(testEvent);
+        await _eventBus.PublishAsync(testEvent);
 
         return Ok(new
         {
@@ -49,7 +49,7 @@ public class TestController : ControllerBase
     /// 批量发送测试事件
     /// </summary>
     [HttpPost("send-batch")]
-    public IActionResult SendBatchEvents([FromBody] SendBatchEventRequest request)
+    public async Task<IActionResult> SendBatchEvents([FromBody] SendBatchEventRequest request, CancellationToken cancellationToken)
     {
         var count = request.Count ?? 5;
         var events = new List<TestEvent>();
@@ -62,7 +62,7 @@ public class TestController : ControllerBase
                 SentAt = DateTime.UtcNow
             };
             events.Add(testEvent);
-            _eventBus.Publish(testEvent);
+            await _eventBus.PublishAsync(testEvent, cancellationToken: cancellationToken);
         }
 
         return Ok(new

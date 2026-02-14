@@ -1,10 +1,13 @@
 namespace OpenTelemetry.Luck.EventBus;
 
-internal class LuckDiagnosticListenerObserver : IObserver<KeyValuePair<string, object?>>
+/// <summary>
+/// 用于订阅单个 DiagnosticListener 事件的观察者
+/// </summary>
+internal class EventBusDiagnosticObserver : IObserver<KeyValuePair<string, object?>>
 {
     private readonly LuckEventBusInstrumentation _instrumentation;
 
-    public LuckDiagnosticListenerObserver(LuckEventBusInstrumentation instrumentation)
+    public EventBusDiagnosticObserver(LuckEventBusInstrumentation instrumentation)
     {
         _instrumentation = instrumentation;
     }

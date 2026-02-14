@@ -1,3 +1,4 @@
+using Luck.AutoDependencyInjection;
 using Luck.Framework.Event;
 
 namespace EventBus.TestApi.Events;
@@ -5,6 +6,7 @@ namespace EventBus.TestApi.Events;
 /// <summary>
 /// 测试事件处理器
 /// </summary>
+[DependencyInjection(ServiceLifetime.Transient, AddSelf = true)]
 public class TestEventHandler : IIntegrationEventHandler<TestEvent>
 {
     private readonly ILogger<TestEventHandler> _logger;

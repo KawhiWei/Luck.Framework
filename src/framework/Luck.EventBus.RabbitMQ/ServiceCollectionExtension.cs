@@ -26,7 +26,6 @@ namespace Microsoft.Extensions.DependencyInjection
             return service;
         }
 
-
         private static IServiceCollection AddRabbitMqPersistentConnection(this IServiceCollection service, RabbitMqConfig config)
         {
             service.AddSingleton<IRabbitMqPersistentConnection>(sp =>
@@ -35,7 +34,6 @@ namespace Microsoft.Extensions.DependencyInjection
                 var factory = new ConnectionFactory()
                 {
                     HostName = config.Host,
-                    DispatchConsumersAsync = true,
                     UserName = config.UserName,
                     Password = config.PassWord,
                     Port = config.Port,

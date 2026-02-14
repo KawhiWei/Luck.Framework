@@ -28,6 +28,11 @@ public abstract class LuckEventData
     public Activity? Activity { get; } = Activity.Current;
 
     /// <summary>
+    /// 原始内容（序列化后的 JSON）
+    /// </summary>
+    public string? RawContent { get; set; }
+
+    /// <summary>
     /// 初始化事件数据
     /// </summary>
     protected LuckEventData(LuckEventDefinition eventDefinition, EventBusType eventBusType)
