@@ -28,7 +28,7 @@ builder.Services.AddSwaggerGen(options =>
 builder.Services.AddHttpContextAccessor();
 
 // Configure RabbitMQ EventBus
-builder.Services.AddEventBusRabbitMq(config =>
+builder.Services.AddLuckEventBusRabbitMq(config =>
 {
     config.Host = builder.Configuration.GetValue<string>("RabbitMQ:Host") ?? "localhost";
     config.Port = builder.Configuration.GetValue<int>("RabbitMQ:Port");

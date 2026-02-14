@@ -9,7 +9,7 @@ namespace Microsoft.Extensions.DependencyInjection
 {
     public static class ServiceCollectionExtension
     {
-        public static IServiceCollection AddEventBusRabbitMq(this IServiceCollection service, Action<RabbitMqConfig> action)
+        public static IServiceCollection AddLuckEventBusRabbitMq(this IServiceCollection service, Action<RabbitMqConfig> action)
         {
             var config = new RabbitMqConfig();
             action.Invoke(config);
