@@ -34,6 +34,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "0.Solution Items", "0.Solut
 		Directory.Build.props = Directory.Build.props
 		.github\workflows\dotnet-format.yml = .github\workflows\dotnet-format.yml
 		LICENSE = LICENSE
+		Directory.Packages.props = Directory.Packages.props
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Luck.EventBus.RabbitMQ", "src\framework\Luck.EventBus.RabbitMQ\Luck.EventBus.RabbitMQ.csproj", "{79FEBCDD-AED6-4FEA-AD14-EF34DDE22905}"
@@ -73,6 +74,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventBus.TestApi", "sample\EventBus.TestApi\EventBus.TestApi.csproj", "{25F3F98E-4439-4F83-8190-E86CD2801B11}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Luck.EventBus.OpenTelemetry", "src\framework\Luck.EventBus.OpenTelemetry\Luck.EventBus.OpenTelemetry.csproj", "{15F12143-36D9-488A-ACAF-49F0FDDD96A8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Luck.Logging.Serilog", "src\framework\Luck.Logging.Serilog\Luck.Logging.Serilog.csproj", "{1CD3A80B-8B0C-446A-94C6-BA005404DE58}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -168,6 +171,10 @@ Global
 		{15F12143-36D9-488A-ACAF-49F0FDDD96A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{15F12143-36D9-488A-ACAF-49F0FDDD96A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{15F12143-36D9-488A-ACAF-49F0FDDD96A8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1CD3A80B-8B0C-446A-94C6-BA005404DE58}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1CD3A80B-8B0C-446A-94C6-BA005404DE58}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1CD3A80B-8B0C-446A-94C6-BA005404DE58}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1CD3A80B-8B0C-446A-94C6-BA005404DE58}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
