@@ -44,8 +44,15 @@ jobs:
         env:
           VERSION: ${{ inputs.version }}
         run: |
-          git tag -a "Release${VERSION}" -m "Release ${VERSION}"
-          git push origin "Release${VERSION}"
+          TAG="Release${VERSION}"
+          if git ls-remote --exit-code --tags origin "refs/tags/${TAG}" >/dev/null; then
+            echo "Tag ${TAG} already exists; skipping tag creation."
+            exit 0
+          fi
+          git -c user.name="github-actions[bot]" \
+            -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+            tag -a "${TAG}" -m "Release ${VERSION}"
+          git push origin "refs/tags/${TAG}"
 
       - name: Upload NuGet packages
         uses: actions/upload-artifact@v4
