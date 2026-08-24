@@ -1,353 +1,165 @@
-# Luck.EventBus.RabbitMQ 使用文档
+# Luck.EventBus.RabbitMQ
 
-## 概述
+`Luck.EventBus.RabbitMQ` 是 `Luck.Framework.Event` 的 RabbitMQ 实现，提供异步事件发布、程序集扫描式处理器订阅、独立的发布/消费通道，以及 `DiagnosticListener` 诊断事件。
 
-Luck.EventBus.RabbitMQ 是一个完全异步的 RabbitMQ 事件总线实现，支持诊断事件和 OpenTelemetry 分布式追踪。
+## 安装
 
-**特点：**
-- 完全异步 API，无阻塞
-- 发布/消费通道完全隔离
-- 内置诊断事件系统
-- 支持 OpenTelemetry 集成
-- 自动重连和故障恢复
+```bash
+dotnet add package Luck.EventBus.RabbitMQ --version 2.0.9
+```
+
+项目依赖 `Luck.Framework`、`RabbitMQ.Client` 和 `Polly`，并引用 `Microsoft.AspNetCore.App` 以运行后台订阅服务。目标框架为 `net6.0`、`net7.0`、`net8.0`、`net9.0` 和 `net10.0`。
 
 ## 快速开始
 
-### 1. 安装
-
-```bash
-dotnet add package Luck.EventBus.RabbitMQ
-```
-
-### 2. 注册服务
+### 注册总线和处理器
 
 ```csharp
+using Luck.EventBus.RabbitMQ.Enums;
+using Luck.Framework.Event;
 using Microsoft.Extensions.DependencyInjection;
 
-builder.Services.AddLuckEventBusRabbitMq(config =>
+builder.Services.AddLuckEventBusRabbitMq(options =>
 {
-    config.Host = "localhost";
-    config.Port = 5672;
-    config.UserName = "guest";
-    config.PassWord = "guest";
-    config.VirtualHost = "/";
-    config.RetryCount = 5;
+    options.Host = "localhost";
+    options.Port = 5672;
+    options.UserName = "guest";
+    options.PassWord = "guest";
+    options.VirtualHost = "/";
+    options.RetryCount = 5;
 });
+
+builder.Services.AddTransient<IIntegrationEventHandler<OrderCreated>, OrderCreatedHandler>();
 ```
 
-### 3. 定义事件
+`AddLuckEventBusRabbitMq` 会注册 `IIntegrationEventBus`、订阅管理器、持久连接和 `RabbitMqSubscribeService`。后台服务启动后会自动调用 `SubscribeAsync`，应用通常不需要手动调用订阅方法。
+
+### 定义事件和路由
+
+事件必须标记 `RabbitMqAttribute`，否则发布和订阅都会失败。当前源码中可用的交换机类型是 `Routing` 和 `FanOut`：
 
 ```csharp
-using Luck.Framework.Event;
 using Luck.EventBus.RabbitMQ.Attributes;
 using Luck.EventBus.RabbitMQ.Enums;
-
-[RabbitMq(EWorkModel.PublishSubscribe, "my_exchange", ExchangeType.Direct, "my_routing_key", "my_queue")]
-public class OrderCreatedEvent : IntegrationEvent
-{
-    public string OrderId { get; set; } = string.Empty;
-    public decimal Amount { get; set; }
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-}
-```
-
-### 4. 定义事件处理器
-
-```csharp
 using Luck.Framework.Event;
 
-public class OrderCreatedEventHandler : IIntegrationEventHandler<OrderCreatedEvent>
+[RabbitMq(
+    EWorkModel.Routing,
+    exchange: "orders",
+    exchangeType: ExchangeType.Routing,
+    routingKey: "order.created",
+    queue: "orders.worker")]
+public sealed class OrderCreated : IntegrationEvent
 {
-    private readonly ILogger<OrderCreatedEventHandler> _logger;
+    public string OrderId { get; init; } = string.Empty;
+}
 
-    public OrderCreatedEventHandler(ILogger<OrderCreatedEventHandler> logger)
+public sealed class OrderCreatedHandler : IIntegrationEventHandler<OrderCreated>
+{
+    public Task HandleAsync(OrderCreated @event)
     {
-        _logger = logger;
-    }
-
-    public Task HandleAsync(OrderCreatedEvent @event)
-    {
-        _logger.LogInformation("处理订单创建事件: {OrderId}, 金额: {Amount}", 
-            @event.OrderId, @event.Amount);
-        
-        // 处理业务逻辑
-        
+        Console.WriteLine(@event.OrderId);
         return Task.CompletedTask;
     }
 }
 ```
 
-### 5. 注册事件处理器
+### 发布事件
+
+通过 `IIntegrationEventBus` 发布，API 是纯异步的：
 
 ```csharp
-builder.Services.AddTransient<IIntegrationEventHandler<OrderCreatedEvent>, OrderCreatedEventHandler>();
-```
-
-### 6. 发布事件
-
-```csharp
-using Luck.Framework.Event;
-
-public class OrderService
+public sealed class OrderService(IIntegrationEventBus eventBus)
 {
-    private readonly IIntegrationEventBus _eventBus;
-
-    public OrderService(IIntegrationEventBus eventBus)
+    public Task CreateAsync(string orderId, CancellationToken cancellationToken)
     {
-        _eventBus = eventBus;
-    }
-
-    public async Task CreateOrderAsync(CreateOrderRequest request)
-    {
-        // 创建订单逻辑...
-        
-        var orderEvent = new OrderCreatedEvent
-        {
-            OrderId = Guid.NewGuid().ToString(),
-            Amount = request.Amount
-        };
-
-        // 发布事件（异步）
-        await _eventBus.PublishAsync(orderEvent);
+        return eventBus.PublishAsync(
+            new OrderCreated { OrderId = orderId },
+            cancellationToken: cancellationToken);
     }
 }
 ```
 
-## 配置选项
+发布前会校验 RabbitMQ 连接和事件特性，事件 JSON 使用 `System.Text.Json` 序列化；消息使用持久化投递模式，默认优先级为 `1`。
 
-### RabbitMqConfig
+## 配置
 
-```csharp
-public class RabbitMqConfig
-{
-    public string Host { get; set; } = "localhost";           // RabbitMQ 主机
-    public int Port { get; set; } = 5672;                      // RabbitMQ 端口
-    public string UserName { get; set; } = "guest";           // 用户名
-    public string PassWord { get; set; } = "guest";           // 密码
-    public string VirtualHost { get; set; } = "/";            // 虚拟主机
-    public int RetryCount { get; set; } = 5;                  // 重试次数
-}
-```
+`RabbitMqConfig` 的属性如下：
 
-## 交换机类型
+| 属性 | 默认值 | 说明 |
+| --- | --- | --- |
+| `Host` | 未初始化 | RabbitMQ 主机名，使用前必须设置 |
+| `Port` | `5672` | RabbitMQ 端口 |
+| `UserName` | 未初始化 | 用户名 |
+| `PassWord` | 未初始化 | 密码 |
+| `VirtualHost` | `/` | RabbitMQ 虚拟主机 |
+| `RetryCount` | `0` | 发布阶段 Polly 重试次数 |
+| `EnableDiagnosticEvents` | `false` | 预留配置项，当前实现不会据此关闭诊断事件 |
 
-```csharp
-public enum ExchangeType
-{
-    Direct,    // 直接路由
-    Fanout,    // 广播
-    Topic,     // 主题路由
-    Headers,   // 头路由
-    Routing    // 路由
-}
-```
+连接失败时持久连接会尝试建立连接；发布阶段的 Polly 策略只处理 `BrokerUnreachableException` 和 `SocketException`，按指数退避执行 `RetryCount` 次。重试次数为 `0` 时不会执行重试。
 
-## 工作模式
+## 交换机和工作模式
+
+`RabbitMqAttribute` 的构造函数是：
 
 ```csharp
-public enum EWorkModel
-{
-    None,               // 无交换机
-    PublishSubscribe,   // 发布订阅模式
-    Routing,            // 路由模式
-    Topics,             // 主题模式
-    Rpc                 // RPC 模式
-}
+RabbitMqAttribute(
+    EWorkModel workModel,
+    string exchange,
+    ExchangeType exchangeType,
+    string routingKey,
+    string queue = "")
 ```
 
-## OpenTelemetry 集成
+当前枚举值：
 
-### 1. 安装 OpenTelemetry 包
+| 枚举 | 生成的 RabbitMQ 类型 | 用途 |
+| --- | --- | --- |
+| `ExchangeType.Routing` | `direct` | 精确路由 |
+| `ExchangeType.FanOut` | `fanout` | 广播 |
+| `EWorkModel.None` | 空字符串 | 使用默认交换机；发布端不声明交换机 |
+| `EWorkModel.PublishSubscribe` | `fanout` | 发布/订阅 |
+| `EWorkModel.Routing` | `direct` | 路由 |
+| `EWorkModel.Topics` | `topic` | 主题 |
+| `EWorkModel.Delayed` | `x-delayed-message` | 延迟交换机，需要 RabbitMQ 插件和额外参数 |
 
-```bash
-dotnet add package Luck.EventBus.OpenTelemetry
-dotnet add package OpenTelemetry.Exporter.OpenTelemetryProtocol
-```
+`RabbitMqAttribute` 同时接收 `EWorkModel` 和 `ExchangeType`，源码只把 `ExchangeType` 转换为实际的 exchange type 字符串；应确保两者语义匹配。当前 `ExchangeType` 没有 `Direct`、`Topic` 或 `Headers` 成员。
 
-### 2. 配置 OpenTelemetry
+消费端会声明交换机和队列，并使用 `routingKey` 绑定队列。消费场景应提供非空的 exchange、queue 和 routing key；`EWorkModel.None` 只适合明确使用默认交换机的发布场景。
 
-```csharp
-using Luck.EventBus.OpenTelemetry;
-using OpenTelemetry.Resources;
-using OpenTelemetry.Trace;
+## 处理器发现和确认
 
-builder.Services.AddOpenTelemetry()
-    .WithTracing(tracing =>
-    {
-        tracing
-            .SetResourceBuilder(ResourceBuilder.CreateDefault()
-                .AddService("MyService", "1.0.0"))
-            .AddAspNetCoreInstrumentation()
-            .AddLuckEventBusInstrumentation()  // 添加 EventBus 仪表化
-            .AddConsoleExporter()
-            .AddOtlpExporter(options =>
-            {
-                // OpenObserve gRPC 端点
-                options.Endpoint = new Uri("http://localhost:5081");
-                options.Protocol = OpenTelemetry.Exporter.OtlpExportProtocol.Grpc;
-                options.Headers = "Authorization=Basic cm9vdEBleGFtcGxlLmNvbTp3U1J6RDJpSDltR2RWSENs,organization=default,stream-name=default";
-            });
-    });
-```
+`SubscribeAsync` 会通过 `AssemblyHelper` 查找当前加载程序集中的非抽象处理器类，并从其 `IIntegrationEventHandler<T>` 接口推断事件类型。因此处理器必须：
 
-### 3. 查看链路追踪
+- 是具体的非抽象类；
+- 实现 `IIntegrationEventHandler<T>`；
+- 通过 DI 注册，或者由 `Luck.AutoDependencyInjection` 自动注册；
+- 事件类型带有 `RabbitMqAttribute`。
 
-启动 OpenObserve:
-```bash
-docker run -d --name openobserve \
-  -p 5080:5080 \
-  -p 5081:5081 \
-  -v openobserve-data:/data \
-  -e ZO_DATA_DIR=/data \
-  -e ZO_ROOT_USER_EMAIL="root@example.com" \
-  -e ZO_ROOT_USER_PASSWORD="Complexpass#123" \
-  openobserve/openobserve:latest
-```
-
-访问 http://localhost:5080 查看链路追踪数据。
+消息只有在处理器成功完成后才会 `BasicAckAsync`。处理器异常会记录 `ProcessFailed` 诊断事件并重新抛出，消息不会在成功前确认；具体重投递行为由 RabbitMQ 消费者配置决定。
 
 ## 诊断事件
 
-### 事件类型
+事件总线创建名称为 `Luck.EventBus.Diagnostics` 的 `DiagnosticListener`，写入以下事件：
 
-| 事件名称 | 说明 | 数据 |
-|---------|------|------|
-| Published | 消息发布成功 | PublishEventData |
-| PublishFailed | 消息发布失败 | PublishEventData |
-| Received | 收到消息 | ConsumeEventData |
-| Processed | 消息处理成功 | ProcessEventData |
-| ProcessFailed | 消息处理失败 | ProcessEventData |
+| 事件名 | 数据类型 | 触发时机 |
+| --- | --- | --- |
+| `Published` | `PublishEventData` | 发布成功 |
+| `PublishFailed` | `PublishEventData` | 发布重试回调记录失败 |
+| `Received` | `ConsumeEventData` | 收到 RabbitMQ 消息 |
+| `Processed` | `ProcessEventData` | 处理器完成并确认消息 |
+| `ProcessFailed` | `ProcessEventData` | 处理器抛出异常 |
 
-### 事件数据结构
+`EnableDiagnosticEvents` 当前只是配置模型属性，`RabbitMqEventBus` 始终写入上述诊断事件。OpenTelemetry 集成见 [`Luck.EventBus.OpenTelemetry`](../Luck.EventBus.OpenTelemetry/README.md)。
 
-所有事件数据都继承自 `LuckEventData`，包含以下公共属性：
+## 注意事项
 
-```csharp
-public abstract class LuckEventData
-{
-    public LuckEventDefinition EventDefinition { get; }  // 事件定义
-    public EventBusType EventBusType { get; }            // 事件总线类型
-    public DateTimeOffset Timestamp { get; }             // 时间戳
-    public Activity? Activity { get; }                   // 当前 Activity
-    public string? RawContent { get; set; }              // 原始消息内容（JSON）
-    public LuckEventId LuckEventId { get; }              // 事件 ID
-    public LuckLogLevel Level { get; }                   // 日志级别
-}
-```
+- `RabbitMqEventBus` 的实现类是内部类型，应用应依赖 `IIntegrationEventBus`，不要直接构造实现类。
+- 事件 key 默认使用事件类型名称；同一事件类型的重复处理器注册会抛出 `ArgumentException`。
+- 发布和消费使用不同通道池；连接、通道和后台订阅服务由容器管理。
+- 诊断事件包含原始 JSON 内容，可能包含业务敏感数据。接入日志或追踪后应配置采样、脱敏或限制导出。
+- 当前实现的订阅循环会持续运行直到取消令牌触发；应用退出时应让宿主正常停止后台服务。
 
-### 订阅诊断事件
+## 许可证
 
-```csharp
-using System.Diagnostics;
-using Luck.Framework.Event;
-
-public class DiagnosticEventSubscriber : IObserver<DiagnosticListener>
-{
-    public void Subscribe()
-    {
-        DiagnosticListener.AllListeners.Subscribe(this);
-    }
-
-    public void OnNext(DiagnosticListener listener)
-    {
-        if (listener.Name == "Luck.EventBus.Diagnostics")
-        {
-            listener.Subscribe(new EventObserver());
-        }
-    }
-
-    private class EventObserver : IObserver<KeyValuePair<string, object?>>
-    {
-        public void OnNext(KeyValuePair<string, object?> value)
-        {
-            var eventName = value.Key;
-            var eventData = value.Value as LuckEventData;
-            
-            Console.WriteLine($"[Event] {eventName}");
-            Console.WriteLine($"  Type: {eventData?.EventBusType}");
-            Console.WriteLine($"  Timestamp: {eventData?.Timestamp}");
-            Console.WriteLine($"  RawContent: {eventData?.RawContent}");
-        }
-
-        public void OnError(Exception error) { }
-        public void OnCompleted() { }
-    }
-
-    public void OnError(Exception error) { }
-    public void OnCompleted() { }
-}
-```
-
-## 最佳实践
-
-### 1. 连接配置
-
-```csharp
-builder.Services.AddLuckEventBusRabbitMq(config =>
-{
-    // 使用环境变量或配置中心
-    config.Host = builder.Configuration["RabbitMQ:Host"] ?? "localhost";
-    config.Port = builder.Configuration.GetValue<int>("RabbitMQ:Port", 5672);
-    config.UserName = builder.Configuration["RabbitMQ:UserName"] ?? "guest";
-    config.PassWord = builder.Configuration["RabbitMQ:PassWord"] ?? "guest";
-    config.RetryCount = 5;
-});
-```
-
-### 2. 异常处理
-
-```csharp
-try
-{
-    await _eventBus.PublishAsync(orderEvent);
-}
-catch (Exception ex)
-{
-    _logger.LogError(ex, "发布事件失败");
-    // 处理失败逻辑，如重试或记录到数据库
-}
-```
-
-### 3. 性能考虑
-
-- 发布和消费使用独立的通道池，避免相互影响
-- 所有操作都是异步的，不会阻塞线程
-- 诊断事件包含原始消息内容，便于调试
-
-## 故障排查
-
-### 连接失败
-
-1. 检查 RabbitMQ 服务是否运行
-2. 检查主机名、端口、用户名和密码
-3. 检查网络连接和防火墙设置
-
-### 收不到消息
-
-1. 确认事件处理器已注册到 DI
-2. 检查交换机、队列和路由键配置
-3. 查看 RabbitMQ 管理界面（http://localhost:15672）
-
-### OpenTelemetry 无数据
-
-1. 确认 OpenObserve 容器已启动（端口 5080/5081）
-2. 检查 OTLP 端点配置是否正确
-3. 查看 API Key 是否有效
-4. 检查控制台是否有错误日志
-
-## 示例项目
-
-参考 `sample/EventBus.TestApi` 项目获取完整的示例代码。
-
-启动示例：
-```bash
-cd sample/EventBus.TestApi
-dotnet run
-```
-
-发送测试事件：
-```bash
-curl -X POST http://localhost:5000/api/test/send \
-  -H "Content-Type: application/json" \
-  -d '{"message": "Hello RabbitMQ!"}'
-```
+本项目采用 [LGPL-3.0-only](../../../LICENSE) 许可证。
