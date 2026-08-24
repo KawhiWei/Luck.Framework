@@ -11,7 +11,6 @@ internal class  DiagnosticSourceSubscriber: IObserver<DiagnosticListener>
     private readonly List<IDisposable> _listenerSubscriptions;
     private readonly Func<string, LuckDiagnosticSourceListener> _handlerFactory;
     
-    private IDisposable _allSourcesSubscription;
 
     /// <summary>
     /// 
@@ -20,7 +19,7 @@ internal class  DiagnosticSourceSubscriber: IObserver<DiagnosticListener>
     public DiagnosticSourceSubscriber(LuckDiagnosticSourceListener handlerFactory)
     {
         _handlerFactory = _=>handlerFactory;
-        this._listenerSubscriptions = new List<IDisposable>();
+        _listenerSubscriptions = new List<IDisposable>();
     }
     public void OnCompleted()
     {

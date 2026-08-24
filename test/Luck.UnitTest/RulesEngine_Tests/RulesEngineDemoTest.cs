@@ -76,12 +76,11 @@ public class RulesEngineDemoTest
                 "SuccessEvent": null
             }
             """;
-        var test = "10110291001";
         var bre = new RulesEngine.RulesEngine();
         try
         {
             var rule = ruleJsonStr.Deserialize<Rule>();
-            bre.AddWorkflow(new WorkflowRules()
+            bre.AddWorkflow(new Workflow()
             {
                 WorkflowName = "限制CA",
                 Rules = new[] { rule }
@@ -97,7 +96,6 @@ public class RulesEngineDemoTest
                 new RuleParameter("input", input)
             });
 
-            var sulemesssage = "";
         }
         catch (Exception e)
         {

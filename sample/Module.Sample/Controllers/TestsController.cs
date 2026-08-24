@@ -12,7 +12,7 @@ namespace Module.Sample.Controllers
     {
 
         [Injection]
-        private readonly IOrderService _orderService;
+        private readonly IOrderService _orderService = null!;
 
         //public TestsController(IOrderService orderService)
         //{

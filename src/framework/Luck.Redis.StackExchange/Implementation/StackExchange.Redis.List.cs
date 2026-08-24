@@ -83,7 +83,7 @@ namespace Luck.Redis.StackExchange
         
 
 
-        public string RPop(string key)=>Database.ListRightPop(key);
+        public string RPop(string key)=>Database.ListRightPop(key).ToString();
         
 
         public T? RPop<T>(string key)=>RPop(key).Deserialize<T>();

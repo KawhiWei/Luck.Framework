@@ -24,7 +24,7 @@ namespace Luck.UnitTest
                         var aa = dr.Key;
 
                     }
-                    catch (ProduceException<Null, string> e)
+                    catch (ProduceException<Null, string>)
                     {
 
                     }
@@ -108,12 +108,12 @@ namespace Luck.UnitTest
                                 // Explicitly storing offsets after processing gives at-least once semantics, the default behavior does not.
                                 consumer.StoreOffset(consumeResult);
                             }
-                            catch (KafkaException e)
+                            catch (KafkaException)
                             {
 
                             }
                         }
-                        catch (ConsumeException e)
+                        catch (ConsumeException)
                         {
 
                         }
@@ -130,4 +130,3 @@ namespace Luck.UnitTest
 
     }
 }
-

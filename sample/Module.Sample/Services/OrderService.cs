@@ -13,13 +13,13 @@ namespace Module.Sample.Services
     {
 
         [Injection]
-        private readonly IAggregateRootRepository<Order, string> _aggregateRootRepository;
+        private readonly IAggregateRootRepository<Order, string> _aggregateRootRepository = null!;
         [Injection]
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IUnitOfWork _unitOfWork = null!;
 
 
         [Injection]
-        private readonly ILogger<OrderService> _logger;
+        private readonly ILogger<OrderService> _logger = null!;
 
         public async Task CreateAsync()
         {

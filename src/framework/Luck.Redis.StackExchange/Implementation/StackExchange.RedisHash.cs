@@ -24,7 +24,7 @@ namespace Luck.Redis.StackExchange
 
         public  long Delete(string key, params string[] fields)
         {
-            return  _database.HashDelete(key, fields.ToRedisValue() ?? Array.Empty<RedisValue>());
+            return  _database.HashDelete(key, fields.ToRedisValue());
         }
         public  bool HashExists(string key, string field)
         {
@@ -43,7 +43,7 @@ namespace Luck.Redis.StackExchange
 
         public  string HashGetByField(string key, string field)
         {
-            return  _database.HashGet(key, field);
+            return  _database.HashGet(key, field).ToString();
         }
 
         public  T? HashGetByField<T>(string key, string field)

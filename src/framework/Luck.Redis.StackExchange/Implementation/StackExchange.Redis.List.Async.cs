@@ -32,7 +32,7 @@ namespace Luck.Redis.StackExchange
 
 
 
-        public async Task<string> LPopAsync(string key) => await Database.ListLeftPopAsync(key);
+        public async Task<string> LPopAsync(string key) => (await Database.ListLeftPopAsync(key)).ToString();
 
 
         public async Task<T?> LPopAsync<T>(string key) => (await LPopAsync(key)).Deserialize<T>();
@@ -59,7 +59,7 @@ namespace Luck.Redis.StackExchange
 
 
 
-        public async Task<string> RPopAsync(string key) => await Database.ListRightPopAsync(key);
+        public async Task<string> RPopAsync(string key) => (await Database.ListRightPopAsync(key)).ToString();
 
 
         public async Task<T?> RPopAsync<T>(string key) => (await RPopAsync(key)).Deserialize<T>();

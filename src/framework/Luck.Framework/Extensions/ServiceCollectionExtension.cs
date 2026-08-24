@@ -416,11 +416,9 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         private static string ReadAllText(IFileInfo fileInfo)
         {
-            byte[] buffer;
             using var stream = fileInfo.CreateReadStream();
-            buffer = new byte[stream.Length];
-            stream.Read(buffer, 0, buffer.Length);
-            return Encoding.Default.GetString(buffer).Trim();
+            using var reader = new StreamReader(stream, Encoding.Default, detectEncodingFromByteOrderMarks: true);
+            return reader.ReadToEnd().Trim();
         }
 
         /// <summary>
