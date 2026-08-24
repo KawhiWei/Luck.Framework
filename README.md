@@ -91,4 +91,4 @@ dotnet test test/Luck.UnitTest/Luck.UnitTest.csproj
 
 ## 版本记录与许可证
 
-历史变更记录位于 [change](change) 目录。使用 `./generate_change_log.sh <version>` 生成变更记录草稿，确认内容后提交 `change/<version>.md`，再触发发布。许可证见 [LICENSE](LICENSE)。
+历史变更记录位于 [change](change) 目录。许可证见 [LICENSE](LICENSE)。

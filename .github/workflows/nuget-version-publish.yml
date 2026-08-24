@@ -28,9 +28,6 @@ jobs:
         with:
           dotnet-version: 10.0.x
 
-      - name: Verify release notes
-        run: test -f "change/${{ inputs.version }}.md"
-
       - name: Restore dependencies
         run: dotnet restore Luck.sln
 
@@ -55,20 +52,3 @@ jobs:
             -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
             tag -a "${TAG}" -m "Release ${VERSION}"
           git push origin "refs/tags/${TAG}"
-
-      - name: Create GitHub release
-        env:
-          GH_TOKEN: ${{ github.token }}
-          VERSION: ${{ inputs.version }}
-        run: |
-          TAG="Release${VERSION}"
-          if gh release view "${TAG}" >/dev/null 2>&1; then
-            gh release edit "${TAG}" \
-              --title "Release ${VERSION}" \
-              --notes-file "change/${VERSION}.md"
-            gh release upload "${TAG}" artifacts/nuget/*.nupkg --clobber
-          else
-            gh release create "${TAG}" artifacts/nuget/*.nupkg \
-              --title "Release ${VERSION}" \
-              --notes-file "change/${VERSION}.md"
-          fi
