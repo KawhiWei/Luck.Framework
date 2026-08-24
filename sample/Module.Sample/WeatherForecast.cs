@@ -29,11 +29,10 @@ namespace Module.Sample
                 var assembly = Assembly.GetEntryAssembly();
                 if (assembly is not null)
                 {
-                    var codeBase = assembly.CodeBase;
-                    if (codeBase is not null)
+                    var location = assembly.Location;
+                    if (!string.IsNullOrEmpty(location))
                     {
-                        var localPath = new Uri(codeBase).LocalPath;
-                        var logPath = Path.GetDirectoryName(localPath);
+                        var logPath = Path.GetDirectoryName(location);
 
                         if (logPath is not null)
                         {

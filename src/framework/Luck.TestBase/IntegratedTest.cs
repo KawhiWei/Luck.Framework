@@ -20,7 +20,7 @@ namespace Luck.TestBase
 
         private IServiceScope TestServiceScope { get; }
 
-        protected override IServiceProvider ServiceProvider => Application is null ? throw new InvalidOperationException() : Application.ServiceProvider;
+        protected override IServiceProvider ServiceProvider => Application?.ServiceProvider ?? throw new InvalidOperationException();
 
         protected IntegratedTest()
         {

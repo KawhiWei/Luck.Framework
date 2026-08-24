@@ -5,19 +5,19 @@ namespace Luck.Redis.StackExchange
 {
     public static class RedisValueExtension
     {
-        internal static RedisValue[]? ToRedisValue(this string[]? values)
+        internal static RedisValue[] ToRedisValue(this string[]? values)
         {
             if (values is null)
-                return null;
+                return Array.Empty<RedisValue>();
             var result = new RedisValue[values.Length];
             for (int i = 0; i < values.Length; i++)
                 result[i] = values[i];
             return result;
         }
-        internal static RedisValue[]? ToRedisValue<T>(this T[]? values)
+        internal static RedisValue[] ToRedisValue<T>(this T[]? values)
         {
             if (values is  null)
-                return null;
+                return Array.Empty<RedisValue>();
             var result = new RedisValue[values.Length];
             for (int i = 0; i < values.Length; i++)
                 result[i] = RedisValue.Unbox(values[i]);
@@ -30,7 +30,7 @@ namespace Luck.Redis.StackExchange
             var dic = new Dictionary<string, string>(values.Length);
             foreach (var item in values)
             {
-                dic.Add(item.Name, item.Value);
+                dic.Add(item.Name.ToString(), item.Value.ToString());
             }
 
             return dic;
@@ -42,7 +42,7 @@ namespace Luck.Redis.StackExchange
             var dic = new Dictionary<string, T?>(values.Length);
             foreach (var item in values)
             {
-                dic.Add(item.Name, item.Value.ToString().Deserialize<T>());
+                dic.Add(item.Name.ToString(), item.Value.ToString().Deserialize<T>());
             }
             return dic;
         }

@@ -6,17 +6,17 @@
 	<!-- Unconditional packages -->
 	<ItemGroup>
 		<!-- JetBrains -->
-		<PackageVersion Include="JetBrains.Annotations" Version="2024.2.0" />
+		<PackageVersion Include="JetBrains.Annotations" Version="2026.2.0" />
 
 		<!-- Microsoft.Extensions (use latest stable as default, per-TFM overrides in csproj) -->
-		<PackageVersion Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.0" />
-		<PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="9.0.0" />
-		<PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.0" />
-		<PackageVersion Include="Microsoft.Extensions.DependencyModel" Version="9.0.0" />
-		<PackageVersion Include="Microsoft.Extensions.FileProviders.Abstractions" Version="9.0.0" />
-		<PackageVersion Include="Microsoft.Extensions.FileProviders.Physical" Version="9.0.0" />
-		<PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.0" />
-		<PackageVersion Include="Microsoft.Extensions.Options" Version="9.0.0" />
+		<PackageVersion Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.19" />
+		<PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="9.0.19" />
+		<PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.19" />
+		<PackageVersion Include="Microsoft.Extensions.DependencyModel" Version="9.0.19" />
+		<PackageVersion Include="Microsoft.Extensions.FileProviders.Abstractions" Version="9.0.19" />
+		<PackageVersion Include="Microsoft.Extensions.FileProviders.Physical" Version="9.0.19" />
+		<PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.19" />
+		<PackageVersion Include="Microsoft.Extensions.Options" Version="9.0.19" />
 
 		<!-- Logging -->
 		<PackageVersion Include="Serilog.AspNetCore" Version="10.0.0" />
@@ -24,35 +24,58 @@
 
 		<!-- EFCore (default versions, per-TFM overrides in csproj) -->
 		<PackageVersion Include="EFCore.NamingConventions" Version="9.0.0" />
-		<PackageVersion Include="Microsoft.EntityFrameworkCore" Version="9.0.0" />
-		<PackageVersion Include="Microsoft.EntityFrameworkCore.InMemory" Version="9.0.0" />
-		<PackageVersion Include="Pomelo.EntityFrameworkCore.MySql" Version="9.0.0-preview.3.efcore.9.0.0rc.2.ci.20241120225539" />
-		<PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.3" />
+		<PackageVersion Include="Microsoft.EntityFrameworkCore" Version="9.0.19" />
+		<PackageVersion Include="Microsoft.EntityFrameworkCore.InMemory" Version="9.0.19" />
+		<PackageVersion Include="Pomelo.EntityFrameworkCore.MySql" Version="9.0.0" />
+		<PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
 
 		<!-- EventBus -->
-		<PackageVersion Include="Polly" Version="8.4.0" />
-		<PackageVersion Include="RabbitMQ.Client" Version="7.2.0" />
-		<PackageVersion Include="OpenTelemetry.Api" Version="1.9.0" />
+		<PackageVersion Include="Polly" Version="8.7.0" />
+		<PackageVersion Include="RabbitMQ.Client" Version="7.2.2" />
+		<PackageVersion Include="OpenTelemetry.Api" Version="1.18.0" />
 
 		<!-- Data -->
-		<PackageVersion Include="StackExchange.Redis" Version="2.11.0" />
-		<PackageVersion Include="MongoDB.Bson" Version="2.28.0" />
-		<PackageVersion Include="MongoDB.Driver" Version="2.28.0" />
-		<PackageVersion Include="Dapper" Version="2.1.66" />
-		<PackageVersion Include="Octonica.ClickHouseClient" Version="3.1.8" />
+		<PackageVersion Include="StackExchange.Redis" Version="3.1.31" />
+		<PackageVersion Include="MongoDB.Bson" Version="3.11.0" />
+		<PackageVersion Include="MongoDB.Driver" Version="3.11.0" />
+		<PackageVersion Include="Dapper" Version="2.1.79" />
+		<PackageVersion Include="Octonica.ClickHouseClient" Version="4.1.4" />
+		<PackageVersion Include="Microsoft.Data.Sqlite" Version="10.0.11" />
 
 		<!-- Code Analysis -->
-		<PackageVersion Include="Microsoft.CodeAnalysis.Analyzers" Version="3.11.0" />
+		<PackageVersion Include="Microsoft.CodeAnalysis.Analyzers" Version="5.3.0" />
 		<PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="5.0.0" />
 		<PackageVersion Include="Microsoft.CodeAnalysis.Common" Version="5.0.0" />
 
 		<!-- Test -->
-		<PackageVersion Include="Confluent.Kafka" Version="2.13.0" />
-		<PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.10.0" />
-		<PackageVersion Include="Mongo2Go" Version="3.1.3" />
-		<PackageVersion Include="RulesEngine" Version="5.0.6" />
-		<PackageVersion Include="xunit" Version="2.4.2" />
-		<PackageVersion Include="xunit.runner.visualstudio" Version="2.4.5" />
-		<PackageVersion Include="coverlet.collector" Version="6.0.2" />
+		<PackageVersion Include="Confluent.Kafka" Version="2.15.0" />
+		<PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.9.0" />
+		<PackageVersion Include="Mongo2Go" Version="5.0.0" />
+		<PackageVersion Include="RulesEngine" Version="6.0.1" />
+		<PackageVersion Include="xunit" Version="2.9.3" />
+		<PackageVersion Include="xunit.runner.visualstudio" Version="4.0.0" />
+		<PackageVersion Include="coverlet.collector" Version="10.0.1" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
+		<PackageVersion Update="EFCore.NamingConventions" Version="6.0.0" />
+		<PackageVersion Update="Microsoft.EntityFrameworkCore" Version="6.0.36" />
+		<PackageVersion Update="Microsoft.EntityFrameworkCore.InMemory" Version="6.0.36" />
+		<PackageVersion Update="Pomelo.EntityFrameworkCore.MySql" Version="6.0.3" />
+		<PackageVersion Update="Npgsql.EntityFrameworkCore.PostgreSQL" Version="6.0.29" />
+	</ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)' == 'net7.0'">
+		<PackageVersion Update="EFCore.NamingConventions" Version="7.0.2" />
+		<PackageVersion Update="Microsoft.EntityFrameworkCore" Version="7.0.20" />
+		<PackageVersion Update="Microsoft.EntityFrameworkCore.InMemory" Version="7.0.20" />
+		<PackageVersion Update="Pomelo.EntityFrameworkCore.MySql" Version="7.0.0" />
+		<PackageVersion Update="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.18" />
+	</ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
+		<PackageVersion Update="EFCore.NamingConventions" Version="8.0.3" />
+		<PackageVersion Update="Microsoft.EntityFrameworkCore" Version="8.0.30" />
+		<PackageVersion Update="Microsoft.EntityFrameworkCore.InMemory" Version="8.0.30" />
+		<PackageVersion Update="Pomelo.EntityFrameworkCore.MySql" Version="8.0.3" />
+		<PackageVersion Update="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.11" />
 	</ItemGroup>
 </Project>

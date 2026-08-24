@@ -28,7 +28,7 @@ namespace Luck.Redis.StackExchange
 
         public async Task<string> HashGetAsyncByFieldAsync(string key, string field)
         {
-            return await _database.HashGetAsync(key, field);
+            return (await _database.HashGetAsync(key, field)).ToString();
         }
 
         public async Task<T?> HashGetAsyncByFieldAsync<T>(string key, string field)

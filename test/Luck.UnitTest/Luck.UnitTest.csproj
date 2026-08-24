@@ -11,6 +11,7 @@
 		<PackageReference Include="Microsoft.CodeAnalysis.Common" />
 
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
+		<PackageReference Include="Microsoft.Data.Sqlite" />
 		<PackageReference Include="Microsoft.NET.Test.Sdk" />
 		<PackageReference Include="Mongo2Go" />
 		<PackageReference Include="RulesEngine" />
@@ -29,6 +30,7 @@
 		<ProjectReference Include="..\..\src\framework\Luck.EntityFrameworkCore.MySQL\Luck.EntityFrameworkCore.MySQL.csproj"/>
 		<ProjectReference Include="..\..\src\framework\Luck.EntityFrameworkCore.PostgreSQL\Luck.EntityFrameworkCore.PostgreSQL.csproj"/>
 		<ProjectReference Include="..\..\src\framework\Luck.EntityFrameworkCore\Luck.EntityFrameworkCore.csproj"/>
+		<ProjectReference Include="..\..\src\framework\Luck.Dapper\Luck.Dapper.csproj"/>
 		<ProjectReference Include="..\..\src\framework\Luck.MongoDB\Luck.MongoDB.csproj"/>
 		<ProjectReference Include="..\..\src\framework\Luck.Pipeline\Luck.Pipeline.csproj"/>
 		<ProjectReference Include="..\..\src\framework\Luck.SourceGenerator\Luck.SourceGenerator.csproj"   OutputItemType="Analyzer" ReferenceOutputAssembly="false"/>

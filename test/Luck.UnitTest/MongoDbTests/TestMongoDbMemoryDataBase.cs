@@ -24,6 +24,9 @@ public class TestMongoDbMemoryDataBase : IntegratedTest<MongoDbTestModule>
             Number = 10,
         });
         var result = await testMongoDbMemoryDataBaseContext.Orders.Find(x => x.Id == id).SingleOrDefaultAsync();
+        Assert.NotNull(result);
+        Assert.Equal("A002", result.Name);
+        Assert.Equal(10, result.Number);
     }
     
 }
