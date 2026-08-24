@@ -1,222 +1,162 @@
 # Luck.EventBus.OpenTelemetry
 
-Luck.EventBus 的 OpenTelemetry 集成包，支持分布式链路追踪。
+`Luck.EventBus.OpenTelemetry` 把 Luck 事件总线的 `DiagnosticListener` 事件转换为 OpenTelemetry `Activity`。当前实现监听名称为 `Luck.EventBus.Diagnostics` 的诊断源，主要用于 [`Luck.EventBus.RabbitMQ`](../Luck.EventBus.RabbitMQ/README.md)。
 
 ## 安装
 
 ```bash
-dotnet add package Luck.EventBus.OpenTelemetry
+dotnet add package Luck.EventBus.OpenTelemetry --version 2.0.9
+dotnet add package Luck.EventBus.RabbitMQ --version 2.0.9
+dotnet add package OpenTelemetry.Extensions.Hosting
+dotnet add package OpenTelemetry.Exporter.Console
 ```
+
+本项目本身引用 `OpenTelemetry.Api` 和 `Microsoft.AspNetCore.App`。`AddOpenTelemetry()`、`AddConsoleExporter()`、OTLP exporter 以及 ASP.NET Core instrumentation 来自应用额外安装的 OpenTelemetry 包，请按实际导出目标添加。
 
 ## 快速开始
 
-### 1. 基础配置
+RabbitMQ 事件总线会创建诊断监听器；OpenTelemetry 扩展会自动发现并订阅它：
 
 ```csharp
 using Luck.EventBus.OpenTelemetry;
-using OpenTelemetry.Resources;
-using OpenTelemetry.Trace;
-
-builder.Services.AddOpenTelemetry()
-    .WithTracing(tracing =>
-    {
-        tracing
-            .SetResourceBuilder(ResourceBuilder.CreateDefault()
-                .AddService("MyService", "1.0.0"))
-            .AddAspNetCoreInstrumentation()
-            .AddLuckEventBusInstrumentation()  // 添加 EventBus 仪表化
-            .AddConsoleExporter();
-    });
-```
-
-### 2. 配置 RabbitMQ
-
-```csharp
-builder.Services.AddLuckEventBusRabbitMq(config =>
-{
-    config.Host = "localhost";
-    config.UserName = "guest";
-    config.PassWord = "guest";
-    config.Port = 5672;
-});
-```
-
-## 导出器配置
-
-### Console Exporter
-
-```csharp
-.AddConsoleExporter()
-```
-
-输出到控制台，适用于开发和调试。
-
-### OpenObserve (推荐)
-
-```csharp
-.AddOtlpExporter(options =>
-{
-    options.Endpoint = new Uri("http://localhost:5081");
-    options.Protocol = OpenTelemetry.Exporter.OtlpExportProtocol.Grpc;
-    options.Headers = "Authorization=Basic {api_key},organization=default,stream-name=default";
-});
-```
-
-启动 OpenObserve:
-```bash
-docker run -d --name openobserve \
-  -p 5080:5080 \
-  -p 5081:5081 \
-  -v openobserve-data:/data \
-  -e ZO_DATA_DIR=/data \
-  -e ZO_ROOT_USER_EMAIL="root@example.com" \
-  -e ZO_ROOT_USER_PASSWORD="Complexpass#123" \
-  openobserve/openobserve:latest
-```
-
-访问 http://localhost:5080 查看链路追踪。
-
-### Jaeger
-
-```csharp
-.AddJaegerExporter(options =>
-{
-    options.AgentHost = "localhost";
-    options.AgentPort = 6831;
-})
-```
-
-启动 Jaeger:
-```bash
-docker run -d --name jaeger \
-  -p 16686:16686 \
-  -p 14268:14268 \
-  -p 6831:6831/udp \
-  jaegertracing/all-in-one:latest
-```
-
-访问 http://localhost:16686 查看链路追踪。
-
-## 生成的 Span
-
-| Span 名称 | Kind | 说明 |
-|-----------|------|------|
-| {EventBusType}.Publish | Producer | 消息发布 |
-| {EventBusType}.Consume | Consumer | 消息消费 |
-| {EventBusType}.Process | Internal | 消息处理 |
-
-## Span 标签
-
-### 通用标签
-
-- `eventbus.event_type` - 事件类型全名
-- `eventbus.event_name` - 事件名称
-- `eventbus.raw_content` - 原始消息内容（JSON）
-- `eventbus.handler_type` - 处理器类型（Process）
-
-### RabbitMQ 标签
-
-- `messaging.system` - "rabbitmq"
-- `messaging.destination` - 交换机名称
-- `messaging.rabbitmq.routing_key` - 路由键
-- `messaging.rabbitmq.queue` - 队列名称
-- `messaging.source` - 交换机名称（消费时）
-
-## 工作原理
-
-### 架构图
-
-```
-┌─────────────────┐     ┌──────────────────────┐     ┌──────────────────┐
-│   Application   │     │   DiagnosticListener  │     │   OpenTelemetry  │
-│                 │     │                      │     │                  │
-│  Publish Event  │────▶│  Luck.EventBus       │────▶│  ActivitySource  │
-│                 │     │  (RabbitMQEventBus)  │     │                  │
-│  Consume Event  │────▶│                      │────▶│  OTLP Exporter   │────▶  OpenObserve
-│                 │     │                      │     │                  │
-│  Process Event  │────▶│                      │────▶│  Console Exporter│────▶  Console
-└─────────────────┘     └──────────────────────┘     └──────────────────┘
-```
-
-### 事件流
-
-1. **Publish**: 应用发布事件 → RabbitMQEventBus 发送消息 → 触发 Published 诊断事件 → 创建 Publish Span
-2. **Consume**: RabbitMQ 收到消息 → 触发 Received 诊断事件 → 创建 Consume Span
-3. **Process**: 事件处理器执行 → 触发 Processed 诊断事件 → 创建 Process Span
-
-## 完整示例
-
-```csharp
 using Luck.EventBus.RabbitMQ;
-using Luck.Framework.Event;
-using Luck.EventBus.OpenTelemetry;
+using Microsoft.Extensions.DependencyInjection;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 配置 RabbitMQ EventBus
-builder.Services.AddLuckEventBusRabbitMq(config =>
+builder.Services.AddLuckEventBusRabbitMq(options =>
 {
-    config.Host = "localhost";
-    config.UserName = "guest";
-    config.PassWord = "guest";
-    config.Port = 5672;
+    options.Host = "localhost";
+    options.Port = 5672;
+    options.UserName = "guest";
+    options.PassWord = "guest";
+    options.VirtualHost = "/";
+    options.RetryCount = 5;
 });
 
-// 配置 OpenTelemetry
 builder.Services.AddOpenTelemetry()
-    .WithTracing(tracing =>
-    {
-        tracing
-            .SetResourceBuilder(ResourceBuilder.CreateDefault()
-                .AddService("EventBusDemo", "1.0.0"))
-            .AddAspNetCoreInstrumentation()
-            .AddLuckEventBusInstrumentation()
-            .AddConsoleExporter()
-            .AddOtlpExporter(options =>
-            {
-                options.Endpoint = new Uri("http://localhost:5081");
-                options.Protocol = OpenTelemetry.Exporter.OtlpExportProtocol.Grpc;
-            });
-    });
-
-// 注册事件处理器
-builder.Services.AddTransient<IIntegrationEventHandler<TestEvent>, TestEventHandler>();
-
-var app = builder.Build();
-app.Run();
+    .WithTracing(tracing => tracing
+        .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService("Orders.Api"))
+        .AddLuckEventBusInstrumentation()
+        .AddConsoleExporter());
 ```
 
-## 关键要点
+`.AddLuckEventBusInstrumentation()` 会把 `Luck.EventBus.Diagnostics` 加入 tracer source，并注册一个 `LuckEventBusInstrumentation` 实例。无需手动调用 `DiagnosticListener.AllListeners.Subscribe`。
 
-1. **一行代码启用**: `.AddLuckEventBusInstrumentation()`
-2. **自动发现**: 自动订阅 `Luck.EventBus.Diagnostics` 诊断监听器
-3. **完整链路**: 包含 Publish、Consume、Process 三个阶段
-4. **原始内容**: 所有 Span 包含 `eventbus.raw_content` 标签记录完整 JSON
-5. **协议支持**: 支持 OTLP/gRPC 和 OTLP/HTTP 协议
+## Span
 
-## 故障排查
+Activity 名称和类型固定如下：
 
-### 看不到链路数据
+| Activity 名称 | Kind | 来源 |
+| --- | --- | --- |
+| `RabbitMQ.Publish` | `Producer` | `Published` 或 `PublishFailed` |
+| `RabbitMQ.Consume` | `Consumer` | `Received` |
+| `RabbitMQ.Process` | `Internal` | `Processed` 或 `ProcessFailed` |
 
-1. 确认 `AddLuckEventBusInstrumentation()` 已调用
-2. 检查 Exporter 配置是否正确
-3. 确认后端服务（OpenObserve/Jaeger）已启动
-4. 查看控制台是否有错误日志
+如果应用没有注册 tracer provider，或采样策略丢弃该 Activity，`StartActivity` 会返回 `null`，不会产生导出数据。
 
-### 只有部分 Span
+## 标签
 
-1. 如果只收到 Publish：检查消费者是否运行
-2. 如果只收到 Consume/Process：检查发布端是否配置正确
-3. 确认所有服务使用相同的诊断监听器名称
+所有存在值的原始消息都会写入 `eventbus.raw_content`。RabbitMQ 发布 Span 的标签：
 
-## 依赖项
+| 标签 | 值 |
+| --- | --- |
+| `eventbus.event_type` | 事件类型全名 |
+| `eventbus.event_name` | 事件类型名称 |
+| `messaging.system` | `rabbitmq` |
+| `messaging.destination` | 交换机 |
+| `messaging.rabbitmq.routing_key` | 路由键 |
+| `eventbus.raw_content` | 原始 JSON |
 
-- OpenTelemetry (>= 1.9.0)
-- Luck.Framework
-- Luck.EventBus.RabbitMQ
+RabbitMQ 消费 Span 的标签：
+
+| 标签 | 值 |
+| --- | --- |
+| `eventbus.event_type` | 事件类型全名 |
+| `eventbus.event_name` | 事件类型名称 |
+| `messaging.system` | `rabbitmq` |
+| `messaging.source` | 交换机 |
+| `messaging.rabbitmq.queue` | 队列 |
+| `eventbus.raw_content` | 原始 JSON |
+
+处理 Span 的标签：
+
+| 标签 | 值 |
+| --- | --- |
+| `eventbus.event_type` | 事件类型全名 |
+| `eventbus.event_name` | 事件类型名称 |
+| `eventbus.handler_type` | 处理器类型全名 |
+| `eventbus.raw_content` | 原始 JSON |
+
+`PublishFailed` 和 `ProcessFailed` 会把 Activity 状态设为 `Error` 并使用异常消息；成功事件状态设为 `Ok`。当前实现不会把 `Consume` 的消息异常状态设置为 Error，因为消费异常由 RabbitMQ event bus 在后续处理阶段写入 `ProcessFailed`。
+
+## 导出器示例
+
+### OTLP/gRPC
+
+安装 `OpenTelemetry.Exporter.OpenTelemetryProtocol` 后：
+
+```csharp
+builder.Services.AddOpenTelemetry()
+    .WithTracing(tracing => tracing
+        .AddLuckEventBusInstrumentation()
+        .AddOtlpExporter(options =>
+        {
+            options.Endpoint = new Uri("http://localhost:4317");
+            options.Protocol = OpenTelemetry.Exporter.OtlpExportProtocol.Grpc;
+        }));
+```
+
+### Jaeger 或其他后端
+
+请安装对应的 OpenTelemetry exporter，并把 exporter 添加到同一个 `TracerProviderBuilder`。本包不启动 OpenObserve、Jaeger 或 OTLP 服务，也不保存追踪数据。
+
+## 原始诊断事件
+
+如果不需要 OpenTelemetry，也可以直接订阅 `DiagnosticListener`：
+
+```csharp
+using System.Diagnostics;
+using Luck.Framework.Event;
+
+DiagnosticListener.AllListeners.Subscribe(new Observer());
+
+sealed class Observer : IObserver<DiagnosticListener>
+{
+    public void OnNext(DiagnosticListener listener)
+    {
+        if (listener.Name == DiagnosticConstants.DiagnosticListenerName)
+            listener.Subscribe(new EventObserver());
+    }
+
+    public void OnError(Exception error) { }
+    public void OnCompleted() { }
+}
+
+sealed class EventObserver : IObserver<KeyValuePair<string, object?>>
+{
+    public void OnNext(KeyValuePair<string, object?> value)
+    {
+        var data = value.Value as LuckEventData;
+        Console.WriteLine($"{value.Key}: {data?.RawContent}");
+    }
+
+    public void OnError(Exception error) { }
+    public void OnCompleted() { }
+}
+```
+
+直接订阅时由调用方负责释放 `IDisposable` 订阅。使用本包的 `AddLuckEventBusInstrumentation()` 时，instrumentation 会在 tracer provider 释放时清理诊断监听器订阅。
+
+## 注意事项
+
+- RabbitMQ 端的 `RabbitMqConfig.EnableDiagnosticEvents` 当前未用于控制诊断事件；事件总线会始终写入诊断监听器。
+- `eventbus.raw_content` 包含完整业务 JSON，可能泄露敏感信息；生产环境应谨慎导出、脱敏或关闭对应采集。
+- Activity source 名称为 `Luck.EventBus.Diagnostics`，扩展方法已经调用 `AddSource`，不要用另一个名称重复配置。
+- 该实现当前只处理 `Published`、`PublishFailed`、`Received`、`Processed` 和 `ProcessFailed` 事件；`Processing` 事件定义存在于基础契约，但 RabbitMQ 实现不会写出它。
 
 ## 许可证
 
-MIT
+本项目采用 [LGPL-3.0-only](../../../LICENSE) 许可证。

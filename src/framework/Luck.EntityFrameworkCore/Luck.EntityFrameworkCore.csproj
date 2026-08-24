@@ -5,26 +5,25 @@
 		<Nullable>enable</Nullable>
 	</PropertyGroup>
 
-
 	<ItemGroup Condition="$(TargetFramework) == 'net6.0'">
-		<PackageReference Include="EFCore.NamingConventions" Version="6.0.0" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.23" />
+		<PackageReference Include="EFCore.NamingConventions" VersionOverride="6.0.0" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" VersionOverride="6.0.23" />
 	</ItemGroup>
 	<ItemGroup Condition="$(TargetFramework) == 'net7.0'">
-		<PackageReference Include="EFCore.NamingConventions" Version="7.0.2" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.12" />
+		<PackageReference Include="EFCore.NamingConventions" VersionOverride="7.0.2" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" VersionOverride="7.0.12" />
 	</ItemGroup>
 	<ItemGroup Condition="$(TargetFramework) == 'net8.0'">
-		<PackageReference Include="EFCore.NamingConventions" Version="8.0.3" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.7" />
+		<PackageReference Include="EFCore.NamingConventions" VersionOverride="8.0.3" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" VersionOverride="8.0.7" />
 	</ItemGroup>
 	<ItemGroup Condition="$(TargetFramework) == 'net9.0'">
-		<PackageReference Include="EFCore.NamingConventions" Version="9.0.0" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.0" />
+		<PackageReference Include="EFCore.NamingConventions" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" />
 	</ItemGroup>
 	<ItemGroup Condition="$(TargetFramework) == 'net10.0'">
-		<PackageReference Include="EFCore.NamingConventions" Version="9.0.0" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.0-preview.1.25081.1" />
+		<PackageReference Include="EFCore.NamingConventions" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" VersionOverride="10.0.0-preview.1.25081.1" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\Luck.AppModule\Luck.AppModule.csproj" />
