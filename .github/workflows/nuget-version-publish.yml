@@ -7,7 +7,6 @@ on:
         description: NuGet package version to publish (for example, 2.1.0)
         required: true
         type: string
-
 permissions:
   contents: write
 
@@ -28,6 +27,9 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 10.0.x
+
+      - name: Verify release notes
+        run: test -f "change/${{ inputs.version }}.md"
 
       - name: Restore dependencies
         run: dotnet restore Luck.sln
@@ -54,9 +56,19 @@ jobs:
             tag -a "${TAG}" -m "Release ${VERSION}"
           git push origin "refs/tags/${TAG}"
 
-      - name: Upload NuGet packages
-        uses: actions/upload-artifact@v4
-        with:
-          name: nuget-packages-${{ inputs.version }}
-          path: artifacts/nuget/*.nupkg
-          if-no-files-found: error
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ inputs.version }}
+        run: |
+          TAG="Release${VERSION}"
+          if gh release view "${TAG}" >/dev/null 2>&1; then
+            gh release edit "${TAG}" \
+              --title "Release ${VERSION}" \
+              --notes-file "change/${VERSION}.md"
+            gh release upload "${TAG}" artifacts/nuget/*.nupkg --clobber
+          else
+            gh release create "${TAG}" artifacts/nuget/*.nupkg \
+              --title "Release ${VERSION}" \
+              --notes-file "change/${VERSION}.md"
+          fi
