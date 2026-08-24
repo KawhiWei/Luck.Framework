@@ -1,7 +1,6 @@
 using Microsoft.Extensions.Configuration;
 using Serilog.Events;
 using System.Reflection;
-using System.Runtime.InteropServices;
 
 namespace Luck.Logging.Serilog;
 
@@ -60,9 +59,7 @@ public sealed class LuckLoggingOptions
     private static string GetDefaultFilePath(string module, string contentRootPath)
     {
         var fileName = $"{module}-.log";
-        return RuntimeInformation.IsOSPlatform(OSPlatform.Linux)
-            ? Path.Combine("/data/logs", $"skynet-{module}", "app", fileName)
-            : Path.Combine(contentRootPath, "logs", fileName);
+        return Path.Combine(contentRootPath, "logs", fileName);
     }
 
     private static IReadOnlyDictionary<string, LogEventLevel> ParseLevelOverrides(IConfigurationSection section)
