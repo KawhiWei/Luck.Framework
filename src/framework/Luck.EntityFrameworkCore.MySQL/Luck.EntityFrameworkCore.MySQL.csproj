@@ -5,7 +5,7 @@
 		<Nullable>enable</Nullable>
 	</PropertyGroup>
 	<ItemGroup>
-		<PackageReference Include="Pomelo.EntityFrameworkCore.MySql" />
+		<PackageReference Include="MySql.EntityFrameworkCore" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\Luck.EntityFrameworkCore\Luck.EntityFrameworkCore.csproj" />

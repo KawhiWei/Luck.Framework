@@ -5,10 +5,10 @@
 ## 安装
 
 ```bash
-dotnet add package Luck.MongoDB --version 2.0.9
+dotnet add package Luck.MongoDB --version 2.0.14
 ```
 
-包依赖 `Luck.Framework`、`MongoDB.Bson` 和 `MongoDB.Driver`（仓库当前中央版本为 `2.28.0`），支持 `net6.0`、`net7.0`、`net8.0`、`net9.0` 和 `net10.0`。
+包依赖 `Luck.Framework`、MongoDB.Bson 3.11.0 和 MongoDB.Driver 3.11.0，目标框架为 `net10.0`。
 
 ## 最小示例
 

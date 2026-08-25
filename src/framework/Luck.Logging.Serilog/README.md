@@ -5,10 +5,10 @@
 ## 安装
 
 ```bash
-dotnet add package Luck.Logging.Serilog --version 2.0.9
+dotnet add package Luck.Logging.Serilog --version 2.0.14
 ```
 
-项目通过 `Microsoft.AspNetCore.App` framework reference 使用 ASP.NET Core，支持 `net6.0`、`net7.0`、`net8.0`、`net9.0` 和 `net10.0`。`Serilog.AspNetCore` 与 `Serilog.Sinks.File` 版本会按目标框架选择。
+项目通过 `Microsoft.AspNetCore.App` framework reference 使用 ASP.NET Core，目标框架为 `net10.0`，依赖 Serilog.AspNetCore 10.0.0 与 Serilog.Sinks.File 7.0.0。
 
 ## ASP.NET Core 快速开始
 

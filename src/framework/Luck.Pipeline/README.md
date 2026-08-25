@@ -5,10 +5,10 @@
 ## 安装
 
 ```bash
-dotnet add package Luck.Pipeline --version 2.0.9
+dotnet add package Luck.Pipeline --version 2.0.14
 ```
 
-该包依赖 `Luck.Framework`，目标框架为 `net6.0`、`net7.0`、`net8.0`、`net9.0` 和 `net10.0`。项目没有提供 `IServiceCollection` 扩展，`PipelineFactory` 和每个管道节点都需要应用显式注册。
+该包依赖 `Luck.Framework`，目标框架为 `net10.0`。项目没有提供 `IServiceCollection` 扩展，`PipelineFactory` 和每个管道节点都需要应用显式注册。
 
 ## 上下文
 

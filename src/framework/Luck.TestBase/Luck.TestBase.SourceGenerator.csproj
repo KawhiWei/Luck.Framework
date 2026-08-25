@@ -1,6 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
+        <Version>2.0.14</Version>
+        <NoWarn>$(NoWarn);NU5128</NoWarn>
+        <PackageLicenseExpression>LGPL-3.0-only</PackageLicenseExpression>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+        <ImplicitUsings>enable</ImplicitUsings>
         <LangVersion>latest</LangVersion>
         <Nullable>enable</Nullable>
         <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
@@ -11,12 +17,18 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" PrivateAssets="all" />
-        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" VersionOverride="5.6.0" PrivateAssets="all" />
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" PrivateAssets="all" />
+        <PackageReference Include="Microsoft.Net.Compilers.Toolset" PrivateAssets="all" />
     </ItemGroup>
 
 
 
     <ItemGroup>
-        <Analyzer Include="SourceGenerators\ServiceRegistrationGenerator.cs" />
+        <Compile Include="..\Luck.SourceGenerator\SourceGenerator\ServiceRegistrationGenerator.cs"
+                 Link="SourceGenerators\ServiceRegistrationGenerator.cs" />
+        <Compile Include="..\Luck.SourceGenerator\IsExternalInit.cs"
+                 Link="IsExternalInit.cs" />
+        <None Include="$(TargetPath)" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+        <None Update="README.md" Pack="true" PackagePath="/" />
     </ItemGroup>
 </Project>

@@ -5,10 +5,10 @@
 ## 安装
 
 ```bash
-dotnet add package Luck.TestBase --version 2.0.9
+dotnet add package Luck.TestBase --version 2.0.14
 ```
 
-项目支持 `net6.0`、`net7.0`、`net8.0`、`net9.0` 和 `net10.0`，并依赖 `Luck.Framework`、`Luck.AppModule`、`Luck.AutoDependencyInjection` 和 `Luck.Dapper.ClickHouse`。按被测模块追加相应的数据库、消息或缓存包。
+项目支持 `net10.0`，并依赖 `Luck.Framework`、`Luck.AppModule`、`Luck.AutoDependencyInjection` 和 `Luck.Dapper.ClickHouse`。按被测模块追加相应的数据库、消息或缓存包。
 
 ## 集成测试
 
@@ -88,7 +88,7 @@ public sealed class ManualTest : TestBaseWithServiceProvider
 
 仓库还包含 `Luck.TestBase.SourceGenerator.csproj`，它声明为 `netstandard2.0` Roslyn component，目标是为测试项目附加 `ServiceRegistrationGenerator` analyzer，并在构建时生成包。其生成器行为和限制见 [`Luck.SourceGenerator`](../Luck.SourceGenerator/README.md)。
 
-当前 checkout 中该项目的 analyzer Include 指向 `SourceGenerators/ServiceRegistrationGenerator.cs`，而实际源文件位于 `Luck.SourceGenerator/SourceGenerator/ServiceRegistrationGenerator.cs`，因此在直接构建这个独立项目之前需要修正路径或补齐文件；本文不把它描述为开箱即用依赖。
+该项目通过链接方式编译 `Luck.SourceGenerator/SourceGenerator/ServiceRegistrationGenerator.cs`，并使用 Roslyn 5.9 编译器工具集。它与主生成器项目共享同一份实现，因此仍受生成器 README 所列硬编码特性名称等限制。
 
 ## 注意事项
 

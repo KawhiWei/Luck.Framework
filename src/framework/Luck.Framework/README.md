@@ -5,10 +5,10 @@
 ## 安装
 
 ```bash
-dotnet add package Luck.Framework --version 2.0.9
+dotnet add package Luck.Framework --version 2.0.14
 ```
 
-项目当前声明的目标框架为 `net6.0`、`net7.0`、`net8.0`、`net9.0` 和 `net10.0`。`net10.0` 使用预览版 Microsoft.Extensions 依赖，生产项目应确认 SDK 与依赖版本后再启用。
+项目目标框架为 `net10.0`，Microsoft.Extensions 依赖统一使用 10.0.11 稳定版。
 
 ## 模块与依赖注入契约
 

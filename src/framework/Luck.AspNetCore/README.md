@@ -5,10 +5,10 @@
 ## 安装
 
 ```bash
-dotnet add package Luck.AspNetCore --version 2.0.9
+dotnet add package Luck.AspNetCore --version 2.0.14
 ```
 
-该包依赖 `Luck.Framework`，并引用 `Microsoft.AspNetCore.App` shared framework。当前目标框架为 `net6.0`、`net7.0`、`net8.0`、`net9.0` 和 `net10.0`。
+该包依赖 `Luck.Framework`，并引用 `Microsoft.AspNetCore.App` shared framework。当前目标框架为 `net10.0`。
 
 ## 统一 API 返回
 

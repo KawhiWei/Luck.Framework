@@ -5,10 +5,10 @@
 ## 安装
 
 ```bash
-dotnet add package Luck.EventBus.OpenTelemetry --version 2.0.9
-dotnet add package Luck.EventBus.RabbitMQ --version 2.0.9
-dotnet add package OpenTelemetry.Extensions.Hosting
-dotnet add package OpenTelemetry.Exporter.Console
+dotnet add package Luck.EventBus.OpenTelemetry --version 2.0.14
+dotnet add package Luck.EventBus.RabbitMQ --version 2.0.14
+dotnet add package OpenTelemetry.Extensions.Hosting --version 1.18.0
+dotnet add package OpenTelemetry.Exporter.Console --version 1.18.0
 ```
 
 本项目本身引用 `OpenTelemetry.Api` 和 `Microsoft.AspNetCore.App`。`AddOpenTelemetry()`、`AddConsoleExporter()`、OTLP exporter 以及 ASP.NET Core instrumentation 来自应用额外安装的 OpenTelemetry 包，请按实际导出目标添加。

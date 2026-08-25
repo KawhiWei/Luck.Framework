@@ -5,10 +5,10 @@
 ## 安装
 
 ```bash
-dotnet add package Luck.Dapper.ClickHouse --version 2.0.9
+dotnet add package Luck.Dapper.ClickHouse --version 2.0.14
 ```
 
-包依赖 `Luck.Dapper`、`Luck.AppModule` 和 `Octonica.ClickHouseClient`（仓库当前中央版本为 `3.1.8`），支持 `net6.0`、`net7.0`、`net8.0`、`net9.0` 和 `net10.0`。
+包依赖 `Luck.Dapper`、`Luck.AppModule` 和 Octonica.ClickHouseClient 4.1.4，目标框架为 `net10.0`。
 
 ## 最小示例
 

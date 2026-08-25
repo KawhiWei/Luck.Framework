@@ -10,8 +10,19 @@
 
 	<ItemGroup>
 		<PackageReference Include="MediatR" Version="14.2.0" />
+		<PackageReference Include="Microsoft.Bcl.Cryptography" Version="10.0.11" />
 		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.23.0" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="10.2.3" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="10.0.11" />
+		<PackageReference Include="Microsoft.Extensions.ApiDescription.Server" Version="10.0.11" PrivateAssets="all" />
+		<PackageReference Include="Microsoft.IdentityModel.Abstractions" Version="8.22.0" />
+		<PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="8.22.0" />
+		<PackageReference Include="Microsoft.IdentityModel.Logging" Version="8.22.0" />
+		<PackageReference Include="Microsoft.IdentityModel.Tokens" Version="8.22.0" />
+		<PackageReference Include="Microsoft.OpenApi" Version="3.10.2" />
+		<PackageReference Include="Serilog" Version="4.4.0" />
+		<PackageReference Include="Serilog.Settings.Configuration" Version="10.0.1" />
+		<PackageReference Include="System.IO.Hashing" Version="10.0.11" />
 	</ItemGroup>
 
 	<ItemGroup>
