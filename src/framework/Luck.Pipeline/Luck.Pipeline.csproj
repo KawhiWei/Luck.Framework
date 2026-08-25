@@ -1,5 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <Import Project="..\..\common.props" />
+    <PropertyGroup>
+        <TargetFrameworks>net10.0</TargetFrameworks>
+    </PropertyGroup>
     <ItemGroup>
       <ProjectReference Include="..\Luck.Framework\Luck.Framework.csproj" />
     </ItemGroup>
