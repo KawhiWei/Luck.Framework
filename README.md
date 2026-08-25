@@ -1,6 +1,6 @@
 # Luck.Framework
 
-Luck.Framework 是一组可组合的 .NET 类库，覆盖模块化启动、依赖注入、数据访问、缓存、事件总线、日志与测试基础设施。仓库中的项目当前支持 `net6.0`、`net7.0`、`net8.0`、`net9.0` 与 `net10.0`（具体目标框架以各项目文件为准）。
+Luck.Framework 是一组可组合的 .NET 类库，覆盖模块化启动、依赖注入、数据访问、缓存、事件总线、日志与测试基础设施。运行时类库支持 `net6.0`、`net7.0`、`net8.0`、`net9.0` 和 `net10.0`；源生成器面向 `netstandard2.0`，由 Roslyn 5.9 编译器工具集构建。
 
 ## 快速开始
 
@@ -47,7 +47,7 @@ public sealed class AppModule : LuckAppModule
 | 类库 | 用途 |
 | --- | --- |
 | [Luck.EntityFrameworkCore](src/framework/Luck.EntityFrameworkCore/README.md) | EF Core `DbContext` 基类、驱动提供程序抽象、JSON 转换和连接拦截器。 |
-| [Luck.EntityFrameworkCore.MySQL](src/framework/Luck.EntityFrameworkCore.MySQL/README.md) | 通过 Pomelo 注册 MySQL EF Core 驱动。 |
+| [Luck.EntityFrameworkCore.MySQL](src/framework/Luck.EntityFrameworkCore.MySQL/README.md) | 通过与目标框架匹配的 Pomelo 或 Oracle provider 注册 MySQL 驱动。 |
 | [Luck.EntityFrameworkCore.PostgreSQL](src/framework/Luck.EntityFrameworkCore.PostgreSQL/README.md) | 通过 Npgsql 注册 PostgreSQL EF Core 驱动。 |
 | [Luck.EntityFrameworkCore.MemoryDataBase](src/framework/Luck.EntityFrameworkCore.MemoryDataBase/README.md) | 注册 EF Core InMemory 驱动，适合测试场景。 |
 | [Luck.Dapper](src/framework/Luck.Dapper/README.md) | Dapper 驱动抽象及实体、聚合根 SQL 仓储实现。 |
@@ -62,7 +62,7 @@ public sealed class AppModule : LuckAppModule
 | [Luck.EventBus.OpenTelemetry](src/framework/Luck.EventBus.OpenTelemetry/README.md) | 将 Luck 事件总线诊断事件转换为 OpenTelemetry Activity。 |
 | [Luck.EventBus.Kafka](src/framework/Luck.EventBus.Kafka/README.md) | Kafka 连接配置模型；当前不包含生产者或消费者实现。 |
 | [Luck.Redis.StackExchange](src/framework/Luck.Redis.StackExchange/README.md) | StackExchange.Redis 连接及 Redis Hash/List 服务注册。 |
-| [Luck.Logging.Serilog](src/framework/Luck.Logging.Serilog/README.md) | Serilog 主机、请求日志、滚动文件输出和结构化日志字段。 |
+| [Luck.Logging.Serilog](src/framework/Luck.Logging.Serilog/README.md) | Serilog 主机日志、滚动文件输出和结构化日志字段。 |
 
 ### 工具与测试
 
@@ -91,4 +91,4 @@ dotnet test test/Luck.UnitTest/Luck.UnitTest.csproj
 
 ## 版本记录与许可证
 
-历史变更记录位于 [change](change) 目录。许可证见 [LICENSE](LICENSE)。
+最新变更见 [2.0.14 更新记录](change/2.0.14.md)，历史记录位于 [change](change) 目录。许可证见 [LICENSE](LICENSE)。

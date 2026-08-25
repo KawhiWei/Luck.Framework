@@ -5,10 +5,10 @@
 ## 安装
 
 ```bash
-dotnet add package Luck.EntityFrameworkCore.PostgreSQL --version 2.0.9
+dotnet add package Luck.EntityFrameworkCore.PostgreSQL --version 2.0.14
 ```
 
-包依赖 `Luck.EntityFrameworkCore` 和 `Npgsql.EntityFrameworkCore.PostgreSQL`。项目支持 `net6.0`、`net7.0`、`net8.0`、`net9.0` 和 `net10.0`；Npgsql 版本随目标框架选择，`net9.0` 和 `net10.0` 使用仓库中央版本配置。
+包依赖 `Luck.EntityFrameworkCore` 和与目标框架匹配的 `Npgsql.EntityFrameworkCore.PostgreSQL`，支持 `net6.0`、`net7.0`、`net8.0`、`net9.0` 和 `net10.0`。
 
 ## 最小示例
 

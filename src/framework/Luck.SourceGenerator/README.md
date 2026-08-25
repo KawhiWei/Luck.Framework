@@ -5,10 +5,10 @@
 ## 安装
 
 ```bash
-dotnet add package Luck.SourceGenerator --version 2.0.9
+dotnet add package Luck.SourceGenerator --version 2.0.14
 ```
 
-项目目标框架为 `net8.0`、`net9.0` 和 `net10.0`，并依赖对应的 Microsoft.CodeAnalysis 包。它是 analyzer/source generator 项目，不是运行时服务库；请把包作为 analyzer 引用到支持 Roslyn 增量生成器的项目中。
+项目目标框架为 `netstandard2.0`，使用 Microsoft.CodeAnalysis 5.9 与 Microsoft.Net.Compilers.Toolset 5.9 构建。它是 analyzer/source generator 项目，不是运行时服务库；请把包作为 analyzer 引用到支持 Roslyn 增量生成器的项目中。
 
 ## 当前扫描条件
 

@@ -20,8 +20,12 @@ namespace Luck.EntityFrameworkCore.MySQL
         public DbContextOptionsBuilder Builder(DbContextOptionsBuilder builder, string connectionString,
             QuerySplittingBehavior querySplittingBehavior = QuerySplittingBehavior.SplitQuery)
         {
+#if NET10_0_OR_GREATER
+            builder.UseMySQL(connectionString)
+#else
             var serverVersion = ServerVersion.AutoDetect(connectionString);
             builder.UseMySql(connectionString, serverVersion)
+#endif
                 .EnableSensitiveDataLogging()
                 .UseSnakeCaseNamingConvention();
             return builder;

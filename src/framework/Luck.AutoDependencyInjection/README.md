@@ -5,7 +5,7 @@
 ## 安装
 
 ```bash
-dotnet add package Luck.AutoDependencyInjection --version 2.0.9
+dotnet add package Luck.AutoDependencyInjection --version 2.0.14
 ```
 
 该包依赖 `Luck.AppModule` 和 ASP.NET Core shared framework，目标框架为 `net6.0`、`net7.0`、`net8.0`、`net9.0` 和 `net10.0`。

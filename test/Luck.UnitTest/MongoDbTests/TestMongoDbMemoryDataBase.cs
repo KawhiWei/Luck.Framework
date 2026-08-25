@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Luck.TestBase;
 using Xunit;
 using Microsoft.Extensions.DependencyInjection;
+using MongoDB.Bson;
 using MongoDB.Driver;
 
 namespace Luck.UnitTest.MongoDbTests;
@@ -13,7 +14,7 @@ public class TestMongoDbMemoryDataBase : IntegratedTest<MongoDbTestModule>
     [Fact]
     public  async Task Connection_Test_Open()
     {
-        var id = Guid.NewGuid().ToString();
+        var id = ObjectId.GenerateNewId().ToString();
         var testMongoDbMemoryDataBaseContext = ServiceProvider.GetService<TestMongoDbMemoryDataBaseContext>();
         if (testMongoDbMemoryDataBaseContext is null)
             throw new ArgumentNullException(nameof(testMongoDbMemoryDataBaseContext));

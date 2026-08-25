@@ -4,8 +4,11 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 	</PropertyGroup>
-	<ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)' != 'net10.0'">
 		<PackageReference Include="Pomelo.EntityFrameworkCore.MySql" />
+	</ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
+		<PackageReference Include="MySql.EntityFrameworkCore" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\Luck.EntityFrameworkCore\Luck.EntityFrameworkCore.csproj" />

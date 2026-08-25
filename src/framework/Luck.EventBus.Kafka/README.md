@@ -5,7 +5,7 @@
 ## 安装
 
 ```bash
-dotnet add package Luck.EventBus.Kafka --version 2.0.9
+dotnet add package Luck.EventBus.Kafka --version 2.0.14
 ```
 
 项目依赖 `Luck.Framework`，目标框架与解决方案一致：`net6.0`、`net7.0`、`net8.0`、`net9.0` 和 `net10.0`。

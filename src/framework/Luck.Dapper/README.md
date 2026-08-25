@@ -5,7 +5,7 @@
 ## 安装
 
 ```bash
-dotnet add package Luck.Dapper --version 2.0.9
+dotnet add package Luck.Dapper --version 2.0.14
 ```
 
 包依赖 `Luck.DDD.Domain`、`Luck.Framework` 和 `Dapper`，支持 `net6.0`、`net7.0`、`net8.0`、`net9.0` 和 `net10.0`。本包不包含 SQL Server、MySQL、PostgreSQL 或 SQLite 的 ADO.NET 驱动。

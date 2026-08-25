@@ -7,7 +7,6 @@
     <PropertyGroup Condition="'$(TargetFramework)' == 'net6.0' Or '$(TargetFramework)' == 'net7.0'">
         <SuppressTfmSupportBuildWarnings>true</SuppressTfmSupportBuildWarnings>
     </PropertyGroup>
-
     <ItemGroup>
         <ProjectReference Include="..\Luck.AutoDependencyInjection\Luck.AutoDependencyInjection.csproj" />
         <ProjectReference Include="..\Luck.Dapper.ClickHouse\Luck.Dapper.ClickHouse.csproj" />

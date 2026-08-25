@@ -1,79 +1,44 @@
-# BusinessServiceRegistrationGenerator
+# ServiceRegistrationGenerator
 
-这是一个基于 `IIncrementalGenerator` 的 SourceGenerator，用于自动注册带有 `BusinessServiceKeyAttribute` 特性的 `IAncillaryPaySuccessWithAncillaryScopeProvider` 接口实现类到 `IServiceCollection` 容器中。
+`ServiceRegistrationGenerator` 是一个 `IIncrementalGenerator`，用于生成 keyed DI 注册扩展。当前实现仍是面向仓库测试模型的实验性生成器，不是可直接复用的通用扫描器。
 
-## 功能特性
+## 当前匹配规则
 
-- 自动扫描所有实现了 `IAncillaryPaySuccessWithAncillaryScopeProvider` 接口的类
-- 读取类上的 `BusinessServiceKeyAttribute` 特性信息
-- 根据特性中的 `Lifetime` 和 `ServiceKey` 自动生成服务注册代码
-- 生成扩展方法 `AddBusinessServices()` 用于批量注册服务
+生成器只处理带有以下完整类型名特性的类：
 
-## 使用方法
-
-### 1. 定义服务实现类
-
-```csharp
-[BusinessServiceKey(typeof(IAncillaryPaySuccessWithAncillaryScopeProvider), "70", ServiceLifetime.Scoped)]
-public class BusExpressAncillaryPaySuccessWithAncillaryScopeProvider : IAncillaryPaySuccessWithAncillaryScopeProvider
-{
-    public async Task<(bool, string)> AncillaryPaySuccessProviderAsync(string request, string originMessage)
-    {
-        return (true, "非单售辅营暂不处理");
-    }
-}
-
-[BusinessServiceKey(typeof(IAncillaryPaySuccessWithAncillaryScopeProvider), "50", ServiceLifetime.Scoped)]
-public class CarAncillaryPaySuccessWithAncillaryScopeProvider : IAncillaryPaySuccessWithAncillaryScopeProvider
-{
-    public async Task<(bool, string)> AncillaryPaySuccessProviderAsync(string request, string originMessage)
-    {
-        return (true, "非单售辅营暂不处理");
-    }
-}
+```text
+Luck.UnitTest.SourceGeneratorTest.BusinessServiceKeyAttribute
 ```
 
-### 2. 注册服务
+特性构造参数按顺序解释为服务类型、服务键和 `ServiceLifetime` 数值。生命周期映射为：`0` 或其他值对应 Singleton，`1` 对应 Scoped，`2` 对应 Transient。
+
+## 生成结果
+
+存在匹配类时，生成器添加 `ServiceCollectionExtensions.g.cs`，其中包含：
 
 ```csharp
-// 在 Program.cs 或 Startup.cs 中
-services.AddBusinessServices();
-```
+namespace Luck.TestBase.SourceGenerators;
 
-### 3. 使用服务
-
-```csharp
-// 通过 ServiceKey 获取特定的服务实现
-var busExpressProvider = serviceProvider.GetKeyedService<IAncillaryPaySuccessWithAncillaryScopeProvider>("70");
-var carProvider = serviceProvider.GetKeyedService<IAncillaryPaySuccessWithAncillaryScopeProvider>("50");
-```
-
-## 生成的代码示例
-
-SourceGenerator 会自动生成类似以下的扩展方法：
-
-```csharp
-using Microsoft.Extensions.DependencyInjection;
-
-namespace Luck.TestBase;
-
-public static class BusinessServiceRegistrationExtensions
+public static class ServiceInfoServiceCollectionExtensions
 {
-    public static IServiceCollection AddBusinessServices(this IServiceCollection services)
+    public static IServiceCollection AddBusinessServices(
+        this IServiceCollection services)
     {
-        services.AddKeyedScoped<Luck.TestBase.IAncillaryPaySuccessWithAncillaryScopeProvider, Luck.TestBase.BusExpressAncillaryPaySuccessWithAncillaryScopeProvider>("70");
-        services.AddKeyedScoped<Luck.TestBase.IAncillaryPaySuccessWithAncillaryScopeProvider, Luck.TestBase.CarAncillaryPaySuccessWithAncillaryScopeProvider>("50");
+        services.Add(new ServiceDescriptor(
+            typeof(IMyService),
+            "service-key",
+            typeof(MyService),
+            ServiceLifetime.Scoped));
         return services;
     }
 }
 ```
 
-sb.AppendLine(
-$"        services.Add(new ServiceDescriptor({service.ImplementationType}, {service.ServiceKey}, {service.Lifetime}));");
+消费项目应以 analyzer 方式引用生成器项目或包，并引用 `Microsoft.Extensions.DependencyInjection`。
 
+## 已知限制
 
-## 支持的生命周期
-
-- `ServiceLifetime.Singleton` → `AddKeyedSingleton`
-- `ServiceLifetime.Scoped` → `AddKeyedScoped`
-- `ServiceLifetime.Transient` → `AddKeyedTransient`
+- 特性完整名称被硬编码为仓库测试命名空间；其他项目定义的同名特性不会被识别。
+- 生成代码命名空间固定为 `Luck.TestBase.SourceGenerators`。
+- 当前单元测试项目没有定义上述特性或匹配类，因此解决方案构建只能验证生成器可被编译器加载，不能验证注册代码实际生成。
+- 生成器未报告无效构造参数、重复服务键或无法解析服务类型的诊断。
