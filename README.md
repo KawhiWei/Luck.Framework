@@ -1,6 +1,6 @@
 # Luck.Framework
 
-Luck.Framework 是一组可组合的 .NET 类库，覆盖模块化启动、依赖注入、数据访问、缓存、事件总线、日志与测试基础设施。运行时类库支持 `net6.0`、`net7.0`、`net8.0`、`net9.0` 和 `net10.0`；源生成器面向 `netstandard2.0`，由 Roslyn 5.9 编译器工具集构建。
+Luck.Framework 是一组可组合的 .NET 类库，覆盖模块化启动、依赖注入、数据访问、缓存、事件总线、日志与测试基础设施。运行时类库仅支持 `net10.0`；源生成器仍面向 `netstandard2.0`，以兼容 Roslyn analyzer 加载约定。
 
 ## 快速开始
 
@@ -91,4 +91,4 @@ dotnet test test/Luck.UnitTest/Luck.UnitTest.csproj
 
 ## 版本记录与许可证
 
-最新变更见 [2.0.14 更新记录](change/2.0.14.md)，历史记录位于 [change](change) 目录。许可证见 [LICENSE](LICENSE)。
+最新变更见 [2.0.15 更新记录](change/2.0.15.md)，历史记录位于 [change](change) 目录。许可证见 [LICENSE](LICENSE)。

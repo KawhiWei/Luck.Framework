@@ -8,7 +8,7 @@
 dotnet add package Luck.EntityFrameworkCore.MySQL --version 2.0.14
 ```
 
-包支持 `net6.0`、`net7.0`、`net8.0`、`net9.0` 和 `net10.0`。net6-net9 引用对应 EF Core 主版本的 `Pomelo.EntityFrameworkCore.MySql`；net10 引用 `MySql.EntityFrameworkCore` 10.0.9 和 Oracle Connector/NET 26.7。
+包仅支持 `net10.0`，并引用 `MySql.EntityFrameworkCore` 10.0.9（Oracle Connector/NET）。
 
 ## 最小示例
 
