@@ -9,6 +9,7 @@
 	<ItemGroup>
 		<PackageReference Include="EFCore.NamingConventions" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\Luck.AppModule\Luck.AppModule.csproj" />
