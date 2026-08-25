@@ -8,7 +8,7 @@
 dotnet add package Luck.EntityFrameworkCore.PostgreSQL --version 2.0.14
 ```
 
-包依赖 `Luck.EntityFrameworkCore` 和 `Npgsql.EntityFrameworkCore.PostgreSQL` 10.0.3，目标框架为 `net10.0`。
+包依赖 `Luck.EntityFrameworkCore` 和与目标框架匹配的 `Npgsql.EntityFrameworkCore.PostgreSQL`，支持 `net6.0`、`net7.0`、`net8.0`、`net9.0` 和 `net10.0`。
 
 ## 最小示例
 

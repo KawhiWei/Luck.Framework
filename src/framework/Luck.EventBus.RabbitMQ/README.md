@@ -8,7 +8,7 @@
 dotnet add package Luck.EventBus.RabbitMQ --version 2.0.14
 ```
 
-项目依赖 `Luck.Framework`、RabbitMQ.Client 7.2.2 和 Polly 8.7.0，并引用 `Microsoft.AspNetCore.App` 以运行后台订阅服务。目标框架为 `net10.0`。
+项目依赖 `Luck.Framework`、RabbitMQ.Client 7.2.2 和 Polly 8.7.0，并引用 `Microsoft.AspNetCore.App` 以运行后台订阅服务。目标框架为 `net6.0`、`net7.0`、`net8.0`、`net9.0` 和 `net10.0`。
 
 ## 快速开始
 

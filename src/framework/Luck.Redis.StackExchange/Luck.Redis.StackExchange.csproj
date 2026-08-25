@@ -4,9 +4,11 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
     </PropertyGroup>
+    <PropertyGroup Condition="'$(TargetFramework)' == 'net6.0' Or '$(TargetFramework)' == 'net7.0'">
+        <SuppressTfmSupportBuildWarnings>true</SuppressTfmSupportBuildWarnings>
+    </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="StackExchange.Redis" />
-        <PackageReference Include="System.IO.Hashing" />
     </ItemGroup>
 
     <ItemGroup>

@@ -8,7 +8,7 @@
 dotnet add package Luck.EntityFrameworkCore --version 2.0.14
 ```
 
-项目目标框架为 `net10.0`。包依赖 `Luck.AppModule`、`Luck.DDD.Domain`、`Luck.Framework`、Microsoft.EntityFrameworkCore 10.0.11 和 EFCore.NamingConventions 10.0.1。
+项目目标框架为 `net6.0`、`net7.0`、`net8.0`、`net9.0` 和 `net10.0`。EF Core 与 EFCore.NamingConventions 按目标框架使用对应主版本的最新兼容稳定版，具体矩阵见根目录 `change/2.0.14.md`。
 
 `Luck.EntityFrameworkCore` 本身只定义驱动接口，不包含 MySQL、PostgreSQL 或内存数据库驱动。请同时安装一个驱动包，并在容器中注册对应的 `IDbContextDrivenProvider`。例如，下面的示例使用内存数据库：
 

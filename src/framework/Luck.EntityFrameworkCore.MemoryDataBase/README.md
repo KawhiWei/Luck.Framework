@@ -8,7 +8,7 @@
 dotnet add package Luck.EntityFrameworkCore.MemoryDataBase --version 2.0.14
 ```
 
-包依赖 `Luck.EntityFrameworkCore` 和 Microsoft.EntityFrameworkCore.InMemory 10.0.11，目标框架为 `net10.0`。
+包依赖 `Luck.EntityFrameworkCore` 和与目标框架同主版本的 Microsoft.EntityFrameworkCore.InMemory，支持 `net6.0`、`net7.0`、`net8.0`、`net9.0` 和 `net10.0`。
 
 ## 最小示例
 

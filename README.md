@@ -1,6 +1,6 @@
 # Luck.Framework
 
-Luck.Framework 是一组可组合的 .NET 类库，覆盖模块化启动、依赖注入、数据访问、缓存、事件总线、日志与测试基础设施。2.0.14 起，运行时类库统一面向 `net10.0`；源生成器继续面向 `netstandard2.0`，由 Roslyn 5.9 编译器工具集构建。
+Luck.Framework 是一组可组合的 .NET 类库，覆盖模块化启动、依赖注入、数据访问、缓存、事件总线、日志与测试基础设施。运行时类库支持 `net6.0`、`net7.0`、`net8.0`、`net9.0` 和 `net10.0`；源生成器面向 `netstandard2.0`，由 Roslyn 5.9 编译器工具集构建。
 
 ## 快速开始
 
@@ -47,7 +47,7 @@ public sealed class AppModule : LuckAppModule
 | 类库 | 用途 |
 | --- | --- |
 | [Luck.EntityFrameworkCore](src/framework/Luck.EntityFrameworkCore/README.md) | EF Core `DbContext` 基类、驱动提供程序抽象、JSON 转换和连接拦截器。 |
-| [Luck.EntityFrameworkCore.MySQL](src/framework/Luck.EntityFrameworkCore.MySQL/README.md) | 通过 Oracle MySQL EF Core 提供程序注册 MySQL 驱动。 |
+| [Luck.EntityFrameworkCore.MySQL](src/framework/Luck.EntityFrameworkCore.MySQL/README.md) | 通过与目标框架匹配的 Pomelo 或 Oracle provider 注册 MySQL 驱动。 |
 | [Luck.EntityFrameworkCore.PostgreSQL](src/framework/Luck.EntityFrameworkCore.PostgreSQL/README.md) | 通过 Npgsql 注册 PostgreSQL EF Core 驱动。 |
 | [Luck.EntityFrameworkCore.MemoryDataBase](src/framework/Luck.EntityFrameworkCore.MemoryDataBase/README.md) | 注册 EF Core InMemory 驱动，适合测试场景。 |
 | [Luck.Dapper](src/framework/Luck.Dapper/README.md) | Dapper 驱动抽象及实体、聚合根 SQL 仓储实现。 |

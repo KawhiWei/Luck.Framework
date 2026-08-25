@@ -8,9 +8,10 @@
 
     <ItemGroup>
         <PackageReference Include="Serilog.Sinks.File" />
-        <PackageReference Include="Serilog" />
-        <PackageReference Include="Serilog.Settings.Configuration" />
         <PackageReference Include="Serilog.AspNetCore" />
         <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    </ItemGroup>
+    <ItemGroup Condition="'$(TargetFramework)' == 'net6.0' Or '$(TargetFramework)' == 'net7.0'">
+        <PackageReference Update="Serilog.AspNetCore" VersionOverride="7.0.0" />
     </ItemGroup>
 </Project>

@@ -8,7 +8,7 @@
 dotnet add package Luck.Redis.StackExchange --version 2.0.14
 ```
 
-项目依赖 `Luck.Framework`、`Luck.AppModule` 和 `StackExchange.Redis`，支持 `net10.0`。
+项目依赖 `Luck.Framework`、`Luck.AppModule` 和 `StackExchange.Redis`，支持 `net6.0`、`net7.0`、`net8.0`、`net9.0` 和 `net10.0`。
 
 ## 注册连接
 

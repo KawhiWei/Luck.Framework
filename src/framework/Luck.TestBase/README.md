@@ -8,7 +8,7 @@
 dotnet add package Luck.TestBase --version 2.0.14
 ```
 
-项目支持 `net10.0`，并依赖 `Luck.Framework`、`Luck.AppModule`、`Luck.AutoDependencyInjection` 和 `Luck.Dapper.ClickHouse`。按被测模块追加相应的数据库、消息或缓存包。
+项目支持 `net6.0`、`net7.0`、`net8.0`、`net9.0` 和 `net10.0`，并依赖 `Luck.Framework`、`Luck.AppModule`、`Luck.AutoDependencyInjection` 和 `Luck.Dapper.ClickHouse`。按被测模块追加相应的数据库、消息或缓存包。
 
 ## 集成测试
 

@@ -4,6 +4,9 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
     </PropertyGroup>
+    <PropertyGroup Condition="'$(TargetFramework)' == 'net6.0' Or '$(TargetFramework)' == 'net7.0'">
+        <SuppressTfmSupportBuildWarnings>true</SuppressTfmSupportBuildWarnings>
+    </PropertyGroup>
     <ItemGroup>
       <ProjectReference Include="..\Luck.AppModule\Luck.AppModule.csproj" />
       <ProjectReference Include="..\Luck.Dapper\Luck.Dapper.csproj" />
