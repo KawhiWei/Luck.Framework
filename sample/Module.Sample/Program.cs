@@ -2,9 +2,11 @@ using Luck.AutoDependencyInjection.PropertyInjection;
 using Module.Sample;
 using System.Diagnostics;
 using Luck.AutoDependencyInjection;
+using Luck.Logging.Serilog;
 
 
 var builder = WebApplication.CreateBuilder(args);
+builder.AddLuckSerilog();
 // Add services to the container.
 builder.Services.AddApplication<AppWebModule>();
 

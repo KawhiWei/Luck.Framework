@@ -3,7 +3,7 @@ using Luck.MongoDB.DbContexts;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Conventions;
-using StringObjectIdIdGeneratorConvention = MongoDB.Bson.Serialization.Conventions.StringObjectIdIdGeneratorConvention;
+using StringObjectIdIdGeneratorConvention = Luck.MongoDB.StringObjectIdIdGeneratorConvention;
 
 namespace Microsoft.Extensions.DependencyInjection
 {

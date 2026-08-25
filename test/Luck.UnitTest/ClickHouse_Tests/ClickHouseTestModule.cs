@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Luck.Dapper.ClickHouse;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,15 +12,18 @@ public class ClickHouseTestModule : ClickHouseBaseModule
 {
     protected override void AddConnectionString(IServiceCollection service)
     {
+        var port = uint.TryParse(Environment.GetEnvironmentVariable("LUCK_CLICKHOUSE_PORT"), out var configuredPort)
+            ? configuredPort
+            : 9000;
         var connectionOptionList = new List<ConnectionStringOptions>
         {
             new()
             {
-                Host = "192.168.31.20",
-                Port = 9000,
-                User = "kawhi",
-                Password = "wzw0126..",
-                Database = "luck_asa",
+                Host = Environment.GetEnvironmentVariable("LUCK_CLICKHOUSE_HOST") ?? "localhost",
+                Port = port,
+                User = Environment.GetEnvironmentVariable("LUCK_CLICKHOUSE_USER") ?? "default",
+                Password = Environment.GetEnvironmentVariable("LUCK_CLICKHOUSE_PASSWORD") ?? string.Empty,
+                Database = Environment.GetEnvironmentVariable("LUCK_CLICKHOUSE_DATABASE") ?? "default",
             }
         };
         service.AddClickHouseDbConnectionString(x =>

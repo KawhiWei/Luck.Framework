@@ -25,7 +25,7 @@ namespace Luck.UnitTest
 
                 options.ConnectionString = "mongodb://localhost:27017/LuckTest";
             });
-            BsonSerializer.RegisterSerializer(new DateTimeSerializer(DateTimeKind.Local));
+            BsonSerializer.TryRegisterSerializer<DateTime>(new DateTimeSerializer(DateTimeKind.Local));
             _serviceProvider = services.BuildServiceProvider();
             _dbContext = _serviceProvider.GetService<TestMongoDbContext>()!;
         }
@@ -52,8 +52,19 @@ namespace Luck.UnitTest
         [Fact]
         public async Task get_user_async()
         {
+            var expectedUser = new User
+            {
+                Name = "大黄瓜18CM",
+                Age = 18,
+                IsLock = false,
+                Sex = Sex.Male,
+                DateTime = DateTime.UtcNow
+            };
+            await _dbContext.Collection<User>().InsertOneAsync(expectedUser);
 
-            var user = await (await _dbContext.Collection<User>().FindAsync(Builders<User>.Filter.Empty)).FirstOrDefaultAsync();
+            var user = await (await _dbContext.Collection<User>()
+                .FindAsync(Builders<User>.Filter.Eq(o => o.Id, expectedUser.Id)))
+                .FirstOrDefaultAsync();
 
             Assert.NotNull(user);
         }
