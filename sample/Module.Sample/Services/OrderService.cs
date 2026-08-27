@@ -3,6 +3,7 @@ using Luck.DDD.Domain.Repositories;
 using Luck.Framework.Extensions;
 using Luck.Framework.Infrastructure.DependencyInjectionModule;
 using Luck.Framework.UnitOfWorks;
+using Luck.Logging.Serilog;
 using Microsoft.EntityFrameworkCore;
 using Module.Sample.Domain;
 using Module.Sample.EventHandlers;
@@ -18,8 +19,12 @@ namespace Module.Sample.Services
         private readonly IUnitOfWork _unitOfWork = null!;
 
 
-        [Injection]
-        private readonly ILogger<OrderService> _logger = null!;
+        private readonly ILogger<OrderService> _logger;
+
+        public OrderService(ILogger<OrderService> logger)
+        {
+            _logger = logger;
+        }
 
         public async Task CreateAsync()
         {
@@ -64,6 +69,18 @@ namespace Module.Sample.Services
 
 
         }
+
+        public Task LogRequestContextAsync()
+        {
+            _logger.LogLuckInformation("Application service received the controller request.");
+
+            using (_logger.BeginLuckLogScope(subcategory: $"{nameof(OrderService)}.{nameof(LogRequestContextAsync)}"))
+            {
+                _logger.LogInformation("Application service is executing its scoped method.");
+            }
+
+            return Task.CompletedTask;
+        }
     }
     public interface IOrderService : IScopedDependency
     {
@@ -76,6 +93,8 @@ namespace Module.Sample.Services
         Task CreateAndEventAsync();
 
         Task<object?> TestQuerySplittingBehavior();
+
+        Task LogRequestContextAsync();
 
     }
 }

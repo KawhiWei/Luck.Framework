@@ -35,6 +35,8 @@ var diagnosticSourceSubscriber = new DiagnosticSourceSubscriber(new LuckDiagnost
 DiagnosticListener.AllListeners.Subscribe(diagnosticSourceSubscriber);
 
 
+app.UseLuckRequestLogContext();
+
 app.UseAuthorization();
 
 app.MapControllers();
