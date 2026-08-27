@@ -3,7 +3,7 @@ using Serilog.Events;
 
 namespace Luck.Logging.Serilog;
 
-/// <summary>Ensures all fields required by the shared output template have values.</summary>
+/// <summary>Ensures all fields required by the shared output template are present.</summary>
 internal sealed class RequiredLogPropertiesEnricher : ILogEventEnricher
 {
     private readonly string _module;
@@ -16,35 +16,11 @@ internal sealed class RequiredLogPropertiesEnricher : ILogEventEnricher
     public void Enrich(LogEvent logEvent, ILogEventPropertyFactory propertyFactory)
     {
         AddIfMissing(logEvent, propertyFactory, LuckLogPropertyNames.Module, _module);
-        AddIfMissing(logEvent, propertyFactory, LuckLogPropertyNames.Category, "-");
-        AddSubcategoryIfMissing(logEvent, propertyFactory);
-        AddIfMissing(logEvent, propertyFactory, LuckLogPropertyNames.TraceId, "-");
-        AddIfMissing(logEvent, propertyFactory, LuckLogPropertyNames.Filter1, "-");
-        AddIfMissing(logEvent, propertyFactory, LuckLogPropertyNames.Filter2, "-");
-    }
-
-    private static void AddSubcategoryIfMissing(LogEvent logEvent, ILogEventPropertyFactory propertyFactory)
-    {
-        LogEventPropertyValue? existing;
-        if (logEvent.Properties.TryGetValue(LuckLogPropertyNames.Subcategory, out existing) && !IsEmpty(existing))
-            return;
-
-        logEvent.AddOrUpdateProperty(propertyFactory.CreateProperty(
-            LuckLogPropertyNames.Subcategory,
-            ExtractClassName(logEvent)));
-    }
-
-    private static string ExtractClassName(LogEvent logEvent)
-    {
-        LogEventPropertyValue? sourceContext;
-        if (!logEvent.Properties.TryGetValue(LuckLogPropertyNames.SourceContext, out sourceContext)
-            || !(sourceContext is ScalarValue scalar)
-            || !(scalar.Value is string source)
-            || string.IsNullOrWhiteSpace(source))
-            return "-";
-
-        var className = source.Split('.', StringSplitOptions.RemoveEmptyEntries).LastOrDefault();
-        return string.IsNullOrWhiteSpace(className) ? "-" : className;
+        AddIfMissing(logEvent, propertyFactory, LuckLogPropertyNames.Category, string.Empty);
+        AddIfMissing(logEvent, propertyFactory, LuckLogPropertyNames.Subcategory, string.Empty);
+        AddIfMissing(logEvent, propertyFactory, LuckLogPropertyNames.TraceId, string.Empty);
+        AddIfMissing(logEvent, propertyFactory, LuckLogPropertyNames.Filter1, string.Empty);
+        AddIfMissing(logEvent, propertyFactory, LuckLogPropertyNames.Filter2, string.Empty);
     }
 
     private static void AddIfMissing(

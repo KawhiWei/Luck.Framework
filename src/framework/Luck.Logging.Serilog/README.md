@@ -32,6 +32,16 @@ app.Run();
 services.AddLuckSerilog(configuration, environment);
 ```
 
+在 MVC 请求中加入控制器、Action 和请求筛选字段：
+
+```csharp
+var app = builder.Build();
+app.UseLuckRequestLogContext();
+app.MapControllers();
+```
+
+该中间件为整个请求创建一个日志 scope：`Module` 是控制器名，`Category` 是 Action 名，`Subcategory` 在 HTTP 请求入口保持为空；`Filter1` 是每个请求新生成的无连字符 GUID；`Filter2` 优先取 JWT 的 `NameIdentifier` 或 `sub` Claim，无有效值时新生成无连字符 GUID；`RequestTraceId` 优先取 `Activity.TraceId`，不可用时取 `HttpContext.TraceIdentifier`。控制器和服务中直接调用标准 `ILogger.LogInformation()`、`LogWarning()` 或 `LogError()` 都会继承这些字段。中间件还会在请求结束时写入一条包含状态码、耗时、HTTP 方法和路径的日志；未处理异常会记录为 `Error` 后继续向上抛出。
+
 发生无法恢复的启动异常时可记录并在 finally 中刷新：
 
 ```csharp
@@ -49,6 +59,27 @@ finally
     LoggingExtensions.CloseAndFlush();
 }
 ```
+
+`Subcategory` 用于业务代码中的具体执行方法；HTTP 请求入口不设置该字段。需要记录方法名时，在 App 层局部创建 scope 即可，不需要包装 `ILogger.LogInformation()` 等方法：
+
+```csharp
+using (logger.BeginLuckMethodScope())
+{
+    logger.LogInformation("Settlement submitted.");
+}
+```
+
+`BeginLuckMethodScope()` 自动使用调用该扩展的方法名作为 `Subcategory`。需要自定义名称时，继续使用 `BeginLuckLogScope(subcategory: "...")`。
+
+也可直接使用日志扩展，无需手动创建 scope：
+
+```csharp
+logger.LogLuckInformation("Settlement submitted. OrderId={OrderId}", values: [orderId]);
+logger.LogLuckWarning("Settlement retry is scheduled.");
+logger.LogLuckError(exception, "Settlement submission failed.");
+```
+
+`LogLuckInformation`、`LogLuckWarning` 和 `LogLuckError` 会自动使用调用方法名作为 `Subcategory`，并继承请求中的 `Module`、`Category`、`RequestTraceId`、`Filter1` 和 `Filter2`。
 
 ## 配置
 
@@ -93,11 +124,26 @@ finally
 | 字段 | 含义 |
 | --- | --- |
 | `Module` | 配置或 `AppKey` 推导出的模块名 |
-| `Category` | 日志分类，默认 `-` |
-| `Subcategory` | 子分类，缺失时尝试取 `SourceContext` 的最后一段 |
-| `RequestTraceId` | 请求或业务代码提供的追踪标识，默认 `-` |
-| `Filter1` | 业务代码可选的筛选字段，默认 `-` |
-| `Filter2` | 业务代码可选的筛选字段，默认 `-` |
+| `Category` | 日志分类，缺失时为空 |
+| `Subcategory` | 业务代码可选的具体执行方法，缺失时为空 |
+| `RequestTraceId` | 请求或业务代码提供的追踪标识，缺失时为空 |
+| `Filter1` | 业务代码可选的筛选字段，缺失时为空 |
+| `Filter2` | 业务代码可选的筛选字段，缺失时为空 |
+
+可使用 `BeginLuckLogScope` 为一组关联日志写入自定义字段。未传入或为空白的参数不会覆盖默认字段：
+
+```csharp
+using (logger.BeginLuckLogScope(
+           module: "Orders.Api",
+           category: "Payment",
+           subcategory: "SettlementService",
+           filter1: orderId,
+           filter2: supplierId))
+{
+    logger.LogInformation("Settlement submitted.");
+    logger.LogInformation("Settlement notification queued.");
+}
+```
 
 ## 注意事项
 

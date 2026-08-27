@@ -1,19 +1,19 @@
 #See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
 
-FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS base
 WORKDIR /app
 EXPOSE 80
 
-FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+# Native database clients can require the Kerberos GSSAPI runtime during authentication.
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends libgssapi-krb5-2 \
+    && rm -rf /var/lib/apt/lists/*
+
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src
-COPY ["sample/Module.Sample/Module.Sample.csproj", "sample/Module.Sample/"]
-COPY ["src/framework/Luck.Redis.StackExchange/Luck.Redis.StackExchange.csproj", "src/framework/Luck.Redis.StackExchange/"]
-COPY ["src/framework/Luck.Framework/Luck.Framework.csproj", "src/framework/Luck.Framework/"]
-COPY ["src/framework/Luck.EntityFrameworkCore/Luck.EntityFrameworkCore.csproj", "src/framework/Luck.EntityFrameworkCore/"]
-COPY ["src/framework/Luck.DDD.Domain/Luck.DDD.Domain.csproj", "src/framework/Luck.DDD.Domain/"]
-RUN dotnet restore "sample/Module.Sample/Module.Sample.csproj"
 COPY . .
 WORKDIR "/src/sample/Module.Sample"
+RUN dotnet restore "Module.Sample.csproj"
 RUN dotnet build "Module.Sample.csproj" -c Release -o /app/build
 
 FROM build AS publish
